@@ -3,12 +3,25 @@ name = "generator"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "gen"
+path = "src/main.rs"
+
+
 [dependencies]
 # diplomat = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-diplomat = { path="../../diplomat/macro" }
+#diplomat = { path="../../diplomat/macro" }
+diplomat = { git = "https://github.com/f0cii/diplomat.git" }
+
 # diplomat-runtime = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-diplomat-runtime = { path="../../diplomat/runtime" }
+#diplomat-runtime = { path="../../diplomat/runtime" }
+diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git" }
+
+
 # diplomat-tool = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-diplomat-tool = { path="../../diplomat/tool" }
+#diplomat-tool = { path="../../diplomat/tool" }
+diplomat-tool = { git = "https://github.com/f0cii/diplomat.git" }
+
 # diplomat_core = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-diplomat_core = { path="../../diplomat/core" }
+#diplomat_core = { path="../../diplomat/core" }
+diplomat_core = { git = "https://github.com/f0cii/diplomat.git" }

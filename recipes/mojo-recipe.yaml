@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+
+context:
+    version: "13.4.2"
+
+package:
+    name: "sonic_mojo"
+    version: 0.1.1
+
+source:
+    - path: ../sonic/  # TODO X: FIX HERE
+
+build:
+    script:
+        - mkdir -p ${PREFIX}/lib/mojo
+        - magic run mojo package . -o ${PREFIX}/lib/mojo/sonic_mojo.mojopkg
+
+requirements:
+    run:
+        - max >=24.5.0
+#        - gojo == 0.1.9
+
+about:
+    homepage: https://github.com/better-mojo/sonic-mojo
+    license: MIT
+    summary: "sonic-rs binding for mojo"
+    repository: https://github.com/better-mojo/sonic-mojo

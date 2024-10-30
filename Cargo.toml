@@ -1,2 +1,0 @@
-[workspace]
-members = ["sonic_rs_bindings", "generator"]
