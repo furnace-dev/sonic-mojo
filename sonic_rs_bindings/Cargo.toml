@@ -1,0 +1,17 @@
+[package]
+name = "sonic"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+#diplomat = "0.8.0"
+#diplomat-runtime = "0.8.2"
+diplomat = { git = "https://github.com/f0cii/diplomat.git" }
+# diplomat = { path="../../diplomat/macro" }
+diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git" }
+# diplomat-runtime = { path="../../diplomat/runtime" }
+lazy_static = "1.5.0"
+sonic-rs = "0.3.14"

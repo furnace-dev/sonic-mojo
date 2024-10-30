@@ -1,0 +1,14 @@
+[package]
+name = "generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# diplomat = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
+diplomat = { path="../../diplomat/macro" }
+# diplomat-runtime = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
+diplomat-runtime = { path="../../diplomat/runtime" }
+# diplomat-tool = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
+diplomat-tool = { path="../../diplomat/tool" }
+# diplomat_core = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
+diplomat_core = { path="../../diplomat/core" }
