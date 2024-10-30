@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+#
+# ref:
+#   - https://prefix-dev.github.io/rattler-build/latest/tutorials/rust/
+#   - https://github.com/conda-forge/fcp-rust-feedstock/blob/main/recipe/meta.yaml#L17
+
+context:
+  version: "13.4.2"
+
+package:
+  name: "libsonic"
+  version: 0.1.1
+
+source:
+  - path: ../sonic_rs_bindings/    # TODO X: 包含 cargo.toml 的路径!!!
+
+
+#
+# build dir:
+#   - macos: packages/uuid-ffi/output/osx-arm64/uuid_ffi-0.1.1-h60d57d3_0/lib/aarch64-apple-darwin/release/libuuid_ffi.dylib
+#
+build:
+  script:
+#    - cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml  # !(1)
+#    - $BUILD_PREFIX/bin/cargo install --locked --bins --root ${PREFIX} --path .
+    - mkdir -p ${PREFIX}/lib/tmp/
+    - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
+    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.dylib ${PREFIX}/lib/
+#    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.a ${PREFIX}/lib/
+    - rm -rf ${PREFIX}/lib/tmp/
+
+#    - $BUILD_PREFIX/bin/cargo build --release --lib
+#    - cp target/release/libuuid_ffi.dylib ${PREFIX}/lib/
+
+
+requirements:
+  build:
+    - ${{ compiler('rust') }}  # TODO X: rust toolchain
+    - ${{ compiler('c') }}
+    #    - ${{ stdlib('c') }}
+#    - cargo-bundle-licenses
+
+about:
+  homepage: https://github.com/better-mojo/sonic-mojo
+  license: MIT
+  summary: "sonic-rs ffi for mojo"
+  repository: https://github.com/better-mojo/sonic-mojo

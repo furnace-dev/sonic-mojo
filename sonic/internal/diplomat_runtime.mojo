@@ -2,7 +2,7 @@ from memory import UnsafePointer
 from sys.ffi import DLHandle
 from sys.ffi import c_char, c_size_t
 from utils import StringRef
-
+from sys import os_is_macos
 
 alias c_bool = Bool
 alias c_char_ptr = UnsafePointer[c_char]
@@ -23,7 +23,17 @@ alias c_void = UInt8
 alias c_void_ptr = UnsafePointer[c_void]
 alias c_nullptr = c_void_ptr()
 
-alias LIBNAME = "libsonic.so"
+
+# os platform:
+fn get_libname() -> StringLiteral:
+    @parameter
+    if os_is_macos():
+        return "libsonic.dylib"
+    else:
+        return "libsonic.so"
+
+# alias LIBNAME = "libXXX.so"
+alias LIBNAME = get_libname()
 
 @value
 @register_passable("trivial")
