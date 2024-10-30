@@ -138,6 +138,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgments
 
 - [Sonic-RS](https://github.com/cloudwego/sonic-rs) for providing the foundation of this library.
+- [Diplomat](https://github.com/rust-diplomat/diplomat) for the code generation tool used to create Mojo bindings, with modifications in my forked version [f0cii/diplomat](https://github.com/f0cii/diplomat).
 - The community for their support and contributions.
 
 ---
