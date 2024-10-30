@@ -31,7 +31,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .)
 mojo test test_sonic.mojo
 ```
 
-## Usage
+## Examples
 
 Here’s a quick example of how to use Sonic-Mojo to read and write JSON data:
 
