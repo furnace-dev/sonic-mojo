@@ -31,6 +31,12 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .)
 mojo test test_sonic.mojo
 ```
 
+### Package the sonic-mojo library
+
+```bash
+mojo package ./sonic -o ./sonic_mojo.mojopkg
+```
+
 ## Examples
 
 Here’s a quick example of how to use Sonic-Mojo to read and write JSON data:
