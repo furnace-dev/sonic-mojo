@@ -4,8 +4,7 @@ channels = ["conda-forge", "https://conda.modular.com/max-nightly", "https://rep
 description = "Add a short description here"
 name = "sonic-mojo"
 
-#platforms = ["linux-64", "osx-arm64"]
-platforms = [ "osx-arm64"]
+platforms = ["linux-64", "osx-arm64"]
 
 version = "0.1.0"
 
@@ -15,7 +14,6 @@ build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https
 
 [dependencies]
 max = ">=24.6.0.dev2024102905,<25"
-libsonic = ">=0.1.1,<0.2"
 
 [feature.dev.dependencies]
 rust = "*"
