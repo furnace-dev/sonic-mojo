@@ -41,7 +41,7 @@ cargo run --bin generator
 ### Update the files in the internal directory to use the correct library name
 
 ```bash
-sed -i 's/libXXX.so/libsonic.so/g' ./sonic/internal/diplomat_runtime.mojo
+sed -i 's/libXXX/libsonic/g' ./sonic/internal/diplomat_runtime.mojo
 ```
 
 ### Run the tests

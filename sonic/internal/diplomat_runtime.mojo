@@ -32,8 +32,9 @@ fn get_libname() -> StringLiteral:
     else:
         return "libsonic.so"
 
-# alias LIBNAME = "libXXX.so"
+
 alias LIBNAME = get_libname()
+
 
 @value
 @register_passable("trivial")
@@ -46,9 +47,9 @@ struct DiplomatWrite:
     var grow: fn (UnsafePointer[DiplomatWrite], c_size_t) -> Bool
 
 
-#@value
-#@register_passable("trivial")
-#struct DiplomatStringView:
+# @value
+# @register_passable("trivial")
+# struct DiplomatStringView:
 #    var data: c_char_ptr
 #    var len: c_size_t
 
