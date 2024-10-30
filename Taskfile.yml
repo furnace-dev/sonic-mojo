@@ -1,0 +1,74 @@
+version: "3"
+
+# env file:
+dotenv:
+  - .env
+
+tasks:
+  init:
+    cmds:
+      - magic project platform add osx-arm64
+
+  pkg:
+    cmds:
+      #      - pixi {{.CLI_ARGS}}
+      - magic {{.CLI_ARGS}}
+
+  generate:
+    aliases: [ "gen" ]
+    cmds:
+      - RUST_LOG=info cargo run --bin gen
+
+  rel:
+    cmds:
+      - cargo build --release
+    dir: sonic_rs_bindings/
+
+  rel:mojo:
+    aliases: ["relm"]
+    cmds:
+      - mkdir build/
+      - magic run mojo package sonic ./build/sonic_mojo.mojopkg
+    ignore_error: true
+
+
+  build:rust:
+    aliases: [ "br" ]
+    cmds:
+      - magic run build-rs
+
+  build:mojo:
+    aliases: [ "bm" ]
+    cmds:
+      - magic run build-mojo
+
+  clean:build:
+    cmds:
+      - task: br
+      - task: bm
+
+  #
+  # ref: https://taskfile.dev/usage/#looping-over-variables
+  #
+  publish:ffi:
+    aliases: [ "upf", "pub", "pub:auto" ]
+    vars:
+      UP_PKGS:
+        sh: find . -name "*.conda" -type f
+    cmds:
+      - echo $PREFIX_DEV_API_KEY
+      - echo {{ .UP_PKGS }}
+      - for: { var: UP_PKGS }
+        cmd:
+          |
+          magic run rattler-build upload prefix -c "better-ffi" \
+            --api-key=$PREFIX_DEV_API_KEY \
+            {{.ITEM}}
+      - open https://prefix.dev/channels/better-ffi
+    dir: output/
+
+  clean:
+    aliases: [ "cl", 'del' ]
+    cmds:
+      - rm -rf output/
+#      - cargo clean

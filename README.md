@@ -3,6 +3,29 @@ A high-performance JSON processing library for the Mojo programming language, pr
 
 ## Usage
 
+### add 
+
+- add channel:
+
+```bash
+# for libsonic
+magic project channel add "https://repo.prefix.dev/better-ffi" 
+
+# for sonic-mojo
+magic project channel add "https://repo.prefix.dev/better-mojo-nightly"
+
+
+```
+
+- add package:
+
+```bash
+magic add sonic_mojo
+magic add libsonic
+
+```
+
+
 ### Compile the sonic-rs library
 
 ```bash
