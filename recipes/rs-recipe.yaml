@@ -21,16 +21,23 @@ source:
 #
 build:
   script:
-#    - cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml  # !(1)
-#    - $BUILD_PREFIX/bin/cargo install --locked --bins --root ${PREFIX} --path .
-    - mkdir -p ${PREFIX}/lib/tmp/
-    - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
-    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.dylib ${PREFIX}/lib/
-#    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.a ${PREFIX}/lib/
-    - rm -rf ${PREFIX}/lib/tmp/
+    - if: osx
+      then:
+        #    - cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml  # !(1)
+        #    - $BUILD_PREFIX/bin/cargo install --locked --bins --root ${PREFIX} --path .
+        - mkdir -p ${PREFIX}/lib/tmp/
+        - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
+        - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.dylib ${PREFIX}/lib/
+        #    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.a ${PREFIX}/lib/
+        - rm -rf ${PREFIX}/lib/tmp/
 
-#    - $BUILD_PREFIX/bin/cargo build --release --lib
-#    - cp target/release/libuuid_ffi.dylib ${PREFIX}/lib/
+    - if: linux
+      then:
+        - mkdir -p ${PREFIX}/lib/tmp/
+        - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
+        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.so ${PREFIX}/lib/
+        #        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.a ${PREFIX}/lib/
+        - rm -rf ${PREFIX}/lib/tmp/
 
 
 requirements:

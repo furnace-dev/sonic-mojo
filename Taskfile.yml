@@ -4,7 +4,15 @@ version: "3"
 dotenv:
   - .env
 
+env:
+  LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:$(realpath .magic/envs/default/lib)"
+
 tasks:
+  install:ubuntu:
+    cmds:
+      - apt install -y zip # unzip libsonic-0.1.1-hb0f4dca_0.conda
+      - apt install -y zstd # tar -I zstd -xvf pkg-libsonic-0.1.1-hb0f4dca_0.tar.zst
+
   init:
     cmds:
       - magic project platform add osx-arm64
@@ -16,8 +24,10 @@ tasks:
 
   run:
     cmds:
-      - magic run mojo main.mojo
-    dir: examples/try-sonic/src/
+      - echo $(realpath .magic/envs/default/lib)
+      - echo $LD_LIBRARY_PATH
+      - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .magic/envs/default/lib);  magic run mojo run src/main.mojo
+    dir: examples/try-sonic/
 
   generate:
     aliases: [ "gen" ]
@@ -94,3 +104,34 @@ tasks:
     cmds:
       - rm -rf output/
 #      - cargo clean
+
+
+  ###########################################################################
+
+  quick:
+    aliases: [ "q" ]
+    cmds:
+      - task: commit
+      - task: commit
+      - git status
+      - task: push
+    ignore_error: true
+
+  commit:
+    aliases: [ "c" ]
+    cmds:
+      - git add .
+      - git commit -m "update" --no-verify
+    ignore_error: true
+
+
+  pull:
+    aliases: [ "pl" ]
+    cmds:
+      - git pull
+
+  push:
+    aliases: [ "p" ]
+    cmds:
+      - git push origin main --tags
+      - repo_url=`git remote -v | grep push | awk -F ":" '{print $2}' | awk -F ".git" '{print "https://github.com/"$1}'`; open $repo_url
