@@ -14,6 +14,11 @@ tasks:
       #      - pixi {{.CLI_ARGS}}
       - magic {{.CLI_ARGS}}
 
+  run:
+    cmds:
+      - magic run mojo main.mojo
+    dir: examples/try-sonic/src/
+
   generate:
     aliases: [ "gen" ]
     cmds:
@@ -25,10 +30,10 @@ tasks:
     dir: sonic_rs_bindings/
 
   rel:mojo:
-    aliases: ["relm"]
+    aliases: [ "relm" ]
     cmds:
       - mkdir build/
-      - magic run mojo package sonic ./build/sonic_mojo.mojopkg
+      - magic run mojo package sonic -o ./build/sonic_mojo.mojopkg
     ignore_error: true
 
 
@@ -65,6 +70,23 @@ tasks:
             --api-key=$PREFIX_DEV_API_KEY \
             {{.ITEM}}
       - open https://prefix.dev/channels/better-ffi
+    dir: output/
+
+  publish:mojo:
+    aliases: [ "upm", ]
+    vars:
+      UP_PKGS:
+        sh: find . -name "*.conda" -type f
+    cmds:
+      - echo $PREFIX_DEV_API_KEY
+      - echo {{ .UP_PKGS }}
+      - for: { var: UP_PKGS }
+        cmd:
+          |
+          magic run rattler-build upload prefix -c "better-mojo-nightly" \
+            --api-key=$PREFIX_DEV_API_KEY \
+            {{.ITEM}}
+      - open https://prefix.dev/channels/better-mojo-nightly
     dir: output/
 
   clean:
