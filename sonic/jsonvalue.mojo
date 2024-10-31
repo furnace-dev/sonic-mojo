@@ -11,7 +11,7 @@ trait JsonContainerTrait:
 
 
 @value
-struct JsonValue(JsonContainerTrait):
+struct JsonValue(JsonContainerTrait, Stringable):
     var _value: UnsafePointer[JValue]
 
     @always_inline
@@ -161,3 +161,6 @@ struct JsonValue(JsonContainerTrait):
         var s = String(s_ref)
         diplomat_buffer_write_destroy(out)
         return s
+
+    fn __str__(self) -> String:
+        return self.to_string()

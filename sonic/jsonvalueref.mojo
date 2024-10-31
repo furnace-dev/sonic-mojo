@@ -3,7 +3,7 @@ from .internal import *
 
 
 @value
-struct JsonValueRef:
+struct JsonValueRef(Stringable):
     var _value: UnsafePointer[JValueRef]
 
     @always_inline
@@ -117,3 +117,6 @@ struct JsonValueRef:
         var s = String(s_ref)
         diplomat_buffer_write_destroy(out)
         return s
+
+    fn __str__(self) -> String:
+        return self.to_string()

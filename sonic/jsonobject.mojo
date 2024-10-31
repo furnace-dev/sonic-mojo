@@ -15,7 +15,7 @@ fn convert_jvalue_to_string(self: UnsafePointer[JValueRef]) -> String:
 
 
 @value
-struct JsonObject(JsonContainerTrait):
+struct JsonObject(JsonContainerTrait, Stringable):
     var _object: UnsafePointer[JObject]
 
     @always_inline
@@ -216,3 +216,6 @@ struct JsonObject(JsonContainerTrait):
             jkeyvalueref_destroy(kv)
         jobjectiter_destroy(iter)
         return ret
+
+    fn __str__(self) -> String:
+        return self.to_string()

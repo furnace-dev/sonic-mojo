@@ -4,7 +4,7 @@ from .jsonvalueref import JsonValueRef
 
 
 @value
-struct JsonArray:
+struct JsonArray(Stringable):
     var _array: UnsafePointer[JArray]
 
     @always_inline
@@ -155,3 +155,6 @@ struct JsonArray:
     @always_inline
     fn destroy(self) -> None:
         jarray_destroy(self._array)
+
+    fn __str__(self) -> String:
+        return self.to_string()

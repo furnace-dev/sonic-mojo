@@ -4,7 +4,7 @@ from .jsonvalueref import *
 
 
 @value
-struct JsonObjectMut:
+struct JsonObjectMut(Stringable):
     var _object: UnsafePointer[JObjectMut]
 
     @always_inline
@@ -191,3 +191,6 @@ struct JsonObjectMut:
             jkeyvalueref_destroy(kv)
         jobjectiter_destroy(iter)
         return ret
+
+    fn __str__(self) -> String:
+        return self.to_string()
