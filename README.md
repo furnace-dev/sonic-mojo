@@ -29,13 +29,15 @@ magic add libsonic
 ### Compile the sonic-rs library
 
 ```bash
+cd sonic_rs_bindings/
 cargo build --release
 ```
 
 ### Generate bindings for sonic-rs
 
 ```bash
-cargo run --bin generator
+cd generator/
+cargo run generator
 ```
 
 ### Update the files in the internal directory to use the correct library name
@@ -47,7 +49,7 @@ sed -i 's/libXXX/libsonic/g' ./sonic/internal/diplomat_runtime.mojo
 ### Run the tests
 
 ```bash
-cp target/release/libsonic.so ./
+cp sonic_rs_bindings/target/release/libsonic.so ./
 
 magic shell
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .)
