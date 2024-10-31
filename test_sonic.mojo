@@ -6,14 +6,14 @@ from sonic.internal.jobjectmut import *
 from testing import assert_equal, assert_true
 
 
-fn test_sonic_rs_internal_sample() -> String:
+fn test_sonic_rs_internal_sample() raises:
     var s = '{"a":100}'
-    var v = jvalue_new_from_str(s)
+    var v = jvalue_from_str(s)
 
     var o = v.bitcast[JObject]()
     jobject_insert_i64(o, "b", 101)
     jobject_insert_str(o, "c", "hello")
-    var a = jvalue_new_from_str("[1,2,3]")
+    var a = jvalue_from_str("[1,2,3]")
     jobject_insert_value(o, "d", a)
 
     var out = diplomat_buffer_write_create(1024)
@@ -26,7 +26,7 @@ fn test_sonic_rs_internal_sample() -> String:
     jvalue_destroy(v)
     jvalue_destroy(a)
 
-    return ret_str
+    _ = ret_str^
 
 
 fn test_object() raises:
