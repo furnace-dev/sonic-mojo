@@ -1,51 +1,33 @@
 from memory import UnsafePointer
 from .internal import *
+from .jsonvalue import JsonValue, JsonContainerTrait
+from .jsonvalueref import JsonValueRef
 
 
-@always_inline
-fn convert_jvalue_to_string(self: UnsafePointer[JValueRef]) -> String:
-    var out = diplomat_buffer_write_create(1024)
-    jvalueref_to_string(self, out)
-    var s_data = diplomat_buffer_write_get_bytes(out)
-    var s_len = diplomat_buffer_write_len(out)
-    var ret_str_ref = StringRef(s_data, s_len)
-    var ret_str = String(ret_str_ref)
-    diplomat_buffer_write_destroy(out)
-    return ret_str
-
-
-struct JsonObject(JsonContainerTrait, Stringable):
+struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
+    Stringable
+):
+    var _src: Pointer[T, origin]
     var _object: UnsafePointer[JObject]
 
     @always_inline
-    fn __init__(inout self):
-        self._object = jobject_new()
+    fn __init__(inout self, ref [origin]value: T):
+        self._src = Pointer.address_of(value)
+        self._object = value.as_jobject_pointer()
 
     @always_inline
-    fn __init__(inout self, s: String):
-        var s_ref = StringRef(s.unsafe_cstr_ptr(), len(s))
-        var v = jvalue_new_from_str(s_ref)
-        self._object = v.bitcast[JObject]()
+    fn __init__(inout self, value: Pointer[T, origin]):
+        self._src = value
+        self._object = value[].as_jobject_pointer()
 
     @always_inline
-    fn __init__(inout self, o: UnsafePointer[JObject]):
-        self._object = o
-    
-    @always_inline
-    fn __moveinit__(inout self, owned other: JsonObject):
+    fn __moveinit__(inout self, owned other: JsonValueObjectView[origin, T]):
+        self._src = other._src
         self._object = other._object
 
     @always_inline
     fn __del__(owned self):
-        jobject_destroy(self._object)
-
-    @always_inline
-    fn as_jobject_pointer(self) -> UnsafePointer[JObject]:
-        return self._object
-
-    @always_inline
-    fn as_jarray_pointer(self) -> UnsafePointer[JArray]:
-        return self._object.bitcast[JArray]()
+        pass
 
     @always_inline
     fn to_string(self, cap: Int = 1024) -> String:
@@ -213,8 +195,6 @@ struct JsonObject(JsonContainerTrait, Stringable):
                 jkeyvalueref_destroy(kv)
                 break
             var value = jkeyvalueref_get_value(kv)
-            # var value_str = convert_jvalue_to_string(value)
-            # print("y", value_str)
             var value_obj = JsonValueRef(value)
             ret.append((key_str, value_obj))
             jkeyvalueref_destroy(kv)

@@ -100,6 +100,25 @@ fn test_valueref() raises:
     jvalueref_destroy(f_ref)
 
 
+fn test_object_view() raises:
+    var v = JsonValue.from_str(
+        '{"a":100, "b":true, "c": "hello", "f": 100.123}'
+    )
+    var o = JsonValueObjectView(v)
+    var a = o.get_i64("a")
+    o.insert_i64("b", 101)
+    assert_equal(a, 100)
+    assert_equal(o.to_string(), '{"a":100,"b":101,"c":"hello","f":100.123}')
+
+
+fn test_array_view() raises:
+    var v = JsonValue.from_str("[1,2,3]")
+    var a = JsonValueArrayView(v)
+    assert_equal(a.to_string(), "[1,2,3]")
+    a.insert(0, JsonValue(100))
+    assert_equal(a.to_string(), "[100,1,2,3]")
+
+
 fn test_read_json() raises:
     var o = JsonObject(
         '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'
