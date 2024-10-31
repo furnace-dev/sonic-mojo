@@ -14,7 +14,6 @@ fn convert_jvalue_to_string(self: UnsafePointer[JValueRef]) -> String:
     return ret_str
 
 
-@value
 struct JsonObject(JsonContainerTrait, Stringable):
     var _object: UnsafePointer[JObject]
 
@@ -31,6 +30,10 @@ struct JsonObject(JsonContainerTrait, Stringable):
     @always_inline
     fn __init__(inout self, o: UnsafePointer[JObject]):
         self._object = o
+    
+    @always_inline
+    fn __moveinit__(inout self, owned other: JsonObject):
+        self._object = other._object
 
     @always_inline
     fn __del__(owned self):

@@ -76,7 +76,6 @@ fn benchmark_value_stringify(inout b: Bencher, v: JsonValue) raises:
 	fn do():
 		_ = str(v)
 	b.iter[do]()
-	_ = v
 
 @parameter
 fn benchmark_json_stringify(inout b: Bencher, json: JsonValue) raises:
@@ -86,8 +85,6 @@ fn benchmark_json_stringify(inout b: Bencher, json: JsonValue) raises:
 		_ = str(json)
 	
 	b.iter[do]()
-
-	_ = json
 
 # source https://opensource.adobe.com/Spry/samples/data_region/JSONDataSetSample.html
 var small_data = """{

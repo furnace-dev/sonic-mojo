@@ -3,13 +3,16 @@ from .internal import *
 from .jsonvalueref import JsonValueRef
 
 
-@value
 struct JsonArrayMut(Stringable):
     var _array: UnsafePointer[JArrayMut]
 
     @always_inline
     fn __init__(inout self, value: UnsafePointer[JArrayMut]):
         self._array = value
+    
+    @always_inline
+    fn __moveinit__(inout self, owned other: JsonArrayMut):
+        self._array = other._array
 
     @always_inline
     fn __del__(owned self):

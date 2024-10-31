@@ -10,7 +10,6 @@ trait JsonContainerTrait:
         pass
 
 
-@value
 struct JsonValue(JsonContainerTrait, Stringable):
     var _value: UnsafePointer[JValue]
 
@@ -46,6 +45,10 @@ struct JsonValue(JsonContainerTrait, Stringable):
     fn __init__(inout self, s: String):
         var s_view = StringRef(s.unsafe_cstr_ptr(), len(s))
         self._value = jvalue_new_str(s_view)
+
+    @always_inline
+    fn __moveinit__(inout self, owned other: JsonValue):
+        self._value = other._value
 
     @staticmethod
     fn from_str(s: String) -> JsonValue:

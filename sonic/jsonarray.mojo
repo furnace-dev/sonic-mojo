@@ -3,7 +3,6 @@ from .internal import *
 from .jsonvalueref import JsonValueRef
 
 
-@value
 struct JsonArray(Stringable):
     var _array: UnsafePointer[JArray]
 
@@ -14,6 +13,10 @@ struct JsonArray(Stringable):
     @always_inline
     fn __init__(inout self):
         self._array = jarray_new()
+    
+    @always_inline
+    fn __moveinit__(inout self, owned other: JsonArray):
+        self._array = other._array
 
     @always_inline
     fn __del__(owned self):
