@@ -108,8 +108,7 @@ mod ffi {
             })
         }
 
-        #[diplomat::attr(auto, constructor)]
-        pub fn new_from_str(s: &DiplomatStr) -> Box<JValue> {
+        pub fn from_str(s: &DiplomatStr) -> Box<JValue> {
             let s = std::str::from_utf8(s).unwrap();
             let value = from_str(s);
             if let Ok(value) = value {
@@ -117,6 +116,10 @@ mod ffi {
             } else {
                 Box::new(Self { 0: Value::new() })
             }
+        }
+
+        pub fn clone(&self) -> Box<JValue> {
+            Box::new(Self { 0: self.0.clone() })
         }
 
         pub fn mark_root(&mut self) {
@@ -253,7 +256,7 @@ mod ffi {
     }
 
     impl<'a> JValueRef<'a> {
-        pub fn get(&self) -> Box<JValue> {
+        pub fn clone(&self) -> Box<JValue> {
             Box::new(JValue(self.0.clone()))
         }
 
@@ -371,6 +374,20 @@ mod ffi {
             Box::new(Self {
                 0: Object::with_capacity(capacity),
             })
+        }
+
+        pub fn from_str(s: &DiplomatStr) -> Box<JObject> {
+            let s = std::str::from_utf8(s).unwrap();
+            let value = from_str(s);
+            if let Ok(value) = value {
+                Box::new(Self { 0: value })
+            } else {
+                Box::new(Self { 0: Object::new() })
+            }
+        }
+
+        pub fn clone(&self) -> Box<JObject> {
+            Box::new(Self { 0: self.0.clone() })
         }
 
         pub fn to_string(&self, out: &mut DiplomatWrite) {
@@ -545,6 +562,10 @@ mod ffi {
     }
 
     impl<'a> JObjectMut<'a> {
+        pub fn clone(&self) -> Box<JObject> {
+            Box::new(JObject(self.0.clone()))
+        }
+
         pub fn to_string(&self, out: &mut DiplomatWrite) {
             let s = sonic_rs::to_string(&self.0).unwrap();
             _ = out.write_str(&s);
@@ -721,17 +742,21 @@ mod ffi {
             Box::new(Self { 0: Array::new() })
         }
 
+        pub fn from_str(s: &DiplomatStr) -> Box<JArray> {
+            let s = std::str::from_utf8(s).unwrap();
+            Box::new(Self {
+                0: from_str(s).unwrap(),
+            })
+        }
+
         pub fn with_capacity(capacity: usize) -> Box<JArray> {
             Box::new(Self {
                 0: Array::with_capacity(capacity),
             })
         }
 
-        pub fn new_from_str(s: &DiplomatStr) -> Box<JArray> {
-            let s = std::str::from_utf8(s).unwrap();
-            Box::new(Self {
-                0: from_str(s).unwrap(),
-            })
+        pub fn clone(&self) -> Box<JArray> {
+            Box::new(JArray(self.0.clone()))
         }
 
         pub fn to_string(&self, out: &mut DiplomatWrite) {
@@ -827,6 +852,10 @@ mod ffi {
     }
 
     impl<'a> JArrayMut<'a> {
+        pub fn clone(&self) -> Box<JArray> {
+            Box::new(JArray(self.0.clone()))
+        }
+
         pub fn to_string(&self, out: &mut DiplomatWrite) {
             let s = sonic_rs::to_string(&self.0).unwrap();
             _ = out.write_str(&s);

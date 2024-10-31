@@ -22,6 +22,10 @@ struct JsonValueRef(Stringable):
         jvalueref_destroy(self._value)
 
     @always_inline
+    fn clone(self) -> JsonValue:
+        return JsonValue(jvalueref_clone(self._value))
+
+    @always_inline
     fn get_type(self) -> JsonType:
         return jvalueref_get_type(self._value)
 

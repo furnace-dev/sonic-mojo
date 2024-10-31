@@ -21,6 +21,10 @@ alias fn_jobject_new = fn () -> UnsafePointer[JObject]
 
 alias fn_jobject_with_capacity = fn (capacity: c_size_t) -> UnsafePointer[JObject]
 
+alias fn_jobject_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JObject]
+
+alias fn_jobject_clone = fn (self: UnsafePointer[JObject]) -> UnsafePointer[JObject]
+
 alias fn_jobject_to_string = fn (self: UnsafePointer[JObject], write: UnsafePointer[DiplomatWrite]) -> None
 
 alias fn_jobject_clear = fn (self: UnsafePointer[JObject]) -> None
@@ -91,6 +95,10 @@ struct _DLWrapper:
     
     var _jobject_with_capacity: fn_jobject_with_capacity
     
+    var _jobject_from_str: fn_jobject_from_str
+    
+    var _jobject_clone: fn_jobject_clone
+    
     var _jobject_to_string: fn_jobject_to_string
     
     var _jobject_clear: fn_jobject_clear
@@ -157,6 +165,10 @@ struct _DLWrapper:
         self._jobject_new = self._handle.get_function[fn_jobject_new]("JObject_new")
         
         self._jobject_with_capacity = self._handle.get_function[fn_jobject_with_capacity]("JObject_with_capacity")
+        
+        self._jobject_from_str = self._handle.get_function[fn_jobject_from_str]("JObject_from_str")
+        
+        self._jobject_clone = self._handle.get_function[fn_jobject_clone]("JObject_clone")
         
         self._jobject_to_string = self._handle.get_function[fn_jobject_to_string]("JObject_to_string")
         
@@ -226,6 +238,14 @@ fn jobject_new() -> UnsafePointer[JObject]:
 @always_inline
 fn jobject_with_capacity(capacity: c_size_t) -> UnsafePointer[JObject]:
     return __wrapper._jobject_with_capacity(capacity)
+
+@always_inline
+fn jobject_from_str(s: DiplomatStringView) -> UnsafePointer[JObject]:
+    return __wrapper._jobject_from_str(s)
+
+@always_inline
+fn jobject_clone(self: UnsafePointer[JObject]) -> UnsafePointer[JObject]:
+    return __wrapper._jobject_clone(self)
 
 @always_inline
 fn jobject_to_string(self: UnsafePointer[JObject], write: UnsafePointer[DiplomatWrite]) -> None:

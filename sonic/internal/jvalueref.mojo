@@ -12,7 +12,7 @@ from .jvalueref_d import *
 
 
 
-alias fn_jvalueref_get = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JValue]
+alias fn_jvalueref_clone = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JValue]
 
 alias fn_jvalueref_get_type = fn (self: UnsafePointer[JValueRef]) -> JsonType
 
@@ -56,7 +56,7 @@ var __wrapper = _DLWrapper()
 struct _DLWrapper:
     var _handle: DLHandle
     
-    var _jvalueref_get: fn_jvalueref_get
+    var _jvalueref_clone: fn_jvalueref_clone
     
     var _jvalueref_get_type: fn_jvalueref_get_type
     
@@ -97,7 +97,7 @@ struct _DLWrapper:
     fn __init__(inout self):
         self._handle = DLHandle(LIBNAME)
         
-        self._jvalueref_get = self._handle.get_function[fn_jvalueref_get]("JValueRef_get")
+        self._jvalueref_clone = self._handle.get_function[fn_jvalueref_clone]("JValueRef_clone")
         
         self._jvalueref_get_type = self._handle.get_function[fn_jvalueref_get_type]("JValueRef_get_type")
         
@@ -137,8 +137,8 @@ struct _DLWrapper:
 
 
 @always_inline
-fn jvalueref_get(self: UnsafePointer[JValueRef]) -> UnsafePointer[JValue]:
-    return __wrapper._jvalueref_get(self)
+fn jvalueref_clone(self: UnsafePointer[JValueRef]) -> UnsafePointer[JValue]:
+    return __wrapper._jvalueref_clone(self)
 
 @always_inline
 fn jvalueref_get_type(self: UnsafePointer[JValueRef]) -> JsonType:

@@ -47,13 +47,17 @@ struct JsonValue(JsonContainerTrait, Stringable):
         self._value = jvalue_new_str(s_view)
 
     @always_inline
+    fn __copyinit__(inout self, other: JsonValue):
+        self._value = jvalue_clone(other._value)
+
+    @always_inline
     fn __moveinit__(inout self, owned other: JsonValue):
         self._value = other._value
 
     @staticmethod
     fn from_str(s: String) -> JsonValue:
         var s_view = StringRef(s.unsafe_cstr_ptr(), len(s))
-        return JsonValue(jvalue_new_from_str(s_view))
+        return JsonValue(jvalue_from_str(s_view))
 
     @always_inline
     fn __del__(owned self):

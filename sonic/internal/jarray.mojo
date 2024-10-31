@@ -15,9 +15,11 @@ from .jarray_d import *
 
 alias fn_jarray_new = fn () -> UnsafePointer[JArray]
 
+alias fn_jarray_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JArray]
+
 alias fn_jarray_with_capacity = fn (capacity: c_size_t) -> UnsafePointer[JArray]
 
-alias fn_jarray_new_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JArray]
+alias fn_jarray_clone = fn (self: UnsafePointer[JArray]) -> UnsafePointer[JArray]
 
 alias fn_jarray_to_string = fn (self: UnsafePointer[JArray], write: UnsafePointer[DiplomatWrite]) -> None
 
@@ -67,9 +69,11 @@ struct _DLWrapper:
     
     var _jarray_new: fn_jarray_new
     
+    var _jarray_from_str: fn_jarray_from_str
+    
     var _jarray_with_capacity: fn_jarray_with_capacity
     
-    var _jarray_new_from_str: fn_jarray_new_from_str
+    var _jarray_clone: fn_jarray_clone
     
     var _jarray_to_string: fn_jarray_to_string
     
@@ -116,9 +120,11 @@ struct _DLWrapper:
         
         self._jarray_new = self._handle.get_function[fn_jarray_new]("JArray_new")
         
+        self._jarray_from_str = self._handle.get_function[fn_jarray_from_str]("JArray_from_str")
+        
         self._jarray_with_capacity = self._handle.get_function[fn_jarray_with_capacity]("JArray_with_capacity")
         
-        self._jarray_new_from_str = self._handle.get_function[fn_jarray_new_from_str]("JArray_new_from_str")
+        self._jarray_clone = self._handle.get_function[fn_jarray_clone]("JArray_clone")
         
         self._jarray_to_string = self._handle.get_function[fn_jarray_to_string]("JArray_to_string")
         
@@ -166,12 +172,16 @@ fn jarray_new() -> UnsafePointer[JArray]:
     return __wrapper._jarray_new()
 
 @always_inline
+fn jarray_from_str(s: DiplomatStringView) -> UnsafePointer[JArray]:
+    return __wrapper._jarray_from_str(s)
+
+@always_inline
 fn jarray_with_capacity(capacity: c_size_t) -> UnsafePointer[JArray]:
     return __wrapper._jarray_with_capacity(capacity)
 
 @always_inline
-fn jarray_new_from_str(s: DiplomatStringView) -> UnsafePointer[JArray]:
-    return __wrapper._jarray_new_from_str(s)
+fn jarray_clone(self: UnsafePointer[JArray]) -> UnsafePointer[JArray]:
+    return __wrapper._jarray_clone(self)
 
 @always_inline
 fn jarray_to_string(self: UnsafePointer[JArray], write: UnsafePointer[DiplomatWrite]) -> None:

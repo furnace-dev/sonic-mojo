@@ -1,26 +1,32 @@
 from memory import UnsafePointer
 from .internal import *
-from .jsonvalueref import JsonValueRef
+from .value_ref import JsonValueRef
 
 
-struct JsonArray(Stringable):
+struct JsonValueArrayView[origin: MutableOrigin, T: JsonContainerTrait](
+    Stringable
+):
+    var _src: Pointer[T, origin]
     var _array: UnsafePointer[JArray]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JArray]):
-        self._array = value
+    fn __init__(inout self, ref [origin]value: T):
+        self._src = Pointer.address_of(value)
+        self._array = value.as_jarray_pointer()
 
     @always_inline
-    fn __init__(inout self):
-        self._array = jarray_new()
-    
+    fn __init__(inout self, value: Pointer[T, origin]):
+        self._src = value
+        self._array = value[].as_jarray_pointer()
+
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonArray):
+    fn __moveinit__(inout self, owned other: JsonValueArrayView[origin, T]):
+        self._src = other._src
         self._array = other._array
 
     @always_inline
     fn __del__(owned self):
-        jarray_destroy(self._array)
+        pass
 
     @always_inline
     fn push_null(self) -> None:

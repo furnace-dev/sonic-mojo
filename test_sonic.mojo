@@ -119,6 +119,50 @@ fn test_array_view() raises:
     assert_equal(a.to_string(), "[100,1,2,3]")
 
 
+fn test_copy() raises:
+    # value
+    var v = JsonValue(100)
+    var v2 = v
+    assert_equal(v.to_string(), v2.to_string())
+
+    var v3 = v2
+    assert_equal(v.to_string(), v3.to_string())
+
+    var v4 = JsonValue('"Hello"')
+    var v5 = v4
+    assert_equal(v4.to_string(), v5.to_string())
+
+    var v6 = JsonValue.from_str('{"a":100}')
+    var v7 = v6
+    assert_equal(v6.to_string(), v7.to_string())
+
+    var v8 = v7
+    assert_equal(v6.to_string(), v8.to_string())
+
+    # object
+    var o = JsonObject('{"a":100}')
+    var o2 = o
+    assert_equal(o.to_string(), o2.to_string())
+
+    var o3 = o
+    assert_equal(o.to_string(), o3.to_string())
+
+    # array
+    var a = JsonArray()
+    var a2 = a
+    assert_equal(a.to_string(), a2.to_string())
+
+    var a3 = a2
+    assert_equal(a.to_string(), a3.to_string())
+
+    var a4 = JsonArray("[1,2,3]")
+    var a5 = a4
+    assert_equal(a4.to_string(), a5.to_string())
+
+    var a6 = a5
+    assert_equal(a4.to_string(), a6.to_string())
+
+
 fn test_read_json() raises:
     var o = JsonObject(
         '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'

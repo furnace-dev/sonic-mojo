@@ -1,6 +1,6 @@
 from memory import UnsafePointer
 from .internal import *
-from .jsonvalueref import JsonValueRef
+from .value_ref import JsonValueRef
 
 
 struct JsonArrayMut(Stringable):
@@ -9,10 +9,14 @@ struct JsonArrayMut(Stringable):
     @always_inline
     fn __init__(inout self, value: UnsafePointer[JArrayMut]):
         self._array = value
-    
+
     @always_inline
     fn __moveinit__(inout self, owned other: JsonArrayMut):
         self._array = other._array
+
+    @always_inline
+    fn clone(self) -> JsonArray:
+        return JsonArray(jarraymut_clone(self._array))
 
     @always_inline
     fn __del__(owned self):

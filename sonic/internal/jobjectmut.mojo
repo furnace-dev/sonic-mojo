@@ -16,6 +16,8 @@ from .jobjectmut_d import *
 
 
 
+alias fn_jobjectmut_clone = fn (self: UnsafePointer[JObjectMut]) -> UnsafePointer[JObject]
+
 alias fn_jobjectmut_to_string = fn (self: UnsafePointer[JObjectMut], write: UnsafePointer[DiplomatWrite]) -> None
 
 alias fn_jobjectmut_clear = fn (self: UnsafePointer[JObjectMut]) -> None
@@ -80,6 +82,8 @@ var __wrapper = _DLWrapper()
 struct _DLWrapper:
     var _handle: DLHandle
     
+    var _jobjectmut_clone: fn_jobjectmut_clone
+    
     var _jobjectmut_to_string: fn_jobjectmut_to_string
     
     var _jobjectmut_clear: fn_jobjectmut_clear
@@ -141,6 +145,8 @@ struct _DLWrapper:
     fn __init__(inout self):
         self._handle = DLHandle(LIBNAME)
         
+        self._jobjectmut_clone = self._handle.get_function[fn_jobjectmut_clone]("JObjectMut_clone")
+        
         self._jobjectmut_to_string = self._handle.get_function[fn_jobjectmut_to_string]("JObjectMut_to_string")
         
         self._jobjectmut_clear = self._handle.get_function[fn_jobjectmut_clear]("JObjectMut_clear")
@@ -199,6 +205,10 @@ struct _DLWrapper:
         
         self._jobjectmut_destroy = self._handle.get_function[fn_jobjectmut_destroy]("JObjectMut_destroy")
 
+
+@always_inline
+fn jobjectmut_clone(self: UnsafePointer[JObjectMut]) -> UnsafePointer[JObject]:
+    return __wrapper._jobjectmut_clone(self)
 
 @always_inline
 fn jobjectmut_to_string(self: UnsafePointer[JObjectMut], write: UnsafePointer[DiplomatWrite]) -> None:

@@ -25,7 +25,9 @@ alias fn_jvalue_new_f64 = fn (value: c_double) -> UnsafePointer[JValue]
 
 alias fn_jvalue_new_str = fn (value: DiplomatStringView) -> UnsafePointer[JValue]
 
-alias fn_jvalue_new_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JValue]
+alias fn_jvalue_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JValue]
+
+alias fn_jvalue_clone = fn (self: UnsafePointer[JValue]) -> UnsafePointer[JValue]
 
 alias fn_jvalue_mark_root = fn (self: UnsafePointer[JValue]) -> None
 
@@ -93,7 +95,9 @@ struct _DLWrapper:
     
     var _jvalue_new_str: fn_jvalue_new_str
     
-    var _jvalue_new_from_str: fn_jvalue_new_from_str
+    var _jvalue_from_str: fn_jvalue_from_str
+    
+    var _jvalue_clone: fn_jvalue_clone
     
     var _jvalue_mark_root: fn_jvalue_mark_root
     
@@ -158,7 +162,9 @@ struct _DLWrapper:
         
         self._jvalue_new_str = self._handle.get_function[fn_jvalue_new_str]("JValue_new_str")
         
-        self._jvalue_new_from_str = self._handle.get_function[fn_jvalue_new_from_str]("JValue_new_from_str")
+        self._jvalue_from_str = self._handle.get_function[fn_jvalue_from_str]("JValue_from_str")
+        
+        self._jvalue_clone = self._handle.get_function[fn_jvalue_clone]("JValue_clone")
         
         self._jvalue_mark_root = self._handle.get_function[fn_jvalue_mark_root]("JValue_mark_root")
         
@@ -234,8 +240,12 @@ fn jvalue_new_str(value: DiplomatStringView) -> UnsafePointer[JValue]:
     return __wrapper._jvalue_new_str(value)
 
 @always_inline
-fn jvalue_new_from_str(s: DiplomatStringView) -> UnsafePointer[JValue]:
-    return __wrapper._jvalue_new_from_str(s)
+fn jvalue_from_str(s: DiplomatStringView) -> UnsafePointer[JValue]:
+    return __wrapper._jvalue_from_str(s)
+
+@always_inline
+fn jvalue_clone(self: UnsafePointer[JValue]) -> UnsafePointer[JValue]:
+    return __wrapper._jvalue_clone(self)
 
 @always_inline
 fn jvalue_mark_root(self: UnsafePointer[JValue]) -> None:

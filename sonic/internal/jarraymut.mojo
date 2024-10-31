@@ -14,6 +14,8 @@ from .jarraymut_d import *
 
 
 
+alias fn_jarraymut_clone = fn (self: UnsafePointer[JArrayMut]) -> UnsafePointer[JArray]
+
 alias fn_jarraymut_to_string = fn (self: UnsafePointer[JArrayMut], write: UnsafePointer[DiplomatWrite]) -> None
 
 alias fn_jarraymut_push_null = fn (self: UnsafePointer[JArrayMut]) -> None
@@ -60,6 +62,8 @@ var __wrapper = _DLWrapper()
 struct _DLWrapper:
     var _handle: DLHandle
     
+    var _jarraymut_clone: fn_jarraymut_clone
+    
     var _jarraymut_to_string: fn_jarraymut_to_string
     
     var _jarraymut_push_null: fn_jarraymut_push_null
@@ -103,6 +107,8 @@ struct _DLWrapper:
     fn __init__(inout self):
         self._handle = DLHandle(LIBNAME)
         
+        self._jarraymut_clone = self._handle.get_function[fn_jarraymut_clone]("JArrayMut_clone")
+        
         self._jarraymut_to_string = self._handle.get_function[fn_jarraymut_to_string]("JArrayMut_to_string")
         
         self._jarraymut_push_null = self._handle.get_function[fn_jarraymut_push_null]("JArrayMut_push_null")
@@ -143,6 +149,10 @@ struct _DLWrapper:
         
         self._jarraymut_destroy = self._handle.get_function[fn_jarraymut_destroy]("JArrayMut_destroy")
 
+
+@always_inline
+fn jarraymut_clone(self: UnsafePointer[JArrayMut]) -> UnsafePointer[JArray]:
+    return __wrapper._jarraymut_clone(self)
 
 @always_inline
 fn jarraymut_to_string(self: UnsafePointer[JArrayMut], write: UnsafePointer[DiplomatWrite]) -> None:

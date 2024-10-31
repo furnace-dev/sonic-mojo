@@ -4,6 +4,7 @@ from sys.ffi import c_char, c_size_t
 from utils import StringRef
 from sys import os_is_macos
 
+
 alias c_bool = Bool
 alias c_char_ptr = UnsafePointer[c_char]
 alias c_float = Float32
@@ -32,9 +33,7 @@ fn get_libname() -> StringLiteral:
     else:
         return "libsonic.so"
 
-
 alias LIBNAME = get_libname()
-
 
 @value
 @register_passable("trivial")
@@ -47,9 +46,9 @@ struct DiplomatWrite:
     var grow: fn (UnsafePointer[DiplomatWrite], c_size_t) -> Bool
 
 
-# @value
-# @register_passable("trivial")
-# struct DiplomatStringView:
+#@value
+#@register_passable("trivial")
+#struct DiplomatStringView:
 #    var data: c_char_ptr
 #    var len: c_size_t
 
