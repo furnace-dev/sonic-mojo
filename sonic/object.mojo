@@ -1,5 +1,6 @@
 from memory import UnsafePointer
 from .internal import *
+from .object_ref import *
 
 
 @always_inline
@@ -173,6 +174,11 @@ struct JsonObject(JsonContainerTrait, Stringable):
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
+
+    @always_inline
+    fn get_object_ref(self, key: StringRef) -> JsonObjectRef:
+        var ret = jobject_get_object_ref(self._object, key)
+        return JsonObjectRef(ret)
 
     @always_inline
     fn get_object_mut(self, key: StringRef) -> JsonObjectMut:

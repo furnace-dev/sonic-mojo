@@ -5,10 +5,12 @@ from .diplomat_runtime import *
 
 from .jarray_d import *
 from .jarraymut_d import *
+from .jarrayref_d import *
 from .jkeysiter_d import *
 from .jobjectiter_d import *
 from .jobjectitermut_d import *
 from .jobjectmut_d import *
+from .jobjectref_d import *
 from .jvalue_d import *
 from .jvaluemut_d import *
 from .jvalueref_d import *
@@ -60,6 +62,10 @@ alias fn_jobject_is_empty = fn (self: UnsafePointer[JObject]) -> c_bool
 alias fn_jobject_get_value = fn (self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JValue]
 
 alias fn_jobject_get_value_ref = fn (self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JValueRef]
+
+alias fn_jobject_get_object_ref = fn (self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JObjectRef]
+
+alias fn_jobject_get_array_ref = fn (self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JArrayRef]
 
 alias fn_jobject_get_value_mut = fn (self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JValueMut]
 
@@ -135,6 +141,10 @@ struct _DLWrapper:
     
     var _jobject_get_value_ref: fn_jobject_get_value_ref
     
+    var _jobject_get_object_ref: fn_jobject_get_object_ref
+    
+    var _jobject_get_array_ref: fn_jobject_get_array_ref
+    
     var _jobject_get_value_mut: fn_jobject_get_value_mut
     
     var _jobject_get_object_mut: fn_jobject_get_object_mut
@@ -205,6 +215,10 @@ struct _DLWrapper:
         self._jobject_get_value = self._handle.get_function[fn_jobject_get_value]("JObject_get_value")
         
         self._jobject_get_value_ref = self._handle.get_function[fn_jobject_get_value_ref]("JObject_get_value_ref")
+        
+        self._jobject_get_object_ref = self._handle.get_function[fn_jobject_get_object_ref]("JObject_get_object_ref")
+        
+        self._jobject_get_array_ref = self._handle.get_function[fn_jobject_get_array_ref]("JObject_get_array_ref")
         
         self._jobject_get_value_mut = self._handle.get_function[fn_jobject_get_value_mut]("JObject_get_value_mut")
         
@@ -318,6 +332,14 @@ fn jobject_get_value(self: UnsafePointer[JObject], key: DiplomatStringView) -> U
 @always_inline
 fn jobject_get_value_ref(self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JValueRef]:
     return __wrapper._jobject_get_value_ref(self, key)
+
+@always_inline
+fn jobject_get_object_ref(self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JObjectRef]:
+    return __wrapper._jobject_get_object_ref(self, key)
+
+@always_inline
+fn jobject_get_array_ref(self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JArrayRef]:
+    return __wrapper._jobject_get_array_ref(self, key)
 
 @always_inline
 fn jobject_get_value_mut(self: UnsafePointer[JObject], key: DiplomatStringView) -> UnsafePointer[JValueMut]:

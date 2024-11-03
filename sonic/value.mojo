@@ -171,3 +171,37 @@ struct JsonValue(JsonContainerTrait, Stringable):
 
     fn __str__(self) -> String:
         return self.to_string()
+
+
+struct ValueIter:
+    var _iter: UnsafePointer[JValueIter]
+
+    @always_inline
+    fn __init__(inout self, value: UnsafePointer[JValueIter]):
+        self._iter = value
+
+    fn __del__(owned self):
+        jvalueiter_destroy(self._iter)
+
+    fn len(self) -> Int:
+        return jvalueiter_len(self._iter)
+
+    fn next(self) -> JsonValueRef:
+        return JsonValueRef(jvalueiter_next(self._iter))
+
+
+struct ValueIterMut:
+    var _iter: UnsafePointer[JValueIterMut]
+
+    @always_inline
+    fn __init__(inout self, value: UnsafePointer[JValueIterMut]):
+        self._iter = value
+
+    fn __del__(owned self):
+        jvalueitermut_destroy(self._iter)
+
+    fn len(self) -> Int:
+        return jvalueitermut_len(self._iter)
+
+    fn next(self) -> JsonValueMut:
+        return JsonValueMut(jvalueitermut_next(self._iter))

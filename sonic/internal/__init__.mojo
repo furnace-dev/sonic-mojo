@@ -6,9 +6,12 @@ from .jsontype import *
 from .jobject import *
 from .jarray import *
 from .jarraymut import *
+from .jarrayref import *
 from .jobjectmut import *
+from .jobjectref import *
 from .jkeysiter import *
 from .jobjectiter import *
 from .jobjectitermut import *
 from .jvalueiter import *
+from .jvalueitermut import *
 from .jkeyvalueref import *

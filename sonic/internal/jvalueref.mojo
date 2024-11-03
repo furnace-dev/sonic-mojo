@@ -4,7 +4,9 @@ from sys.ffi import DLHandle
 from .diplomat_runtime import *
 
 from .jarray_d import *
+from .jarrayref_d import *
 from .jobject_d import *
+from .jobjectref_d import *
 from .jsontype_d import *
 from .jvalue_d import *
 
@@ -44,7 +46,11 @@ alias fn_jvalueref_as_str = fn (self: UnsafePointer[JValueRef], default: Diploma
 
 alias fn_jvalueref_as_object = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JObject]
 
+alias fn_jvalueref_as_object_ref = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JObjectRef]
+
 alias fn_jvalueref_as_array = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JArray]
+
+alias fn_jvalueref_as_array_ref = fn (self: UnsafePointer[JValueRef]) -> UnsafePointer[JArrayRef]
 
 alias fn_jvalueref_to_string = fn (self: UnsafePointer[JValueRef], write: UnsafePointer[DiplomatWrite]) -> None
 
@@ -88,7 +94,11 @@ struct _DLWrapper:
     
     var _jvalueref_as_object: fn_jvalueref_as_object
     
+    var _jvalueref_as_object_ref: fn_jvalueref_as_object_ref
+    
     var _jvalueref_as_array: fn_jvalueref_as_array
+    
+    var _jvalueref_as_array_ref: fn_jvalueref_as_array_ref
     
     var _jvalueref_to_string: fn_jvalueref_to_string
     
@@ -129,7 +139,11 @@ struct _DLWrapper:
         
         self._jvalueref_as_object = self._handle.get_function[fn_jvalueref_as_object]("JValueRef_as_object")
         
+        self._jvalueref_as_object_ref = self._handle.get_function[fn_jvalueref_as_object_ref]("JValueRef_as_object_ref")
+        
         self._jvalueref_as_array = self._handle.get_function[fn_jvalueref_as_array]("JValueRef_as_array")
+        
+        self._jvalueref_as_array_ref = self._handle.get_function[fn_jvalueref_as_array_ref]("JValueRef_as_array_ref")
         
         self._jvalueref_to_string = self._handle.get_function[fn_jvalueref_to_string]("JValueRef_to_string")
         
@@ -201,8 +215,16 @@ fn jvalueref_as_object(self: UnsafePointer[JValueRef]) -> UnsafePointer[JObject]
     return __wrapper._jvalueref_as_object(self)
 
 @always_inline
+fn jvalueref_as_object_ref(self: UnsafePointer[JValueRef]) -> UnsafePointer[JObjectRef]:
+    return __wrapper._jvalueref_as_object_ref(self)
+
+@always_inline
 fn jvalueref_as_array(self: UnsafePointer[JValueRef]) -> UnsafePointer[JArray]:
     return __wrapper._jvalueref_as_array(self)
+
+@always_inline
+fn jvalueref_as_array_ref(self: UnsafePointer[JValueRef]) -> UnsafePointer[JArrayRef]:
+    return __wrapper._jvalueref_as_array_ref(self)
 
 @always_inline
 fn jvalueref_to_string(self: UnsafePointer[JValueRef], write: UnsafePointer[DiplomatWrite]) -> None:

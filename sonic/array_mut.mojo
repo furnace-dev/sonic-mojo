@@ -1,6 +1,7 @@
 from memory import UnsafePointer
 from .internal import *
 from .value_ref import JsonValueRef
+from .value_mut import JsonValueMut
 
 
 struct JsonArrayMut(Stringable):
@@ -141,8 +142,11 @@ struct JsonArrayMut(Stringable):
         return ret_str
 
     @always_inline
-    fn iter(self) -> UnsafePointer[JValueIter]:
-        return jarraymut_iter(self._array)
+    fn iter(self) -> ValueIter:
+        return ValueIter(jarraymut_iter(self._array))
+
+    fn iter_mut(self) -> ValueIterMut:
+        return ValueIterMut(jarraymut_iter_mut(self._array))
 
     @always_inline
     fn to_string(self, cap: Int = 1024) -> String:

@@ -277,3 +277,77 @@ fn test_object_iterator() raises:
     assert_equal(value_list[0], 100)
     assert_equal(value_list[1], 200)
     assert_equal(value_list[2], 300)
+
+
+fn test_object_iterator_ref() raises:
+    var body = String(
+        '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
+    )
+
+    var doc = JsonObject(body)
+    var ret_code = doc.get_i64("retCode")
+    var ret_msg = doc.get_str("retMsg")
+    if ret_code != 0:
+        raise "error retCode=" + str(ret_code) + ", retMsg=" + ret_msg
+
+    var result = doc.get_object_ref("result")
+    var result_list = result.get_array_ref("list")
+
+    if result_list.len() == 0:
+        raise "error list length is 0"
+
+    var list_iter = result_list.iter()
+    while True:
+        var value = list_iter.next()
+        if value.is_null():
+            break
+
+        var obj = value.as_object_ref()
+
+        var symbol_ = obj.get_str("symbol")
+
+        var priceFilter = obj.get_object_ref("priceFilter")
+        var tick_size = float(priceFilter.get_str("tickSize"))
+        var lotSizeFilter = obj.get_object_ref("lotSizeFilter")
+        var stepSize = float(lotSizeFilter.get_str("qtyStep"))
+
+        assert_equal(symbol_, "BTCUSDT")
+        assert_equal(tick_size, 0.1)
+        assert_equal(stepSize, 0.001)
+
+
+fn test_object_iterator_mut() raises:
+    var body = String(
+        '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
+    )
+
+    var doc = JsonObject(body)
+    var ret_code = doc.get_i64("retCode")
+    var ret_msg = doc.get_str("retMsg")
+    if ret_code != 0:
+        raise "error retCode=" + str(ret_code) + ", retMsg=" + ret_msg
+
+    var result = doc.get_object_mut("result")
+    var result_list = result.get_array_mut("list")
+
+    if result_list.len() == 0:
+        raise "error list length is 0"
+
+    var list_iter = result_list.iter_mut()
+    while True:
+        var value = list_iter.next()
+        if value.is_null():
+            break
+
+        var obj = value.as_object_mut()
+
+        var symbol_ = obj.get_str("symbol")
+
+        var priceFilter = obj.get_object_mut("priceFilter")
+        var tick_size = float(priceFilter.get_str("tickSize"))
+        var lotSizeFilter = obj.get_object_mut("lotSizeFilter")
+        var stepSize = float(lotSizeFilter.get_str("qtyStep"))
+
+        assert_equal(symbol_, "BTCUSDT")
+        assert_equal(tick_size, 0.1)
+        assert_equal(stepSize, 0.001)

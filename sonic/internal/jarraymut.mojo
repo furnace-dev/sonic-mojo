@@ -7,6 +7,7 @@ from .jarray_d import *
 from .jobject_d import *
 from .jvalue_d import *
 from .jvalueiter_d import *
+from .jvalueitermut_d import *
 from .jvaluemut_d import *
 from .jvalueref_d import *
 
@@ -53,6 +54,8 @@ alias fn_jarraymut_get = fn (self: UnsafePointer[JArrayMut], index: c_size_t) ->
 alias fn_jarraymut_get_mut = fn (self: UnsafePointer[JArrayMut], index: c_size_t) -> UnsafePointer[JValueMut]
 
 alias fn_jarraymut_iter = fn (self: UnsafePointer[JArrayMut]) -> UnsafePointer[JValueIter]
+
+alias fn_jarraymut_iter_mut = fn (self: UnsafePointer[JArrayMut]) -> UnsafePointer[JValueIterMut]
 
 alias fn_jarraymut_destroy = fn (self: UnsafePointer[JArrayMut]) -> None
 
@@ -102,6 +105,8 @@ struct _DLWrapper:
     
     var _jarraymut_iter: fn_jarraymut_iter
     
+    var _jarraymut_iter_mut: fn_jarraymut_iter_mut
+    
     var _jarraymut_destroy: fn_jarraymut_destroy
 
     fn __init__(inout self):
@@ -146,6 +151,8 @@ struct _DLWrapper:
         self._jarraymut_get_mut = self._handle.get_function[fn_jarraymut_get_mut]("JArrayMut_get_mut")
         
         self._jarraymut_iter = self._handle.get_function[fn_jarraymut_iter]("JArrayMut_iter")
+        
+        self._jarraymut_iter_mut = self._handle.get_function[fn_jarraymut_iter_mut]("JArrayMut_iter_mut")
         
         self._jarraymut_destroy = self._handle.get_function[fn_jarraymut_destroy]("JArrayMut_destroy")
 
@@ -229,6 +236,10 @@ fn jarraymut_get_mut(self: UnsafePointer[JArrayMut], index: c_size_t) -> UnsafeP
 @always_inline
 fn jarraymut_iter(self: UnsafePointer[JArrayMut]) -> UnsafePointer[JValueIter]:
     return __wrapper._jarraymut_iter(self)
+
+@always_inline
+fn jarraymut_iter_mut(self: UnsafePointer[JArrayMut]) -> UnsafePointer[JValueIterMut]:
+    return __wrapper._jarraymut_iter_mut(self)
 
 @always_inline
 fn jarraymut_destroy(self: UnsafePointer[JArrayMut]) -> None:
