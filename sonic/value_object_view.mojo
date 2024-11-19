@@ -11,17 +11,17 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
     var _object: UnsafePointer[JObject]
 
     @always_inline
-    fn __init__(inout self, ref [origin]value: T):
+    fn __init__(out self, ref [origin]value: T):
         self._src = Pointer.address_of(value)
         self._object = value.as_jobject_pointer()
 
     @always_inline
-    fn __init__(inout self, value: Pointer[T, origin]):
+    fn __init__(out self, value: Pointer[T, origin]):
         self._src = value
         self._object = value[].as_jobject_pointer()
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonValueObjectView[origin, T]):
+    fn __moveinit__(out self, owned other: JsonValueObjectView[origin, T]):
         self._src = other._src
         self._object = other._object
 
@@ -151,6 +151,10 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
+        return jobject_get_str_ref(self._object, key, default)
 
     @always_inline
     fn get_object_mut(self, key: StringRef) -> JsonObjectMut:

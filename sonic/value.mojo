@@ -14,44 +14,44 @@ struct JsonValue(JsonContainerTrait, Stringable):
     var _value: UnsafePointer[JValue]
 
     @always_inline
-    fn __init__(inout self, v: UnsafePointer[JValue]):
+    fn __init__(out self, v: UnsafePointer[JValue]):
         self._value = v
 
     @always_inline
-    fn __init__(inout self):
+    fn __init__(out self):
         self._value = jvalue_new()
 
     @always_inline
-    fn __init__(inout self, b: Bool):
+    fn __init__(out self, b: Bool):
         self._value = jvalue_new_bool(b)
 
     @always_inline
-    fn __init__(inout self, i64: Int):
+    fn __init__(out self, i64: Int):
         self._value = jvalue_new_i64(i64)
 
     @always_inline
-    fn __init__(inout self, i64: Int64):
+    fn __init__(out self, i64: Int64):
         self._value = jvalue_new_i64(i64)
 
     @always_inline
-    fn __init__(inout self, u64: UInt64):
+    fn __init__(out self, u64: UInt64):
         self._value = jvalue_new_u64(u64)
 
     @always_inline
-    fn __init__(inout self, f64: Float64):
+    fn __init__(out self, f64: Float64):
         self._value = jvalue_new_f64(f64)
 
     @always_inline
-    fn __init__(inout self, s: String):
+    fn __init__(out self, s: String):
         var s_view = StringRef(s.unsafe_cstr_ptr(), len(s))
         self._value = jvalue_new_str(s_view)
 
     @always_inline
-    fn __copyinit__(inout self, other: JsonValue):
+    fn __copyinit__(out self, other: JsonValue):
         self._value = jvalue_clone(other._value)
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonValue):
+    fn __moveinit__(out self, owned other: JsonValue):
         self._value = other._value
 
     @staticmethod
@@ -177,7 +177,7 @@ struct ValueIter:
     var _iter: UnsafePointer[JValueIter]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JValueIter]):
+    fn __init__(out self, value: UnsafePointer[JValueIter]):
         self._iter = value
 
     fn __del__(owned self):
@@ -194,7 +194,7 @@ struct ValueIterMut:
     var _iter: UnsafePointer[JValueIterMut]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JValueIterMut]):
+    fn __init__(out self, value: UnsafePointer[JValueIterMut]):
         self._iter = value
 
     fn __del__(owned self):

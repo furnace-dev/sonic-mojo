@@ -7,15 +7,15 @@ struct JsonArrayRef(Stringable):
     var _array: UnsafePointer[JArrayRef]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JArrayRef]):
+    fn __init__(out self, value: UnsafePointer[JArrayRef]):
         self._array = value
 
     @always_inline
-    fn __copyinit__(inout self, other: JsonArrayRef):
+    fn __copyinit__(out self, other: JsonArrayRef):
         self._array = other._array
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonArrayRef):
+    fn __moveinit__(out self, owned other: JsonArrayRef):
         self._array = other._array
 
     @always_inline
@@ -86,6 +86,13 @@ struct JsonArrayRef(Stringable):
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
+        var vref = jarrayref_get(self._array, index)
+        var ret = jvalueref_as_str_ref(vref, default)
+        jvalueref_destroy(vref)
+        return ret
 
     @always_inline
     fn iter(self) -> ValueIter:

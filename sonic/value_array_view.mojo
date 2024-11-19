@@ -10,17 +10,17 @@ struct JsonValueArrayView[origin: MutableOrigin, T: JsonContainerTrait](
     var _array: UnsafePointer[JArray]
 
     @always_inline
-    fn __init__(inout self, ref [origin]value: T):
+    fn __init__(out self, ref [origin]value: T):
         self._src = Pointer.address_of(value)
         self._array = value.as_jarray_pointer()
 
     @always_inline
-    fn __init__(inout self, value: Pointer[T, origin]):
+    fn __init__(out self, value: Pointer[T, origin]):
         self._src = value
         self._array = value[].as_jarray_pointer()
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonValueArrayView[origin, T]):
+    fn __moveinit__(out self, owned other: JsonValueArrayView[origin, T]):
         self._src = other._src
         self._array = other._array
 
@@ -145,6 +145,13 @@ struct JsonValueArrayView[origin: MutableOrigin, T: JsonContainerTrait](
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
+        var vref = jarray_get(self._array, index)
+        var ret = jvalueref_as_str_ref(vref, default)
+        jvalueref_destroy(vref)
+        return ret
 
     @always_inline
     fn iter(self) -> UnsafePointer[JValueIter]:

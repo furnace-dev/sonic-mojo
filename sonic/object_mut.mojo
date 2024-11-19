@@ -7,11 +7,11 @@ struct JsonObjectMut(Stringable):
     var _object: UnsafePointer[JObjectMut]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JObjectMut]):
+    fn __init__(out self, value: UnsafePointer[JObjectMut]):
         self._object = value
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonObjectMut):
+    fn __moveinit__(out self, owned other: JsonObjectMut):
         self._object = other._object
 
     @always_inline
@@ -150,6 +150,10 @@ struct JsonObjectMut(Stringable):
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
+        return jobjectmut_get_str_ref(self._object, key, default)
 
     @always_inline
     fn get_object_mut(self, key: StringRef) -> JsonObjectMut:

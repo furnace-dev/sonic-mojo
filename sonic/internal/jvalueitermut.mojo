@@ -27,7 +27,7 @@ struct _DLWrapper:
     
     var _jvalueitermut_destroy: fn_jvalueitermut_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jvalueitermut_len = self._handle.get_function[fn_jvalueitermut_len]("JValueIterMut_len")

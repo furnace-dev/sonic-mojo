@@ -7,24 +7,24 @@ struct JsonArray(Stringable):
     var _array: UnsafePointer[JArray]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JArray]):
+    fn __init__(out self, value: UnsafePointer[JArray]):
         self._array = value
 
     @always_inline
-    fn __init__(inout self):
+    fn __init__(out self):
         self._array = jarray_new()
 
     @always_inline
-    fn __init__(inout self, s: String):
+    fn __init__(out self, s: String):
         var s_ref = StringRef(s.unsafe_cstr_ptr(), len(s))
         self._array = jarray_from_str(s_ref)
 
     @always_inline
-    fn __copyinit__(inout self, other: JsonArray):
+    fn __copyinit__(out self, other: JsonArray):
         self._array = jarray_clone(other._array)
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonArray):
+    fn __moveinit__(out self, owned other: JsonArray):
         self._array = other._array
 
     @always_inline
@@ -148,6 +148,13 @@ struct JsonArray(Stringable):
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
+        var vref = jarray_get(self._array, index)
+        var ret = jvalueref_as_str_ref(vref, default)
+        jvalueref_destroy(vref)
+        return ret
 
     @always_inline
     fn iter(self) -> UnsafePointer[JValueIter]:

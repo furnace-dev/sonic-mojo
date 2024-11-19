@@ -19,25 +19,25 @@ struct JsonObject(JsonContainerTrait, Stringable):
     var _object: UnsafePointer[JObject]
 
     @always_inline
-    fn __init__(inout self):
+    fn __init__(out self):
         self._object = jobject_new()
 
     @always_inline
-    fn __init__(inout self, s: String):
+    fn __init__(out self, s: String):
         var s_ref = StringRef(s.unsafe_cstr_ptr(), len(s))
         var v = jvalue_from_str(s_ref)
         self._object = v.bitcast[JObject]()
 
     @always_inline
-    fn __init__(inout self, o: UnsafePointer[JObject]):
+    fn __init__(out self, o: UnsafePointer[JObject]):
         self._object = o
 
     @always_inline
-    fn __copyinit__(inout self, other: JsonObject):
+    fn __copyinit__(out self, other: JsonObject):
         self._object = jobject_clone(other._object)
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonObject):
+    fn __moveinit__(out self, owned other: JsonObject):
         self._object = other._object
 
     @always_inline
@@ -174,6 +174,10 @@ struct JsonObject(JsonContainerTrait, Stringable):
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
+        return jobject_get_str_ref(self._object, key, default)
 
     @always_inline
     fn get_object_ref(self, key: StringRef) -> JsonObjectRef:

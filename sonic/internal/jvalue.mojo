@@ -63,6 +63,8 @@ alias fn_jvalue_as_f64 = fn (self: UnsafePointer[JValue]) -> OptionF64Result
 
 alias fn_jvalue_as_str = fn (self: UnsafePointer[JValue], default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None
 
+alias fn_jvalue_as_str_ref = fn (self: UnsafePointer[JValue], default: DiplomatStringView) -> DiplomatStringView
+
 alias fn_jvalue_as_object = fn (self: UnsafePointer[JValue]) -> UnsafePointer[JObject]
 
 alias fn_jvalue_as_object_mut = fn (self: UnsafePointer[JValue]) -> UnsafePointer[JObjectMut]
@@ -131,6 +133,8 @@ struct _DLWrapper:
     
     var _jvalue_as_str: fn_jvalue_as_str
     
+    var _jvalue_as_str_ref: fn_jvalue_as_str_ref
+    
     var _jvalue_as_object: fn_jvalue_as_object
     
     var _jvalue_as_object_mut: fn_jvalue_as_object_mut
@@ -143,7 +147,7 @@ struct _DLWrapper:
     
     var _jvalue_destroy: fn_jvalue_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jvalue_new = self._handle.get_function[fn_jvalue_new]("JValue_new")
@@ -195,6 +199,8 @@ struct _DLWrapper:
         self._jvalue_as_f64 = self._handle.get_function[fn_jvalue_as_f64]("JValue_as_f64")
         
         self._jvalue_as_str = self._handle.get_function[fn_jvalue_as_str]("JValue_as_str")
+        
+        self._jvalue_as_str_ref = self._handle.get_function[fn_jvalue_as_str_ref]("JValue_as_str_ref")
         
         self._jvalue_as_object = self._handle.get_function[fn_jvalue_as_object]("JValue_as_object")
         
@@ -308,6 +314,10 @@ fn jvalue_as_f64(self: UnsafePointer[JValue]) -> OptionF64Result:
 @always_inline
 fn jvalue_as_str(self: UnsafePointer[JValue], default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None:
     return __wrapper._jvalue_as_str(self, default, write)
+
+@always_inline
+fn jvalue_as_str_ref(self: UnsafePointer[JValue], default: DiplomatStringView) -> DiplomatStringView:
+    return __wrapper._jvalue_as_str_ref(self, default)
 
 @always_inline
 fn jvalue_as_object(self: UnsafePointer[JValue]) -> UnsafePointer[JObject]:

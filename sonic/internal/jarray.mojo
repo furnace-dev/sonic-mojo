@@ -115,7 +115,7 @@ struct _DLWrapper:
     
     var _jarray_destroy: fn_jarray_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jarray_new = self._handle.get_function[fn_jarray_new]("JArray_new")

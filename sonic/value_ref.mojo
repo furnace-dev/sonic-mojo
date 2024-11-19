@@ -6,15 +6,15 @@ struct JsonValueRef(Stringable):
     var _value: UnsafePointer[JValueRef]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JValueRef]):
+    fn __init__(out self, value: UnsafePointer[JValueRef]):
         self._value = value
 
     @always_inline
-    fn __copyinit__(inout self, value: JsonValueRef):
+    fn __copyinit__(out self, value: JsonValueRef):
         self._value = value._value
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonValueRef):
+    fn __moveinit__(out self, owned other: JsonValueRef):
         self._value = other._value
 
     @always_inline

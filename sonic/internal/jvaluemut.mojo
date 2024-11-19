@@ -48,6 +48,8 @@ alias fn_jvaluemut_as_f64 = fn (self: UnsafePointer[JValueMut]) -> OptionF64Resu
 
 alias fn_jvaluemut_as_str = fn (self: UnsafePointer[JValueMut], default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None
 
+alias fn_jvaluemut_as_str_ref = fn (self: UnsafePointer[JValueMut], default: DiplomatStringView) -> DiplomatStringView
+
 alias fn_jvaluemut_as_object_mut = fn (self: UnsafePointer[JValueMut]) -> UnsafePointer[JObjectMut]
 
 alias fn_jvaluemut_as_array_mut = fn (self: UnsafePointer[JValueMut]) -> UnsafePointer[JArrayMut]
@@ -98,6 +100,8 @@ struct _DLWrapper:
     
     var _jvaluemut_as_str: fn_jvaluemut_as_str
     
+    var _jvaluemut_as_str_ref: fn_jvaluemut_as_str_ref
+    
     var _jvaluemut_as_object_mut: fn_jvaluemut_as_object_mut
     
     var _jvaluemut_as_array_mut: fn_jvaluemut_as_array_mut
@@ -106,7 +110,7 @@ struct _DLWrapper:
     
     var _jvaluemut_destroy: fn_jvaluemut_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jvaluemut_clone = self._handle.get_function[fn_jvaluemut_clone]("JValueMut_clone")
@@ -144,6 +148,8 @@ struct _DLWrapper:
         self._jvaluemut_as_f64 = self._handle.get_function[fn_jvaluemut_as_f64]("JValueMut_as_f64")
         
         self._jvaluemut_as_str = self._handle.get_function[fn_jvaluemut_as_str]("JValueMut_as_str")
+        
+        self._jvaluemut_as_str_ref = self._handle.get_function[fn_jvaluemut_as_str_ref]("JValueMut_as_str_ref")
         
         self._jvaluemut_as_object_mut = self._handle.get_function[fn_jvaluemut_as_object_mut]("JValueMut_as_object_mut")
         
@@ -225,6 +231,10 @@ fn jvaluemut_as_f64(self: UnsafePointer[JValueMut]) -> OptionF64Result:
 @always_inline
 fn jvaluemut_as_str(self: UnsafePointer[JValueMut], default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None:
     return __wrapper._jvaluemut_as_str(self, default, write)
+
+@always_inline
+fn jvaluemut_as_str_ref(self: UnsafePointer[JValueMut], default: DiplomatStringView) -> DiplomatStringView:
+    return __wrapper._jvaluemut_as_str_ref(self, default)
 
 @always_inline
 fn jvaluemut_as_object_mut(self: UnsafePointer[JValueMut]) -> UnsafePointer[JObjectMut]:

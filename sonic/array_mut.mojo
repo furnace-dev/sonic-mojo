@@ -8,11 +8,11 @@ struct JsonArrayMut(Stringable):
     var _array: UnsafePointer[JArrayMut]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JArrayMut]):
+    fn __init__(out self, value: UnsafePointer[JArrayMut]):
         self._array = value
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonArrayMut):
+    fn __moveinit__(out self, owned other: JsonArrayMut):
         self._array = other._array
 
     @always_inline
@@ -140,6 +140,13 @@ struct JsonArrayMut(Stringable):
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
+        var vref = jarraymut_get(self._array, index)
+        var ret = jvalueref_as_str_ref(vref, default)
+        jvalueref_destroy(vref)
+        return ret
 
     @always_inline
     fn iter(self) -> ValueIter:

@@ -1,13 +1,13 @@
 #[diplomat::bridge]
 mod ffi {
     use diplomat_runtime::DiplomatWrite;
+    use lazy_static::lazy_static;
     use sonic_rs::{from_str, JsonContainerTrait};
     use sonic_rs::{Array, JsonValueTrait, Object, Value};
     use sonic_rs::{JsonValueMutTrait, Number};
     use std::fmt::Write;
     use std::ptr::addr_of_mut;
     use std::str::FromStr;
-    use lazy_static::lazy_static;
 
     // static NULL_VALUE: Value = Value::new();
     // static NULL_OBJECT: Object = Object::new();
@@ -111,14 +111,14 @@ mod ffi {
         }
 
         pub fn new_str(value: &DiplomatStr) -> Box<JValue> {
-            let value = std::str::from_utf8(value).unwrap();
+            let value = unsafe { std::str::from_utf8_unchecked(value) };
             Box::new(Self {
                 0: Value::from_str(value).unwrap(),
             })
         }
 
         pub fn from_str(s: &DiplomatStr) -> Box<JValue> {
-            let s = std::str::from_utf8(s).unwrap();
+            let s = unsafe { std::str::from_utf8_unchecked(s) };
             let value = from_str(s);
             if let Ok(value) = value {
                 Box::new(Self { 0: value })
@@ -211,10 +211,19 @@ mod ffi {
             if let Some(s) = s {
                 _ = out.write_str(&s);
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
             }
             out.flush();
+        }
+
+        pub fn as_str_ref<'a>(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+            let s = self.0.as_str();
+            if let Some(s) = s {
+                s.as_bytes()
+            } else {
+                default
+            }
         }
 
         pub fn as_object(&self) -> Box<JObject> {
@@ -347,10 +356,19 @@ mod ffi {
             if let Some(s) = s {
                 _ = out.write_str(&s);
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
             }
             out.flush();
+        }
+
+        pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+            let s = self.0.as_str();
+            if let Some(s) = s {
+                s.as_bytes()
+            } else {
+                default
+            }
         }
 
         pub fn as_object_mut(&'a mut self) -> Box<JObjectMut<'a>> {
@@ -359,11 +377,7 @@ mod ffi {
         }
 
         pub fn as_array_mut(&'a mut self) -> Box<JArrayMut<'a>> {
-            Box::new(JArrayMut(
-                self.0
-                    .as_array_mut()
-                    .unwrap(),
-            ))
+            Box::new(JArrayMut(self.0.as_array_mut().unwrap()))
         }
 
         // pub fn as_array(&self) -> Box<JArray> {
@@ -455,10 +469,19 @@ mod ffi {
             if let Some(s) = s {
                 _ = out.write_str(s);
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
             }
             out.flush();
+        }
+
+        pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+            let s = self.0.as_str();
+            if let Some(s) = s {
+                s.as_bytes()
+            } else {
+                default
+            }
         }
 
         pub fn as_object(&self) -> Box<JObject> {
@@ -507,7 +530,7 @@ mod ffi {
         }
 
         pub fn from_str(s: &DiplomatStr) -> Box<JObject> {
-            let s = std::str::from_utf8(s).unwrap();
+            let s = unsafe { std::str::from_utf8_unchecked(s) };
             let value = from_str(s);
             if let Ok(value) = value {
                 Box::new(Self { 0: value })
@@ -535,59 +558,58 @@ mod ffi {
         }
 
         pub fn contains_key(&self, key: &DiplomatStr) -> bool {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.contains_key(&key)
         }
 
         pub fn insert_null(&mut self, key: &DiplomatStr) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::new());
         }
 
         pub fn insert_bool(&mut self, key: &DiplomatStr, value: bool) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_i64(&mut self, key: &DiplomatStr, value: i64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_u64(&mut self, key: &DiplomatStr, value: u64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_f64(&mut self, key: &DiplomatStr, value: f64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Number::from_f64(value).unwrap());
         }
 
         pub fn insert_str(&mut self, key: &DiplomatStr, value: &DiplomatStr) {
-            let key = std::str::from_utf8(key).unwrap();
-            let value = std::str::from_utf8(value).unwrap();
-            //self.0.insert(&key, SonicValue::from(value));
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
+            let value = unsafe { std::str::from_utf8_unchecked(value) };
             self.0.insert(&key, Value::from_str(value).unwrap());
         }
 
         pub fn insert_value(&mut self, key: &DiplomatStr, value: &JValue) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn insert_object(&mut self, key: &DiplomatStr, value: &JObject) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn insert_array(&mut self, key: &DiplomatStr, value: &JArray) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn remove(&mut self, key: &DiplomatStr) -> bool {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let value = self.0.remove(&key);
             value.is_some()
         }
@@ -601,7 +623,7 @@ mod ffi {
         }
 
         pub fn get_value(&self, key: &DiplomatStr) -> Box<JValue> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let a = self.0.get(&key);
             if let Some(v) = a {
                 Box::new(JValue(v.clone()))
@@ -611,77 +633,96 @@ mod ffi {
         }
 
         pub fn get_value_ref<'a>(&'a self, key: &DiplomatStr) -> Box<JValueRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key).unwrap_or(&NULL_VALUE);
             Box::new(JValueRef(v))
         }
 
         pub fn get_object_ref<'a>(&'a self, key: &DiplomatStr) -> Box<JObjectRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key).unwrap_or(&NULL_VALUE);
             Box::new(JObjectRef(v.as_object().unwrap()))
         }
 
         pub fn get_array_ref<'a>(&'a self, key: &DiplomatStr) -> Box<JArrayRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key).unwrap_or(&NULL_VALUE);
             Box::new(JArrayRef(v.as_array().unwrap()))
         }
 
         pub fn get_value_mut<'a>(&'a mut self, key: &DiplomatStr) -> Box<JValueMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JValueMut(v))
         }
 
         pub fn get_object_mut<'a>(&'a mut self, key: &DiplomatStr) -> Box<JObjectMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JObjectMut(v.as_object_mut().unwrap()))
         }
 
         pub fn get_array_mut<'a>(&'a mut self, key: &DiplomatStr) -> Box<JArrayMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JArrayMut(v.as_array_mut().unwrap()))
         }
 
         pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_bool())
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_i64())
         }
 
         pub fn get_u64(&self, key: &DiplomatStr) -> Option<u64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_u64())
         }
 
         pub fn get_f64(&self, key: &DiplomatStr) -> Option<f64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_f64())
         }
 
         pub fn get_str(&self, key: &DiplomatStr, default: &DiplomatStr, out: &mut DiplomatWrite) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             if let Some(v) = self.0.get(&key) {
                 let s = v.as_str();
                 if let Some(s) = s {
                     _ = out.write_str(s);
                     out.flush();
                 } else {
-                    let default = std::str::from_utf8(default).unwrap();
+                    let default = unsafe { std::str::from_utf8_unchecked(default) };
                     _ = out.write_str(default);
                     out.flush();
                 }
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
                 out.flush();
+            }
+        }
+
+        pub fn get_str_ref<'a>(
+            &'a self,
+            key: &DiplomatStr,
+            default: &'a DiplomatStr,
+        ) -> &'a DiplomatStr {
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
+            let value = self.0.get(&key);
+            if let Some(value) = value {
+                let s = value.as_str();
+                if let Some(s) = s {
+                    s.as_bytes()
+                } else {
+                    default
+                }
+            } else {
+                default
             }
         }
 
@@ -723,58 +764,58 @@ mod ffi {
         }
 
         pub fn contains_key(&self, key: &DiplomatStr) -> bool {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.contains_key(&key)
         }
 
         pub fn insert_null(&mut self, key: &DiplomatStr) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::new());
         }
 
         pub fn insert_bool(&mut self, key: &DiplomatStr, value: bool) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_i64(&mut self, key: &DiplomatStr, value: i64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_u64(&mut self, key: &DiplomatStr, value: u64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Value::from(value));
         }
 
         pub fn insert_f64(&mut self, key: &DiplomatStr, value: f64) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, Number::from_f64(value).unwrap());
         }
 
         pub fn insert_str(&mut self, key: &DiplomatStr, value: &DiplomatStr) {
-            let key = std::str::from_utf8(key).unwrap();
-            let value = std::str::from_utf8(value).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
+            let value = unsafe { std::str::from_utf8_unchecked(value) };
             self.0.insert(&key, Value::from_str(value).unwrap());
         }
 
         pub fn insert_value(&mut self, key: &DiplomatStr, value: &JValue) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn insert_object(&mut self, key: &DiplomatStr, value: &JObject) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn insert_array(&mut self, key: &DiplomatStr, value: &JArray) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.insert(&key, value.0.clone());
         }
 
         pub fn remove(&mut self, key: &DiplomatStr) -> bool {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let value = self.0.remove(&key);
             value.is_some()
         }
@@ -788,7 +829,7 @@ mod ffi {
         }
 
         pub fn get_value(&self, key: &DiplomatStr) -> Box<JValue> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let a = self.0.get(&key);
             if let Some(v) = a {
                 Box::new(JValue(v.clone()))
@@ -798,7 +839,7 @@ mod ffi {
         }
 
         pub fn get_value_ref(&'a self, key: &DiplomatStr) -> Box<JValueRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key);
             if let Some(v) = v {
                 Box::new(JValueRef(v))
@@ -808,59 +849,77 @@ mod ffi {
         }
 
         pub fn get_value_mut(&'a mut self, key: &DiplomatStr) -> Box<JValueMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JValueMut(v))
         }
 
         pub fn get_object_mut(&'a mut self, key: &DiplomatStr) -> Box<JObjectMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JObjectMut(v.as_object_mut().unwrap()))
         }
 
         pub fn get_array_mut(&'a mut self, key: &DiplomatStr) -> Box<JArrayMut<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get_mut(&key).unwrap();
             Box::new(JArrayMut(v.as_array_mut().unwrap()))
         }
 
         pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_bool())
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_i64())
         }
 
         pub fn get_u64(&self, key: &DiplomatStr) -> Option<u64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_u64())
         }
 
         pub fn get_f64(&self, key: &DiplomatStr) -> Option<f64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_f64())
         }
 
         pub fn get_str(&self, key: &DiplomatStr, default: &DiplomatStr, out: &mut DiplomatWrite) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             if let Some(v) = self.0.get(&key) {
                 let s = v.as_str();
                 if let Some(s) = s {
                     _ = out.write_str(s);
                     out.flush();
                 } else {
-                    let default = std::str::from_utf8(default).unwrap();
+                    let default = unsafe { std::str::from_utf8_unchecked(default) };
                     _ = out.write_str(default);
                     out.flush();
                 }
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
                 out.flush();
+            }
+        }
+
+        pub fn get_str_ref(
+            &'a self,
+            key: &DiplomatStr,
+            default: &'a DiplomatStr,
+        ) -> &'a DiplomatStr {
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
+            if let Some(v) = self.0.get(&key) {
+                let s = v.as_str();
+                if let Some(s) = s {
+                    s.as_bytes()
+                } else {
+                    default
+                }
+            } else {
+                default
             }
         }
 
@@ -894,7 +953,7 @@ mod ffi {
         }
 
         pub fn contains_key(&self, key: &DiplomatStr) -> bool {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.contains_key(&key)
         }
 
@@ -907,7 +966,7 @@ mod ffi {
         }
 
         pub fn get_value(&self, key: &DiplomatStr) -> Box<JValue> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let a = self.0.get(&key);
             if let Some(v) = a {
                 Box::new(JValue(v.clone()))
@@ -917,7 +976,7 @@ mod ffi {
         }
 
         pub fn get_value_ref(&'a self, key: &DiplomatStr) -> Box<JValueRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key);
             if let Some(v) = v {
                 Box::new(JValueRef(v))
@@ -927,7 +986,7 @@ mod ffi {
         }
 
         pub fn get_object_ref(&'a self, key: &DiplomatStr) -> Box<JObjectRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key);
             if let Some(v) = v {
                 Box::new(JObjectRef(v.as_object().unwrap()))
@@ -937,7 +996,7 @@ mod ffi {
         }
 
         pub fn get_array_ref(&'a self, key: &DiplomatStr) -> Box<JArrayRef<'a>> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             let v = self.0.get(&key);
             if let Some(v) = v {
                 Box::new(JArrayRef(v.as_array().unwrap()))
@@ -947,41 +1006,59 @@ mod ffi {
         }
 
         pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_bool())
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_i64())
         }
 
         pub fn get_u64(&self, key: &DiplomatStr) -> Option<u64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_u64())
         }
 
         pub fn get_f64(&self, key: &DiplomatStr) -> Option<f64> {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             self.0.get(&key).and_then(|v| v.as_f64())
         }
 
         pub fn get_str(&self, key: &DiplomatStr, default: &DiplomatStr, out: &mut DiplomatWrite) {
-            let key = std::str::from_utf8(key).unwrap();
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
             if let Some(v) = self.0.get(&key) {
                 let s = v.as_str();
                 if let Some(s) = s {
                     _ = out.write_str(s);
                     out.flush();
                 } else {
-                    let default = std::str::from_utf8(default).unwrap();
+                    let default = unsafe { std::str::from_utf8_unchecked(default) };
                     _ = out.write_str(default);
                     out.flush();
                 }
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
                 out.flush();
+            }
+        }
+
+        pub fn get_str_ref(
+            &'a self,
+            key: &DiplomatStr,
+            default: &'a DiplomatStr,
+        ) -> &'a DiplomatStr {
+            let key = unsafe { std::str::from_utf8_unchecked(key) };
+            if let Some(v) = self.0.get(&key) {
+                let s = v.as_str();
+                if let Some(s) = s {
+                    s.as_bytes()
+                } else {
+                    default
+                }
+            } else {
+                default
             }
         }
 
@@ -1006,7 +1083,7 @@ mod ffi {
         }
 
         pub fn from_str(s: &DiplomatStr) -> Box<JArray> {
-            let s = std::str::from_utf8(s).unwrap();
+            let s = unsafe { std::str::from_utf8_unchecked(s) };
             Box::new(Self {
                 0: from_str(s).unwrap(),
             })
@@ -1049,7 +1126,7 @@ mod ffi {
         }
 
         pub fn push_str(&mut self, value: &DiplomatStr) {
-            let value = std::str::from_utf8(value).unwrap();
+            let value = unsafe { std::str::from_utf8_unchecked(value) };
             self.0.push(Value::from_str(value).unwrap());
         }
 
@@ -1178,7 +1255,7 @@ mod ffi {
         }
 
         pub fn push_str(&mut self, value: &DiplomatStr) {
-            let value = std::str::from_utf8(value).unwrap();
+            let value = unsafe { std::str::from_utf8_unchecked(value) };
             self.0.push(Value::from_str(value).unwrap());
         }
 
@@ -1268,7 +1345,7 @@ mod ffi {
                 _ = out.write_str(s);
                 out.flush();
             } else {
-                let default = std::str::from_utf8(default).unwrap();
+                let default = unsafe { std::str::from_utf8_unchecked(default) };
                 _ = out.write_str(default);
                 out.flush();
             }

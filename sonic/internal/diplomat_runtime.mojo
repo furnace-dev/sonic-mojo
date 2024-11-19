@@ -171,7 +171,7 @@ struct _DLWrapper:
 
     var _diplomat_buffer_write_destroy: fn_diplomat_buffer_write_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
 
         self._diplomat_simple_write = self._handle.get_function[

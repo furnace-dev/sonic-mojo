@@ -83,6 +83,8 @@ alias fn_jobject_get_f64 = fn (self: UnsafePointer[JObject], key: DiplomatString
 
 alias fn_jobject_get_str = fn (self: UnsafePointer[JObject], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None
 
+alias fn_jobject_get_str_ref = fn (self: UnsafePointer[JObject], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView
+
 alias fn_jobject_keys_iter = fn (self: UnsafePointer[JObject]) -> UnsafePointer[JKeysIter]
 
 alias fn_jobject_iter = fn (self: UnsafePointer[JObject]) -> UnsafePointer[JObjectIter]
@@ -161,6 +163,8 @@ struct _DLWrapper:
     
     var _jobject_get_str: fn_jobject_get_str
     
+    var _jobject_get_str_ref: fn_jobject_get_str_ref
+    
     var _jobject_keys_iter: fn_jobject_keys_iter
     
     var _jobject_iter: fn_jobject_iter
@@ -169,7 +173,7 @@ struct _DLWrapper:
     
     var _jobject_destroy: fn_jobject_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jobject_new = self._handle.get_function[fn_jobject_new]("JObject_new")
@@ -235,6 +239,8 @@ struct _DLWrapper:
         self._jobject_get_f64 = self._handle.get_function[fn_jobject_get_f64]("JObject_get_f64")
         
         self._jobject_get_str = self._handle.get_function[fn_jobject_get_str]("JObject_get_str")
+        
+        self._jobject_get_str_ref = self._handle.get_function[fn_jobject_get_str_ref]("JObject_get_str_ref")
         
         self._jobject_keys_iter = self._handle.get_function[fn_jobject_keys_iter]("JObject_keys_iter")
         
@@ -372,6 +378,10 @@ fn jobject_get_f64(self: UnsafePointer[JObject], key: DiplomatStringView) -> Opt
 @always_inline
 fn jobject_get_str(self: UnsafePointer[JObject], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None:
     return __wrapper._jobject_get_str(self, key, default, write)
+
+@always_inline
+fn jobject_get_str_ref(self: UnsafePointer[JObject], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView:
+    return __wrapper._jobject_get_str_ref(self, key, default)
 
 @always_inline
 fn jobject_keys_iter(self: UnsafePointer[JObject]) -> UnsafePointer[JKeysIter]:

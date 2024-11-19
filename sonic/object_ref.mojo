@@ -8,11 +8,11 @@ struct JsonObjectRef(Stringable):
     var _object: UnsafePointer[JObjectRef]
 
     @always_inline
-    fn __init__(inout self, value: UnsafePointer[JObjectRef]):
+    fn __init__(out self, value: UnsafePointer[JObjectRef]):
         self._object = value
 
     @always_inline
-    fn __moveinit__(inout self, owned other: JsonObjectRef):
+    fn __moveinit__(out self, owned other: JsonObjectRef):
         self._object = other._object
 
     @always_inline
@@ -104,6 +104,10 @@ struct JsonObjectRef(Stringable):
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
+
+    @always_inline
+    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
+        return jobjectref_get_str_ref(self._object, key, default)
 
     @always_inline
     fn get_object_ref(self, key: StringRef) -> JsonObjectRef:

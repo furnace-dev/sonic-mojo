@@ -30,7 +30,7 @@ struct _DLWrapper:
     
     var _jkeysiter_destroy: fn_jkeysiter_destroy
 
-    fn __init__(inout self):
+    fn __init__(out self):
         self._handle = DLHandle(LIBNAME)
         
         self._jkeysiter_next = self._handle.get_function[fn_jkeysiter_next]("JKeysIter_next")
