@@ -1,15 +1,23 @@
 #[diplomat::bridge]
 mod ffi {
     use diplomat_runtime::DiplomatWrite;
-    use sonic_rs::{from_str, json, JsonContainerTrait};
+    use sonic_rs::{from_str, JsonContainerTrait};
     use sonic_rs::{Array, JsonValueTrait, Object, Value};
     use sonic_rs::{JsonValueMutTrait, Number};
     use std::fmt::Write;
+    use std::ptr::addr_of_mut;
     use std::str::FromStr;
+    use lazy_static::lazy_static;
 
-    static NULL_VALUE: Value = Value::new();
-    static NULL_OBJECT: Object = Object::new();
-    static NULL_ARRAY: Array = Array::new();
+    // static NULL_VALUE: Value = Value::new();
+    // static NULL_OBJECT: Object = Object::new();
+    // static NULL_ARRAY: Array = Array::new();
+
+    lazy_static! {
+        static ref NULL_VALUE: Value = Value::new();
+        static ref NULL_OBJECT: Object = Object::new();
+        static ref NULL_ARRAY: Array = Array::new();
+    }
 
     #[diplomat::enum_convert(sonic_rs::JsonType)]
     pub enum JsonType {
@@ -123,9 +131,9 @@ mod ffi {
             Box::new(Self { 0: self.0.clone() })
         }
 
-        pub fn mark_root(&mut self) {
-            self.0.mark_root();
-        }
+        // pub fn mark_root(&mut self) {
+        //     self.0.mark_root();
+        // }
 
         pub fn get_type(&self) -> JsonType {
             self.0.get_type().into()
@@ -223,10 +231,8 @@ mod ffi {
         }
 
         pub fn as_object_mut<'a>(&'a mut self) -> Box<JObjectMut<'a>> {
-            Box::new(JObjectMut(self.0.as_object_mut().unwrap_or_else(|| {
-                static mut TEMP_OBJECT: Object = Object::new();
-                unsafe { &mut TEMP_OBJECT }
-            })))
+            let obj = self.0.as_object_mut().unwrap();
+            Box::new(JObjectMut(obj))
         }
 
         pub fn as_array(&self) -> Box<JArray> {
@@ -245,7 +251,7 @@ mod ffi {
         pub fn as_array_mut<'a>(&'a mut self) -> Box<JArrayMut<'a>> {
             Box::new(JArrayMut(self.0.as_array_mut().unwrap_or_else(|| {
                 static mut TEMP_ARRAY: Array = Array::new();
-                unsafe { &mut TEMP_ARRAY }
+                unsafe { &mut *addr_of_mut!(TEMP_ARRAY) }
             })))
         }
 
@@ -261,9 +267,9 @@ mod ffi {
             Box::new(JValue { 0: self.0.clone() })
         }
 
-        pub fn mark_root(&mut self) {
-            self.0.mark_root();
-        }
+        // pub fn mark_root(&mut self) {
+        //     self.0.mark_root();
+        // }
 
         pub fn get_type(&self) -> JsonType {
             self.0.get_type().into()
@@ -348,20 +354,15 @@ mod ffi {
         }
 
         pub fn as_object_mut(&'a mut self) -> Box<JObjectMut<'a>> {
-            static mut TEMP_OBJECT: Object = Object::new();
-            let obj = self
-                .0
-                .as_object_mut()
-                .unwrap_or_else(|| unsafe { &mut TEMP_OBJECT });
+            let obj = self.0.as_object_mut().unwrap();
             Box::new(JObjectMut(obj))
         }
 
         pub fn as_array_mut(&'a mut self) -> Box<JArrayMut<'a>> {
-            static mut TEMP_ARRAY: Array = Array::new();
             Box::new(JArrayMut(
                 self.0
                     .as_array_mut()
-                    .unwrap_or_else(|| unsafe { &mut TEMP_ARRAY }),
+                    .unwrap(),
             ))
         }
 
@@ -1303,7 +1304,7 @@ mod ffi {
         pub fn next(&mut self) -> Box<JValueMut<'a>> {
             Box::new(JValueMut(self.0.next().unwrap_or_else(|| {
                 static mut TEMP_VALUE: Value = Value::new();
-                unsafe { &mut TEMP_VALUE }
+                unsafe { &mut *addr_of_mut!(TEMP_VALUE) }
             })))
         }
     }

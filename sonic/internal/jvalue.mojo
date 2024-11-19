@@ -29,8 +29,6 @@ alias fn_jvalue_from_str = fn (s: DiplomatStringView) -> UnsafePointer[JValue]
 
 alias fn_jvalue_clone = fn (self: UnsafePointer[JValue]) -> UnsafePointer[JValue]
 
-alias fn_jvalue_mark_root = fn (self: UnsafePointer[JValue]) -> None
-
 alias fn_jvalue_get_type = fn (self: UnsafePointer[JValue]) -> JsonType
 
 alias fn_jvalue_is_boolean = fn (self: UnsafePointer[JValue]) -> c_bool
@@ -99,8 +97,6 @@ struct _DLWrapper:
     
     var _jvalue_clone: fn_jvalue_clone
     
-    var _jvalue_mark_root: fn_jvalue_mark_root
-    
     var _jvalue_get_type: fn_jvalue_get_type
     
     var _jvalue_is_boolean: fn_jvalue_is_boolean
@@ -165,8 +161,6 @@ struct _DLWrapper:
         self._jvalue_from_str = self._handle.get_function[fn_jvalue_from_str]("JValue_from_str")
         
         self._jvalue_clone = self._handle.get_function[fn_jvalue_clone]("JValue_clone")
-        
-        self._jvalue_mark_root = self._handle.get_function[fn_jvalue_mark_root]("JValue_mark_root")
         
         self._jvalue_get_type = self._handle.get_function[fn_jvalue_get_type]("JValue_get_type")
         
@@ -246,10 +240,6 @@ fn jvalue_from_str(s: DiplomatStringView) -> UnsafePointer[JValue]:
 @always_inline
 fn jvalue_clone(self: UnsafePointer[JValue]) -> UnsafePointer[JValue]:
     return __wrapper._jvalue_clone(self)
-
-@always_inline
-fn jvalue_mark_root(self: UnsafePointer[JValue]) -> None:
-    return __wrapper._jvalue_mark_root(self)
 
 @always_inline
 fn jvalue_get_type(self: UnsafePointer[JValue]) -> JsonType:

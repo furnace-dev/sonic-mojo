@@ -71,9 +71,9 @@ struct JsonValue(JsonContainerTrait, Stringable):
     fn as_jarray_pointer(self) -> UnsafePointer[JArray]:
         return self._value.bitcast[JArray]()
 
-    @always_inline
-    fn mark_root(self) -> None:
-        return jvalue_mark_root(self._value)
+    # @always_inline
+    # fn mark_root(self) -> None:
+    #     return jvalue_mark_root(self._value)
 
     @always_inline
     fn get_type(self) -> JsonType:

@@ -14,8 +14,6 @@ from .jvaluemut_d import *
 
 alias fn_jvaluemut_clone = fn (self: UnsafePointer[JValueMut]) -> UnsafePointer[JValue]
 
-alias fn_jvaluemut_mark_root = fn (self: UnsafePointer[JValueMut]) -> None
-
 alias fn_jvaluemut_get_type = fn (self: UnsafePointer[JValueMut]) -> JsonType
 
 alias fn_jvaluemut_is_boolean = fn (self: UnsafePointer[JValueMut]) -> c_bool
@@ -66,8 +64,6 @@ struct _DLWrapper:
     
     var _jvaluemut_clone: fn_jvaluemut_clone
     
-    var _jvaluemut_mark_root: fn_jvaluemut_mark_root
-    
     var _jvaluemut_get_type: fn_jvaluemut_get_type
     
     var _jvaluemut_is_boolean: fn_jvaluemut_is_boolean
@@ -115,8 +111,6 @@ struct _DLWrapper:
         
         self._jvaluemut_clone = self._handle.get_function[fn_jvaluemut_clone]("JValueMut_clone")
         
-        self._jvaluemut_mark_root = self._handle.get_function[fn_jvaluemut_mark_root]("JValueMut_mark_root")
-        
         self._jvaluemut_get_type = self._handle.get_function[fn_jvaluemut_get_type]("JValueMut_get_type")
         
         self._jvaluemut_is_boolean = self._handle.get_function[fn_jvaluemut_is_boolean]("JValueMut_is_boolean")
@@ -163,10 +157,6 @@ struct _DLWrapper:
 @always_inline
 fn jvaluemut_clone(self: UnsafePointer[JValueMut]) -> UnsafePointer[JValue]:
     return __wrapper._jvaluemut_clone(self)
-
-@always_inline
-fn jvaluemut_mark_root(self: UnsafePointer[JValueMut]) -> None:
-    return __wrapper._jvaluemut_mark_root(self)
 
 @always_inline
 fn jvaluemut_get_type(self: UnsafePointer[JValueMut]) -> JsonType:
