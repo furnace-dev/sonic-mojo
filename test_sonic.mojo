@@ -234,6 +234,9 @@ fn test_deep_json() raises:
     var b = a.get_object_mut("b")
     var c = b.get_i64("c")
     assert_equal(c, 100)
+    _ = b^
+    _ = a^
+    _ = o^
 
 
 # Write JSON
@@ -367,3 +370,8 @@ fn test_object_iterator_mut() raises:
         assert_equal(symbol_, "BTCUSDT")
         assert_equal(tick_size, 0.1)
         assert_equal(stepSize, 0.001)
+    
+    _ = list_iter^
+    _ = result_list^
+    _ = result^
+    _ = doc^
