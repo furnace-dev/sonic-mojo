@@ -2,7 +2,15 @@ from memory import UnsafePointer
 from .internal import *
 
 
-struct JsonValueRef(Stringable):
+trait JsonRefContainerTrait:
+    fn as_jobject_pointer(self) -> UnsafePointer[JObjectRef]:
+        pass
+
+    fn as_jarray_pointer(self) -> UnsafePointer[JArrayRef]:
+        pass
+
+
+struct JsonValueRef(JsonRefContainerTrait, Stringable):
     var _value: UnsafePointer[JValueRef]
 
     @always_inline
@@ -20,6 +28,14 @@ struct JsonValueRef(Stringable):
     @always_inline
     fn __del__(owned self):
         jvalueref_destroy(self._value)
+
+    @always_inline
+    fn as_jobject_pointer(self) -> UnsafePointer[JObjectRef]:
+        return self._value.bitcast[JObjectRef]()
+
+    @always_inline
+    fn as_jarray_pointer(self) -> UnsafePointer[JArrayRef]:
+        return self._value.bitcast[JArrayRef]()
 
     @always_inline
     fn clone(self) -> JsonValue:
