@@ -1,11 +1,11 @@
 from memory import UnsafePointer
 from .internal import *
-from .value import JsonValue, JsonContainerTrait
+from .value import JsonValue, JsonContainerTrait, JsonObjectViewable
 from .value_ref import JsonValueRef
 
 
 struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
-    Stringable
+    Stringable, JsonObjectViewable
 ):
     var _src: Pointer[T, origin]
     var _object: UnsafePointer[JObject]

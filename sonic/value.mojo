@@ -10,6 +10,53 @@ trait JsonContainerTrait:
         pass
 
 
+trait JsonObjectViewable:
+    fn to_string(self, cap: Int = 1024) -> String:
+        pass
+
+    fn capacity(self) -> Int:
+        pass
+
+    fn contains_key(self, key: StringRef) -> Bool:
+        pass
+
+    fn len(self) -> Int:
+        pass
+
+    fn is_empty(self) -> Bool:
+        pass
+
+    fn get_type(self) -> JsonType:
+        pass
+
+    fn get_value(self, key: StringRef) -> JsonValue:
+        pass
+
+    fn get_bool(self, key: StringRef, default: Bool = False) -> Bool:
+        pass
+
+    fn get_i64(self, key: StringRef, default: Int64 = 0) -> Int64:
+        pass
+
+    fn get_u64(self, key: StringRef, default: UInt64 = 0) -> UInt64:
+        pass
+
+    fn get_f64(self, key: StringRef, default: Float64 = 0.0) -> Float64:
+        pass
+
+    fn get_str(self, key: StringRef, default: StringRef = "") -> String:
+        pass
+
+    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
+        pass
+
+    fn keys(self) -> List[String]:
+        pass
+
+    fn iter(self) -> List[Tuple[String, JsonValueRef]]:
+        pass
+
+
 struct JsonValue(JsonContainerTrait, Stringable):
     var _value: UnsafePointer[JValue]
 

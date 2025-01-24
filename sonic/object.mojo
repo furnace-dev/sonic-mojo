@@ -15,7 +15,7 @@ fn convert_jvalue_to_string(self: UnsafePointer[JValueRef]) -> String:
     return ret_str
 
 
-struct JsonObject(JsonContainerTrait, Stringable):
+struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
     var _object: UnsafePointer[JObject]
 
     @always_inline
