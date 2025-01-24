@@ -60,7 +60,7 @@ alias fn_jobjectmut_get_object_mut = fn (self: UnsafePointer[JObjectMut], key: D
 
 alias fn_jobjectmut_get_array_mut = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView) -> UnsafePointer[JArrayMut]
 
-alias fn_jobjectmut_get_bool = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView) -> OptionBoolResult
+alias fn_jobjectmut_get_bool = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: c_bool) -> c_bool
 
 alias fn_jobjectmut_get_i64 = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView) -> OptionI64Result
 
@@ -301,8 +301,8 @@ fn jobjectmut_get_array_mut(self: UnsafePointer[JObjectMut], key: DiplomatString
     return __wrapper._jobjectmut_get_array_mut(self, key)
 
 @always_inline
-fn jobjectmut_get_bool(self: UnsafePointer[JObjectMut], key: DiplomatStringView) -> OptionBoolResult:
-    return __wrapper._jobjectmut_get_bool(self, key)
+fn jobjectmut_get_bool(self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: c_bool) -> c_bool:
+    return __wrapper._jobjectmut_get_bool(self, key, default)
 
 @always_inline
 fn jobjectmut_get_i64(self: UnsafePointer[JObjectMut], key: DiplomatStringView) -> OptionI64Result:

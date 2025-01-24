@@ -34,7 +34,7 @@ alias fn_jobjectref_get_object_ref = fn (self: UnsafePointer[JObjectRef], key: D
 
 alias fn_jobjectref_get_array_ref = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView) -> UnsafePointer[JArrayRef]
 
-alias fn_jobjectref_get_bool = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView) -> OptionBoolResult
+alias fn_jobjectref_get_bool = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: c_bool) -> c_bool
 
 alias fn_jobjectref_get_i64 = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView) -> OptionI64Result
 
@@ -179,8 +179,8 @@ fn jobjectref_get_array_ref(self: UnsafePointer[JObjectRef], key: DiplomatString
     return __wrapper._jobjectref_get_array_ref(self, key)
 
 @always_inline
-fn jobjectref_get_bool(self: UnsafePointer[JObjectRef], key: DiplomatStringView) -> OptionBoolResult:
-    return __wrapper._jobjectref_get_bool(self, key)
+fn jobjectref_get_bool(self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: c_bool) -> c_bool:
+    return __wrapper._jobjectref_get_bool(self, key, default)
 
 @always_inline
 fn jobjectref_get_i64(self: UnsafePointer[JObjectRef], key: DiplomatStringView) -> OptionI64Result:

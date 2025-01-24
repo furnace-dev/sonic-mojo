@@ -138,10 +138,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
 
     @always_inline
     fn get_bool(self, key: StringRef, default: Bool = False) -> Bool:
-        var ret = jobject_get_bool(self._object, key)
-        if ret.is_ok:
-            return ret.ok
-        return default
+        return jobject_get_bool(self._object, key, default)
 
     @always_inline
     fn get_i64(self, key: StringRef, default: Int64 = 0) -> Int64:

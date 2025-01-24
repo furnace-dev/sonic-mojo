@@ -1,6 +1,6 @@
 [project]
 authors = ["yl <2201441955@qq.com>"]
-channels = ["conda-forge", "https://conda.modular.com/max-nightly", "https://repo.prefix.dev/better-ffi"]
+channels = ["conda-forge", "https://conda.modular.com/max"]
 description = "Add a short description here"
 name = "sonic-mojo"
 
@@ -13,7 +13,7 @@ build-mojo = { cmd = "rattler-build build --recipe recipes/mojo-recipe.yaml -c h
 build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https://conda.modular.com/max -c conda-forge --skip-existing=all" }
 
 [dependencies]
-max = ">=24.6.0.dev2024102905,<25"
+max = "*"
 
 [feature.dev.dependencies]
 rust = "*"

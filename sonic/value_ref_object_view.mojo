@@ -70,10 +70,7 @@ struct JsonValueRefObjectView[origin: MutableOrigin, T: JsonRefContainerTrait](
 
     @always_inline
     fn get_bool(self, key: StringRef, default: Bool = False) -> Bool:
-        var ret = jobjectref_get_bool(self._object, key)
-        if ret.is_ok:
-            return ret.ok
-        return default
+        return jobjectref_get_bool(self._object, key, default)
 
     @always_inline
     fn get_i64(self, key: StringRef, default: Int64 = 0) -> Int64:
@@ -110,6 +107,16 @@ struct JsonValueRefObjectView[origin: MutableOrigin, T: JsonRefContainerTrait](
     @always_inline
     fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
         return jobjectref_get_str_ref(self._object, key, default)
+
+    @always_inline
+    fn get_object_ref(self, key: StringRef) -> JsonObjectRef:
+        var ret = jobjectref_get_object_ref(self._object, key)
+        return JsonObjectRef(ret)
+
+    @always_inline
+    fn get_array_ref(self, key: StringRef) -> JsonArrayRef:
+        var ret = jobjectref_get_array_ref(self._object, key)
+        return JsonArrayRef(ret)
 
     fn keys(self) -> List[String]:
         var iter = jobjectref_keys_iter(self._object)

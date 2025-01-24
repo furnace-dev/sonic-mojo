@@ -668,9 +668,14 @@ mod ffi {
             Box::new(JArrayMut(v.as_array_mut().unwrap()))
         }
 
-        pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
+        pub fn get_bool(&self, key: &DiplomatStr, default: bool) -> bool {
             let key = unsafe { std::str::from_utf8_unchecked(key) };
-            self.0.get(&key).and_then(|v| v.as_bool())
+            let v = self.0.get(&key).as_bool();
+            if let Some(v) = v {
+                v
+            } else {
+                default
+            }
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
@@ -866,9 +871,14 @@ mod ffi {
             Box::new(JArrayMut(v.as_array_mut().unwrap()))
         }
 
-        pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
+        pub fn get_bool(&self, key: &DiplomatStr, default: bool) -> bool {
             let key = unsafe { std::str::from_utf8_unchecked(key) };
-            self.0.get(&key).and_then(|v| v.as_bool())
+            let v = self.0.get(&key).as_bool();
+            if let Some(v) = v {
+                v
+            } else {
+                default
+            }
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
@@ -1005,9 +1015,14 @@ mod ffi {
             }
         }
 
-        pub fn get_bool(&self, key: &DiplomatStr) -> Option<bool> {
+        pub fn get_bool(&self, key: &DiplomatStr, default: bool) -> bool {
             let key = unsafe { std::str::from_utf8_unchecked(key) };
-            self.0.get(&key).and_then(|v| v.as_bool())
+            let v = self.0.get(&key).as_bool();
+            if let Some(v) = v {
+                v
+            } else {
+                default
+            }
         }
 
         pub fn get_i64(&self, key: &DiplomatStr) -> Option<i64> {
