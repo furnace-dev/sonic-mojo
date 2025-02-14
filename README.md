@@ -25,6 +25,33 @@ magic add libsonic
 
 ```
 
+### Release 
+
+```ruby
+# install requirements
+magic i
+
+
+# build rust libsonic 
+task br
+  
+# build mojo lib 
+task bm
+
+# publish rust libsonic
+task publish:ffi
+
+
+# publish mojo lib
+task publish:mojo 
+
+  
+   
+```
+
+
+
+
 
 ### Compile the sonic-rs library
 

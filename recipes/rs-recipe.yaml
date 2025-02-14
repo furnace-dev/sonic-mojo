@@ -9,7 +9,7 @@ context:
 
 package:
   name: "libsonic"
-  version: 0.1.1
+  version: 0.2.1
 
 source:
   - path: ../sonic_rs_bindings/    # TODO X: 包含 cargo.toml 的路径!!!

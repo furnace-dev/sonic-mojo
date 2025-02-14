@@ -5,7 +5,7 @@ context:
 
 package:
     name: "sonic_mojo"
-    version: 0.1.1
+    version: 0.2.1
 
 source:
     - path: ../sonic/  # TODO X: FIX HERE

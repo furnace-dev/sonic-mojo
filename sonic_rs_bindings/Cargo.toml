@@ -1,7 +1,13 @@
 [package]
 name = "sonic"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+
+#
+# TODO X: pixi + rattler-build 不支持 cargo workspace 模式, 必须保留此字段!!!!
+#
+[workspace]
+
 
 [lib]
 crate-type = ["cdylib", "rlib", "staticlib"]

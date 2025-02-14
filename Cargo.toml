@@ -1,3 +1,9 @@
 [workspace]
 resolver = "2"
-members = ["sonic_rs_bindings", "generator"]
+members = ["generator"]
+
+# TODO X: 注意, 必须这样改! ( pixi + rattler-build )
+exclude = [
+    "tmp", # 不需要 ** 子目录
+    "sonic_rs_bindings", # TODO X: 注意! pixi + rattler-build  发包工具,不支持 cargo workspace, 必须这样改!!!!!!!!
+]

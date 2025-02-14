@@ -4,7 +4,7 @@ channels = ["conda-forge", "https://conda.modular.com/max"]
 description = "Add a short description here"
 name = "sonic-mojo"
 
-platforms = ["linux-64", "osx-arm64"]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64"]
 
 version = "0.1.0"
 
@@ -15,5 +15,15 @@ build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https
 [dependencies]
 max = "*"
 
+
 [feature.dev.dependencies]
 rust = "*"
+rattler-build = "*"
+
+#
+# ref: https://pixi.sh/latest/features/multi_environment/#ambiguous-environment-selection
+#
+[environments]
+#default = ["default"]
+dev = ["dev"]
+

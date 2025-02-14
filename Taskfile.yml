@@ -58,9 +58,12 @@ tasks:
       - magic run build-mojo
 
   clean:build:
+    aliases: [ "cb" ]
     cmds:
+      - rm -rf build/
       - task: br
       - task: bm
+
 
   #
   # ref: https://taskfile.dev/usage/#looping-over-variables
