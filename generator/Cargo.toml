@@ -10,18 +10,17 @@ path = "src/main.rs"
 
 [dependencies]
 # diplomat = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-#diplomat = { path="../../diplomat/macro" }
-diplomat = { git = "https://github.com/f0cii/diplomat.git" }
+#diplomat = { path="../../../f0cii/diplomat/macro" }
+diplomat = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }
 
 # diplomat-runtime = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-#diplomat-runtime = { path="../../diplomat/runtime" }
-diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git" }
-
+#diplomat-runtime = { path="../../../f0cii/diplomat/runtime" }
+diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }
 
 # diplomat-tool = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-#diplomat-tool = { path="../../diplomat/tool" }
-diplomat-tool = { git = "https://github.com/f0cii/diplomat.git" }
+#diplomat-tool = { path="../../../f0cii/diplomat/tool" }
+diplomat-tool = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }
 
 # diplomat_core = { git = "https://github.com/rust-diplomat/diplomat.git", rev = "645c1872e6581074bc559fb72514eb8e96040fb9" }
-#diplomat_core = { path="../../diplomat/core" }
-diplomat_core = { git = "https://github.com/f0cii/diplomat.git" }
+#diplomat_core = { path="../../../f0cii/diplomat/core" }
+diplomat_core = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }

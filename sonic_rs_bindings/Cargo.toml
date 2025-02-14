@@ -15,9 +15,9 @@ crate-type = ["cdylib", "rlib", "staticlib"]
 [dependencies]
 #diplomat = "0.8.0"
 #diplomat-runtime = "0.8.2"
-diplomat = { git = "https://github.com/f0cii/diplomat.git" }
-# diplomat = { path="../../diplomat/macro" }
-diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git" }
-# diplomat-runtime = { path="../../diplomat/runtime" }
+#diplomat = { path="../../../f0cii/diplomat/macro" }
+diplomat = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }
+#diplomat-runtime = { path="../../../f0cii/diplomat/runtime" }
+diplomat-runtime = { git = "https://github.com/f0cii/diplomat.git", rev = "541ae700e823006ce1645b742937af95ac5e0ac7" }
 lazy_static = "1.5.0"
 sonic-rs = "0.3.14"
