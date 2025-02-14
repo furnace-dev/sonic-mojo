@@ -21,7 +21,7 @@ source:
 #
 build:
   script:
-    - if: osx
+    - if: osx and aarch64  # m1 mac
       then:
         #    - cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml  # !(1)
         #    - $BUILD_PREFIX/bin/cargo install --locked --bins --root ${PREFIX} --path .
@@ -31,13 +31,24 @@ build:
         #    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.a ${PREFIX}/lib/
         - rm -rf ${PREFIX}/lib/tmp/
 
-    - if: linux
+    #
+    # https://rattler.build/latest/selectors/#available-variables
+    #
+    - if: linux and x86_64  # amd64
       then:
         - mkdir -p ${PREFIX}/lib/tmp/
         - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
         - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.so ${PREFIX}/lib/
         #        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.a ${PREFIX}/lib/
         - rm -rf ${PREFIX}/lib/tmp/
+
+    - if: linux and aarch64  # arm64
+      then:
+        - mkdir -p ${PREFIX}/lib/tmp/
+        - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
+        - cp ${PREFIX}/lib/tmp/aarch64-unknown-linux-gnu/release/libsonic.so ${PREFIX}/lib/
+        - rm -rf ${PREFIX}/lib/tmp/
+
 
 
 requirements:

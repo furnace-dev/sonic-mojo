@@ -50,7 +50,7 @@ tasks:
   build:rust:
     aliases: [ "br" ]
     cmds:
-      - magic run build-rs
+      - magic run -e=dev build-rs
 
   build:mojo:
     aliases: [ "bm" ]
@@ -79,7 +79,7 @@ tasks:
       - for: { var: UP_PKGS }
         cmd:
           |
-          magic run rattler-build upload prefix -c "better-ffi" \
+          magic run -e=dev rattler-build upload prefix -c "better-ffi" \
             --api-key=$PREFIX_DEV_API_KEY \
             {{.ITEM}}
       - open https://prefix.dev/channels/better-ffi
@@ -96,7 +96,7 @@ tasks:
       - for: { var: UP_PKGS }
         cmd:
           |
-          magic run rattler-build upload prefix -c "better-mojo-nightly" \
+          magic run -e=dev rattler-build upload prefix -c "better-mojo-nightly" \
             --api-key=$PREFIX_DEV_API_KEY \
             {{.ITEM}}
       - open https://prefix.dev/channels/better-mojo-nightly
