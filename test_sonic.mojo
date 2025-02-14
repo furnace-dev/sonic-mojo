@@ -20,7 +20,9 @@ fn test_sonic_rs_internal_sample() raises:
     _ = jvalue_to_string(v, out)
     var s_data = diplomat_buffer_write_get_bytes(out)
     var s_len = diplomat_buffer_write_len(out)
-    var ret_str_ref = StringRef(s_data, s_len)
+    var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        ptr=s_data.bitcast[Byte](), length=s_len
+    )
     var ret_str = String(ret_str_ref)
     diplomat_buffer_write_destroy(out)
     jvalue_destroy(v)
@@ -81,7 +83,9 @@ fn test_valueref() raises:
     jvalueref_as_str(c_ref, "", out)
     var s_data = diplomat_buffer_write_get_bytes(out)
     var s_len = diplomat_buffer_write_len(out)
-    var ret_str_ref = StringRef(s_data, s_len)
+    var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        ptr=s_data.bitcast[Byte](), length=s_len
+    )
     var c = String(ret_str_ref)
     diplomat_buffer_write_destroy(out)
     var f = jvalueref_as_f64(f_ref)
@@ -177,16 +181,16 @@ fn test_read_json() raises:
     assert_equal(b, True)
     var s = o.get_str("s")
     assert_equal(s, "Hi")
-    var s_ref = o.get_str_ref("s")
-    assert_equal(s_ref, "Hi")
+    # var s_ref = o.get_str_ref("s")
+    # assert_equal(s_ref, "Hi")
 
     var obj = o.get_object_mut("obj")
     var obj_a = obj.get_i64("a")
     assert_equal(obj_a, 100)
     var obj_s = obj.get_str("s")
     assert_equal(obj_s, "hello")
-    var obj_s_ref = obj.get_str_ref("s")
-    assert_equal(obj_s_ref, "hello")
+    # var obj_s_ref = obj.get_str_ref("s")
+    # assert_equal(obj_s_ref, "hello")
 
     var arr = o.get_array_mut("arr")
     var arr_0 = arr.get_i64(0)
@@ -201,24 +205,24 @@ fn test_read_json() raises:
     assert_equal(s_arr_len, 3)
     var s_arr_0 = s_arr.get_str(0)
     assert_equal(s_arr_0, "a")
-    var s_arr_0_ref = s_arr.get_str_ref(0)
-    assert_equal(s_arr_0_ref, "a")
+    # var s_arr_0_ref = s_arr.get_str_ref(0)
+    # assert_equal(s_arr_0_ref, "a")
     var s_arr_1 = s_arr.get_str(1)
     assert_equal(s_arr_1, "b")
-    var s_arr_1_ref = s_arr.get_str_ref(1)
-    assert_equal(s_arr_1_ref, "b")
+    # var s_arr_1_ref = s_arr.get_str_ref(1)
+    # assert_equal(s_arr_1_ref, "b")
     var s_arr_2 = s_arr.get_str(2)
     assert_equal(s_arr_2, "c")
-    var s_arr_2_ref = s_arr.get_str_ref(2)
-    assert_equal(s_arr_2_ref, "c")
+    # var s_arr_2_ref = s_arr.get_str_ref(2)
+    # assert_equal(s_arr_2_ref, "c")
     var s_arr_3 = s_arr.get_str(3)
     assert_equal(s_arr_3, "")
-    var s_arr_3_ref = s_arr.get_str_ref(3)
-    assert_equal(s_arr_3_ref, "")
+    # var s_arr_3_ref = s_arr.get_str_ref(3)
+    # assert_equal(s_arr_3_ref, "")
     var s_arr_4 = s_arr.get_str(4, "default")
     assert_equal(s_arr_4, "default")
-    var s_arr_4_ref = s_arr.get_str_ref(4, "default")
-    assert_equal(s_arr_4_ref, "default")
+    # var s_arr_4_ref = s_arr.get_str_ref(4, "default")
+    # assert_equal(s_arr_4_ref, "default")
 
     var null = o.get_value("null")
     assert_equal(null.is_null(), True)
@@ -307,7 +311,9 @@ fn test_object_iterator_ref() raises:
     var ret_code = doc.get_i64("retCode")
     var ret_msg = doc.get_str("retMsg")
     if ret_code != 0:
-        raise "error retCode=" + str(ret_code) + ", retMsg=" + ret_msg
+        raise "error retCode=" + String(ret_code) + ", retMsg=" + String(
+            ret_msg
+        )
 
     var result = doc.get_object_ref("result")
     var result_list = result.get_array_ref("list")
@@ -326,9 +332,9 @@ fn test_object_iterator_ref() raises:
         var symbol_ = obj.get_str("symbol")
 
         var priceFilter = obj.get_object_ref("priceFilter")
-        var tick_size = float(priceFilter.get_str("tickSize"))
+        var tick_size = Float64(priceFilter.get_str("tickSize"))
         var lotSizeFilter = obj.get_object_ref("lotSizeFilter")
-        var stepSize = float(lotSizeFilter.get_str("qtyStep"))
+        var stepSize = Float64(lotSizeFilter.get_str("qtyStep"))
 
         assert_equal(symbol_, "BTCUSDT")
         assert_equal(tick_size, 0.1)
@@ -344,7 +350,9 @@ fn test_object_iterator_mut() raises:
     var ret_code = doc.get_i64("retCode")
     var ret_msg = doc.get_str("retMsg")
     if ret_code != 0:
-        raise "error retCode=" + str(ret_code) + ", retMsg=" + ret_msg
+        raise "error retCode=" + String(ret_code) + ", retMsg=" + String(
+            ret_msg
+        )
 
     var result = doc.get_object_mut("result")
     var result_list = result.get_array_mut("list")
@@ -363,14 +371,14 @@ fn test_object_iterator_mut() raises:
         var symbol_ = obj.get_str("symbol")
 
         var priceFilter = obj.get_object_mut("priceFilter")
-        var tick_size = float(priceFilter.get_str("tickSize"))
+        var tick_size = Float64(priceFilter.get_str("tickSize"))
         var lotSizeFilter = obj.get_object_mut("lotSizeFilter")
-        var stepSize = float(lotSizeFilter.get_str("qtyStep"))
+        var stepSize = Float64(lotSizeFilter.get_str("qtyStep"))
 
         assert_equal(symbol_, "BTCUSDT")
         assert_equal(tick_size, 0.1)
         assert_equal(stepSize, 0.001)
-    
+
     _ = list_iter^
     _ = result_list^
     _ = result^

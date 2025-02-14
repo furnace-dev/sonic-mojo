@@ -44,8 +44,6 @@ alias fn_jobjectref_get_f64 = fn (self: UnsafePointer[JObjectRef], key: Diplomat
 
 alias fn_jobjectref_get_str = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None
 
-alias fn_jobjectref_get_str_ref = fn (self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView
-
 alias fn_jobjectref_keys_iter = fn (self: UnsafePointer[JObjectRef]) -> UnsafePointer[JKeysIter]
 
 alias fn_jobjectref_iter = fn (self: UnsafePointer[JObjectRef]) -> UnsafePointer[JObjectIter]
@@ -88,8 +86,6 @@ struct _DLWrapper:
     
     var _jobjectref_get_str: fn_jobjectref_get_str
     
-    var _jobjectref_get_str_ref: fn_jobjectref_get_str_ref
-    
     var _jobjectref_keys_iter: fn_jobjectref_keys_iter
     
     var _jobjectref_iter: fn_jobjectref_iter
@@ -128,8 +124,6 @@ struct _DLWrapper:
         self._jobjectref_get_f64 = self._handle.get_function[fn_jobjectref_get_f64]("JObjectRef_get_f64")
         
         self._jobjectref_get_str = self._handle.get_function[fn_jobjectref_get_str]("JObjectRef_get_str")
-        
-        self._jobjectref_get_str_ref = self._handle.get_function[fn_jobjectref_get_str_ref]("JObjectRef_get_str_ref")
         
         self._jobjectref_keys_iter = self._handle.get_function[fn_jobjectref_keys_iter]("JObjectRef_keys_iter")
         
@@ -197,10 +191,6 @@ fn jobjectref_get_f64(self: UnsafePointer[JObjectRef], key: DiplomatStringView) 
 @always_inline
 fn jobjectref_get_str(self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None:
     return __wrapper._jobjectref_get_str(self, key, default, write)
-
-@always_inline
-fn jobjectref_get_str_ref(self: UnsafePointer[JObjectRef], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView:
-    return __wrapper._jobjectref_get_str_ref(self, key, default)
 
 @always_inline
 fn jobjectref_keys_iter(self: UnsafePointer[JObjectRef]) -> UnsafePointer[JKeysIter]:

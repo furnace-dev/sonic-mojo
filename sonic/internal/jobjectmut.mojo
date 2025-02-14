@@ -70,8 +70,6 @@ alias fn_jobjectmut_get_f64 = fn (self: UnsafePointer[JObjectMut], key: Diplomat
 
 alias fn_jobjectmut_get_str = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None
 
-alias fn_jobjectmut_get_str_ref = fn (self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView
-
 alias fn_jobjectmut_keys_iter = fn (self: UnsafePointer[JObjectMut]) -> UnsafePointer[JKeysIter]
 
 alias fn_jobjectmut_iter = fn (self: UnsafePointer[JObjectMut]) -> UnsafePointer[JObjectIter]
@@ -138,8 +136,6 @@ struct _DLWrapper:
     
     var _jobjectmut_get_str: fn_jobjectmut_get_str
     
-    var _jobjectmut_get_str_ref: fn_jobjectmut_get_str_ref
-    
     var _jobjectmut_keys_iter: fn_jobjectmut_keys_iter
     
     var _jobjectmut_iter: fn_jobjectmut_iter
@@ -202,8 +198,6 @@ struct _DLWrapper:
         self._jobjectmut_get_f64 = self._handle.get_function[fn_jobjectmut_get_f64]("JObjectMut_get_f64")
         
         self._jobjectmut_get_str = self._handle.get_function[fn_jobjectmut_get_str]("JObjectMut_get_str")
-        
-        self._jobjectmut_get_str_ref = self._handle.get_function[fn_jobjectmut_get_str_ref]("JObjectMut_get_str_ref")
         
         self._jobjectmut_keys_iter = self._handle.get_function[fn_jobjectmut_keys_iter]("JObjectMut_keys_iter")
         
@@ -319,10 +313,6 @@ fn jobjectmut_get_f64(self: UnsafePointer[JObjectMut], key: DiplomatStringView) 
 @always_inline
 fn jobjectmut_get_str(self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: DiplomatStringView, write: UnsafePointer[DiplomatWrite]) -> None:
     return __wrapper._jobjectmut_get_str(self, key, default, write)
-
-@always_inline
-fn jobjectmut_get_str_ref(self: UnsafePointer[JObjectMut], key: DiplomatStringView, default: DiplomatStringView) -> DiplomatStringView:
-    return __wrapper._jobjectmut_get_str_ref(self, key, default)
 
 @always_inline
 fn jobjectmut_keys_iter(self: UnsafePointer[JObjectMut]) -> UnsafePointer[JKeysIter]:

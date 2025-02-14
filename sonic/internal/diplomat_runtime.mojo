@@ -1,7 +1,7 @@
 from memory import UnsafePointer
 from sys.ffi import DLHandle
 from sys.ffi import c_char, c_size_t
-from utils import StringRef
+from utils import StaticString, StringSlice
 from sys import os_is_macos
 
 
@@ -53,7 +53,7 @@ struct DiplomatWrite:
 #    var len: c_size_t
 
 
-alias DiplomatStringView = StringRef
+alias DiplomatStringView = StaticString
 
 
 @value

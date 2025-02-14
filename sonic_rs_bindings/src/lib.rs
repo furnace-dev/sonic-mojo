@@ -217,14 +217,14 @@ mod ffi {
             out.flush();
         }
 
-        pub fn as_str_ref<'a>(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
-            let s = self.0.as_str();
-            if let Some(s) = s {
-                s.as_bytes()
-            } else {
-                default
-            }
-        }
+        // pub fn as_str_ref<'a>(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+        //     let s = self.0.as_str();
+        //     if let Some(s) = s {
+        //         s.as_bytes()
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn as_object(&self) -> Box<JObject> {
             if self.0.is_object() {
@@ -362,14 +362,14 @@ mod ffi {
             out.flush();
         }
 
-        pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
-            let s = self.0.as_str();
-            if let Some(s) = s {
-                s.as_bytes()
-            } else {
-                default
-            }
-        }
+        // pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+        //     let s = self.0.as_str();
+        //     if let Some(s) = s {
+        //         s.as_bytes()
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn as_object_mut(&'a mut self) -> Box<JObjectMut<'a>> {
             let obj = self.0.as_object_mut().unwrap();
@@ -475,14 +475,14 @@ mod ffi {
             out.flush();
         }
 
-        pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
-            let s = self.0.as_str();
-            if let Some(s) = s {
-                s.as_bytes()
-            } else {
-                default
-            }
-        }
+        // pub fn as_str_ref(&'a self, default: &'a DiplomatStr) -> &'a DiplomatStr {
+        //     let s = self.0.as_str();
+        //     if let Some(s) = s {
+        //         s.as_bytes()
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn as_object(&self) -> Box<JObject> {
             if self.0.is_object() {
@@ -712,24 +712,24 @@ mod ffi {
             }
         }
 
-        pub fn get_str_ref<'a>(
-            &'a self,
-            key: &DiplomatStr,
-            default: &'a DiplomatStr,
-        ) -> &'a DiplomatStr {
-            let key = unsafe { std::str::from_utf8_unchecked(key) };
-            let value = self.0.get(&key);
-            if let Some(value) = value {
-                let s = value.as_str();
-                if let Some(s) = s {
-                    s.as_bytes()
-                } else {
-                    default
-                }
-            } else {
-                default
-            }
-        }
+        // pub fn get_str_ref<'a>(
+        //     &'a self,
+        //     key: &DiplomatStr,
+        //     default: &'a DiplomatStr,
+        // ) -> &'a DiplomatStr {
+        //     let key = unsafe { std::str::from_utf8_unchecked(key) };
+        //     let value = self.0.get(&key);
+        //     if let Some(value) = value {
+        //         let s = value.as_str();
+        //         if let Some(s) = s {
+        //             s.as_bytes()
+        //         } else {
+        //             default
+        //         }
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn keys_iter(&self) -> Box<JKeysIter> {
             let keys_iter = self
@@ -915,23 +915,23 @@ mod ffi {
             }
         }
 
-        pub fn get_str_ref(
-            &'a self,
-            key: &DiplomatStr,
-            default: &'a DiplomatStr,
-        ) -> &'a DiplomatStr {
-            let key = unsafe { std::str::from_utf8_unchecked(key) };
-            if let Some(v) = self.0.get(&key) {
-                let s = v.as_str();
-                if let Some(s) = s {
-                    s.as_bytes()
-                } else {
-                    default
-                }
-            } else {
-                default
-            }
-        }
+        // pub fn get_str_ref(
+        //     &'a self,
+        //     key: &DiplomatStr,
+        //     default: &'a DiplomatStr,
+        // ) -> &'a DiplomatStr {
+        //     let key = unsafe { std::str::from_utf8_unchecked(key) };
+        //     if let Some(v) = self.0.get(&key) {
+        //         let s = v.as_str();
+        //         if let Some(s) = s {
+        //             s.as_bytes()
+        //         } else {
+        //             default
+        //         }
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn keys_iter(&self) -> Box<JKeysIter> {
             let keys_iter = self
@@ -1059,23 +1059,23 @@ mod ffi {
             }
         }
 
-        pub fn get_str_ref(
-            &'a self,
-            key: &DiplomatStr,
-            default: &'a DiplomatStr,
-        ) -> &'a DiplomatStr {
-            let key = unsafe { std::str::from_utf8_unchecked(key) };
-            if let Some(v) = self.0.get(&key) {
-                let s = v.as_str();
-                if let Some(s) = s {
-                    s.as_bytes()
-                } else {
-                    default
-                }
-            } else {
-                default
-            }
-        }
+        // pub fn get_str_ref(
+        //     &'a self,
+        //     key: &DiplomatStr,
+        //     default: &'a DiplomatStr,
+        // ) -> &'a DiplomatStr {
+        //     let key = unsafe { std::str::from_utf8_unchecked(key) };
+        //     if let Some(v) = self.0.get(&key) {
+        //         let s = v.as_str();
+        //         if let Some(s) = s {
+        //             s.as_bytes()
+        //         } else {
+        //             default
+        //         }
+        //     } else {
+        //         default
+        //     }
+        // }
 
         pub fn keys_iter(&self) -> Box<JKeysIter> {
             let keys_iter = self

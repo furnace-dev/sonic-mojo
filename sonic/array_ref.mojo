@@ -75,24 +75,26 @@ struct JsonArrayRef(Stringable):
             return default
 
     @always_inline
-    fn get_str(self, index: Int, default: StringRef = "") -> String:
+    fn get_str(self, index: Int, default: StaticString = "") -> String:
         var vref = jarrayref_get(self._array, index)
         var out = diplomat_buffer_write_create(1024)
         jvalueref_as_str(vref, default, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringRef(s_data, s_len)
+        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
 
-    @always_inline
-    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
-        var vref = jarrayref_get(self._array, index)
-        var ret = jvalueref_as_str_ref(vref, default)
-        jvalueref_destroy(vref)
-        return ret
+    # @always_inline
+    # fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
+    #     var vref = jarrayref_get(self._array, index)
+    #     var ret = jvalueref_as_str_ref(vref, default)
+    #     jvalueref_destroy(vref)
+    #     return ret
 
     @always_inline
     fn iter(self) -> ValueIter:
@@ -104,7 +106,9 @@ struct JsonArrayRef(Stringable):
         _ = jarrayref_to_string(self._array, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringRef(s_data, s_len)
+        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str

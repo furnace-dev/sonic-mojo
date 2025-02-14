@@ -16,7 +16,9 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn __init__(out self, s: String):
-        var s_ref = StringRef(s.unsafe_cstr_ptr(), len(s))
+        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+        )
         self._array = jarray_from_str(s_ref)
 
     @always_inline
@@ -53,7 +55,9 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn push_str(self, value: String) -> None:
-        var s_ref = StringRef(value.unsafe_cstr_ptr(), len(value))
+        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=value.unsafe_cstr_ptr().bitcast[Byte](), length=len(value)
+        )
         jarray_push_str(self._array, s_ref)
 
     @always_inline
@@ -137,24 +141,26 @@ struct JsonArray(Stringable):
             return default
 
     @always_inline
-    fn get_str(self, index: Int, default: StringRef = "") -> String:
+    fn get_str(self, index: Int, default: StaticString = "") -> String:
         var vref = jarray_get(self._array, index)
         var out = diplomat_buffer_write_create(1024)
         jvalueref_as_str(vref, default, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringRef(s_data, s_len)
+        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         jvalueref_destroy(vref)
         return ret_str
 
-    @always_inline
-    fn get_str_ref(self, index: Int, default: StringRef = "") -> StringRef:
-        var vref = jarray_get(self._array, index)
-        var ret = jvalueref_as_str_ref(vref, default)
-        jvalueref_destroy(vref)
-        return ret
+    # @always_inline
+    # fn get_str_ref(self, index: Int, default: StaticString = "") -> StringRef:
+    #     var vref = jarray_get(self._array, index)
+    #     var ret = jvalueref_as_str_ref(vref, default)
+    #     jvalueref_destroy(vref)
+    #     return ret
 
     @always_inline
     fn iter(self) -> UnsafePointer[JValueIter]:
@@ -166,7 +172,9 @@ struct JsonArray(Stringable):
         _ = jarray_to_string(self._array, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringRef(s_data, s_len)
+        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str

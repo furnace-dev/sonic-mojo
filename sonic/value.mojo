@@ -17,7 +17,7 @@ trait JsonObjectViewable:
     fn capacity(self) -> Int:
         pass
 
-    fn contains_key(self, key: StringRef) -> Bool:
+    fn contains_key(self, key: StaticString) -> Bool:
         pass
 
     fn len(self) -> Int:
@@ -29,26 +29,26 @@ trait JsonObjectViewable:
     fn get_type(self) -> JsonType:
         pass
 
-    fn get_value(self, key: StringRef) -> JsonValue:
+    fn get_value(self, key: StaticString) -> JsonValue:
         pass
 
-    fn get_bool(self, key: StringRef, default: Bool = False) -> Bool:
+    fn get_bool(self, key: StaticString, default: Bool = False) -> Bool:
         pass
 
-    fn get_i64(self, key: StringRef, default: Int64 = 0) -> Int64:
+    fn get_i64(self, key: StaticString, default: Int64 = 0) -> Int64:
         pass
 
-    fn get_u64(self, key: StringRef, default: UInt64 = 0) -> UInt64:
+    fn get_u64(self, key: StaticString, default: UInt64 = 0) -> UInt64:
         pass
 
-    fn get_f64(self, key: StringRef, default: Float64 = 0.0) -> Float64:
+    fn get_f64(self, key: StaticString, default: Float64 = 0.0) -> Float64:
         pass
 
-    fn get_str(self, key: StringRef, default: StringRef = "") -> String:
+    fn get_str(self, key: StaticString, default: StaticString = "") -> String:
         pass
 
-    fn get_str_ref(self, key: StringRef, default: StringRef = "") -> StringRef:
-        pass
+    # fn get_str_ref(self, key: StaticString, default: StaticString = "") -> StringRef:
+    #     pass
 
     fn keys(self) -> List[String]:
         pass
@@ -90,7 +90,9 @@ struct JsonValue(JsonContainerTrait, Stringable):
 
     @always_inline
     fn __init__(out self, s: String):
-        var s_view = StringRef(s.unsafe_cstr_ptr(), len(s))
+        var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+        )
         self._value = jvalue_new_str(s_view)
 
     @always_inline
@@ -103,7 +105,9 @@ struct JsonValue(JsonContainerTrait, Stringable):
 
     @staticmethod
     fn from_str(s: String) -> JsonValue:
-        var s_view = StringRef(s.unsafe_cstr_ptr(), len(s))
+        var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+        )
         return JsonValue(jvalue_from_str(s_view))
 
     @always_inline
@@ -196,12 +200,18 @@ struct JsonValue(JsonContainerTrait, Stringable):
 
     @always_inline
     fn as_str(self, default: String = "") -> String:
-        var default_sref = StringRef(default.unsafe_cstr_ptr(), len(default))
+        var default_sref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=default.unsafe_cstr_ptr().bitcast[Byte](), length=len(default)
+        )
         var out = diplomat_buffer_write_create(1024)
         jvalue_as_str(self._value, default_sref, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var s = String(StringRef(s_data, s_len))
+        var s = String(
+            StringSlice[__origin_of(StaticConstantOrigin)](
+                ptr=s_data.bitcast[Byte](), length=s_len
+            )
+        )
         diplomat_buffer_write_destroy(out)
         return s
 
@@ -211,7 +221,9 @@ struct JsonValue(JsonContainerTrait, Stringable):
         _ = jvalue_to_string(self._value, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var s_ref = StringRef(s_data, s_len)
+        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var s = String(s_ref)
         diplomat_buffer_write_destroy(out)
         return s
