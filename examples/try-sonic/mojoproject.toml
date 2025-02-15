@@ -1,6 +1,11 @@
 [project]
 authors = ["hhglory <hhglory@outlook.com>"]
-channels = ["conda-forge", "https://conda.modular.com/max-nightly", "https://repo.prefix.dev/better-ffi", "https://repo.prefix.dev/better-mojo-nightly"]
+channels = [
+    "conda-forge",
+    "https://conda.modular.com/max-nightly",
+    "https://repo.prefix.dev/better-ffi",
+    "https://repo.prefix.dev/better-mojo",
+]
 
 description = "Add a short description here"
 name = "try-sonic"
@@ -8,8 +13,11 @@ platforms = ["linux-64", "osx-arm64"]
 version = "0.1.0"
 
 [tasks]
+dev = "mojo run src/main.mojo"
 
 [dependencies]
-max = ">=24.5.0,<25"
-sonic_mojo = ">=0.1.1,<0.2"
-libsonic = ">=0.1.1,<0.2"
+max = "*"
+
+
+libsonic = "*"
+sonic_mojo = "*"

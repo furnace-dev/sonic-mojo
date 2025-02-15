@@ -1,30 +1,29 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
 
 context:
-  version: "0.2.1"                   # package version
-  package_name: "sonic_mojo" # package name
-  package_path: "../sonic/"    # package path, TODO X: 注意是相对此文件的路径 !!!
+  version: "0.2.1" # package version
+  package_name: "sonic" # package name
+  package_path: "../sonic/" # package path, TODO X: 注意是相对此文件的路径 !!!
 
 package:
   name: ${{ package_name }}
   version: ${{ version }}
 
 source:
-  - path: ${{ package_path }}    # TODO X: 包含 cargo.toml 的路径!!!
-
+  - path: ${{ package_path }} # TODO X: 包含 cargo.toml 的路径!!!
 
 build:
-    script:
-        - mkdir -p ${PREFIX}/lib/mojo
-        - magic run mojo package . -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
+  script:
+    - mkdir -p ${PREFIX}/lib/mojo
+    - magic run mojo package . -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
 
 requirements:
-    run:
-        - max >=24.5.0
+  run:
+    - max >=24.5.0
 #        - gojo == 0.1.9
 
 about:
-    homepage: https://github.com/better-mojo/sonic-mojo
-    license: MIT
-    summary: "sonic-rs binding for mojo"
-    repository: https://github.com/better-mojo/sonic-mojo
+  homepage: https://github.com/better-mojo/sonic-mojo
+  license: MIT
+  summary: "sonic-rs binding for mojo"
+  repository: https://github.com/better-mojo/sonic-mojo

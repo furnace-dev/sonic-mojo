@@ -1,12 +1,12 @@
-from sonic_mojo import JsonObject
+from sonic import JsonObject
 
 
 fn main() raises:
     # Create a JSON object
     var o = JsonObject(
         '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'
-            ' {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a", "b", "c"],'
-            ' "null": null}'
+        ' {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a", "b", "c"],'
+        ' "null": null}'
     )
 
     # Reading
