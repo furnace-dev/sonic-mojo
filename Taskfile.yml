@@ -54,7 +54,8 @@ tasks:
   build:mojo:
     aliases: ["bm"]
     cmds:
-      - magic run build-mojo
+      - magic i -e=dev
+      - magic run  -e=dev build-mojo
       - open output/
 
   clean:build:
