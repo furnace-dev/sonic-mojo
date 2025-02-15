@@ -4,15 +4,18 @@
 #   - https://prefix-dev.github.io/rattler-build/latest/tutorials/rust/
 #   - https://github.com/conda-forge/fcp-rust-feedstock/blob/main/recipe/meta.yaml#L17
 
+
 context:
-  version: "13.4.2"
+  version: "0.2.1"                   # package version
+  package_name: "libsonic" # package name
+  package_path: "../sonic_rs_bindings/"    # package path, TODO X: 注意是相对此文件的路径 !!!
 
 package:
-  name: "libsonic"
-  version: 0.2.1
+  name: ${{ package_name }}
+  version: ${{ version }}
 
 source:
-  - path: ../sonic_rs_bindings/    # TODO X: 包含 cargo.toml 的路径!!!
+  - path: ${{ package_path }}    # TODO X: 包含 cargo.toml 的路径!!!
 
 
 #
@@ -21,14 +24,11 @@ source:
 #
 build:
   script:
-    - if: osx and aarch64  # m1 mac
+    - if: osx # m1 mac
       then:
-        #    - cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml  # !(1)
-        #    - $BUILD_PREFIX/bin/cargo install --locked --bins --root ${PREFIX} --path .
         - mkdir -p ${PREFIX}/lib/tmp/
         - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
-        - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.dylib ${PREFIX}/lib/
-        #    - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/libsonic.a ${PREFIX}/lib/
+        - cp ${PREFIX}/lib/tmp/aarch64-apple-darwin/release/${{ package_name }}.dylib ${PREFIX}/lib/
         - rm -rf ${PREFIX}/lib/tmp/
 
     #
@@ -38,16 +38,18 @@ build:
       then:
         - mkdir -p ${PREFIX}/lib/tmp/
         - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
-        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.so ${PREFIX}/lib/
-        #        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/libsonic.a ${PREFIX}/lib/
+        - cp ${PREFIX}/lib/tmp/x86_64-unknown-linux-gnu/release/${{ package_name }}.so ${PREFIX}/lib/
         - rm -rf ${PREFIX}/lib/tmp/
 
     - if: linux and aarch64  # arm64
       then:
         - mkdir -p ${PREFIX}/lib/tmp/
         - $BUILD_PREFIX/bin/cargo build --release --lib --target-dir ${PREFIX}/lib/tmp
-        - cp ${PREFIX}/lib/tmp/aarch64-unknown-linux-gnu/release/libsonic.so ${PREFIX}/lib/
+        - cp ${PREFIX}/lib/tmp/aarch64-unknown-linux-gnu/release/${{ package_name }}.so ${PREFIX}/lib/
         - rm -rf ${PREFIX}/lib/tmp/
+
+
+
 
 
 
