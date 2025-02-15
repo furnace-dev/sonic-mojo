@@ -11,6 +11,7 @@ version = "0.1.0"
 [tasks]
 build-mojo = { cmd = "rattler-build build --recipe recipes/mojo-recipe.yaml -c https://conda.modular.com/max -c conda-forge --skip-existing=all" }
 build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https://conda.modular.com/max -c conda-forge --skip-existing=all" }
+publish = { cmd = "bash scripts/publish.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
 
 [dependencies]
 max = "*"
