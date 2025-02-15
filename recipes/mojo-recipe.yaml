@@ -3,7 +3,7 @@
 context:
   version: "0.2.1" # package version
   package_name: "sonic" # package name
-  package_path: "../sonic/" # package path, TODO X: 注意是相对此文件的路径 !!!
+  package_path: "../src/" # package path, TODO X: 注意是相对此文件的路径 !!!
 
 package:
   name: ${{ package_name }}
@@ -15,12 +15,11 @@ source:
 build:
   script:
     - mkdir -p ${PREFIX}/lib/mojo
-    - magic run mojo package . -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
+    - magic run mojo package ${{ package_name }} -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
 
 requirements:
   run:
-    - max >=24.5.0
-#        - gojo == 0.1.9
+    - max >= 25.1.0
 
 about:
   homepage: https://github.com/better-mojo/sonic-mojo
