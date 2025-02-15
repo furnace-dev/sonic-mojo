@@ -2,14 +2,14 @@
 authors = ["hhglory <hhglory@outlook.com>"]
 channels = [
     "conda-forge",
-    "https://conda.modular.com/max-nightly",
+    "https://conda.modular.com/max",
     "https://repo.prefix.dev/better-ffi",
     "https://repo.prefix.dev/better-mojo",
 ]
 
 description = "Add a short description here"
 name = "try-sonic"
-platforms = ["linux-64", "osx-arm64"]
+platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
@@ -20,4 +20,4 @@ max = "*"
 
 
 libsonic = "*"
-sonic_mojo = "*"
+sonic = "*"
