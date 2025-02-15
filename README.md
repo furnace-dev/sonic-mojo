@@ -5,6 +5,10 @@ A high-performance JSON processing library for the Mojo programming language, pr
 
 ### add 
 
+- channel: 
+  - https://prefix.dev/channels/better-mojo
+  - https://prefix.dev/channels/better-mojo-nightly
+  - https://prefix.dev/channels/better-ffi
 - add channel:
 
 ```bash
@@ -12,6 +16,9 @@ A high-performance JSON processing library for the Mojo programming language, pr
 magic project channel add "https://repo.prefix.dev/better-ffi" 
 
 # for sonic-mojo
+magic project channel add "https://repo.prefix.dev/better-mojo"
+
+# for sonic-mojo + nightly
 magic project channel add "https://repo.prefix.dev/better-mojo-nightly"
 
 
@@ -20,8 +27,12 @@ magic project channel add "https://repo.prefix.dev/better-mojo-nightly"
 - add package:
 
 ```bash
-magic add sonic_mojo
+# add rust binary lib (required for sonic-mojo)
 magic add libsonic
+
+# add mojopkg
+magic add sonic_mojo
+
 
 ```
 
