@@ -1,0 +1,27 @@
+version: "3"
+
+# env file:
+#dotenv:
+#  - .env
+
+# global env:
+env:
+  ENV1: testing
+  LD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib:{{.PWD}}/bin" # TODO X: for linux
+  # DYLD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib:{{.PWD}}/bin" # TODO X: for macos
+  DYLD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib" # TODO X: for macos
+
+tasks:
+  run:
+    aliases: ["r"]
+    cmds:
+      - echo "DYLD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+      - magic run mojo run src/main.mojo
+
+  build:run:
+    aliases: ["br"]
+    cmds:
+      - echo "DYLD_LIBRARY_PATH = $DYLD_LIBRARY_PATH"
+      - magic run mojo build src/main.mojo -o ./main
+      - ./main
+    ignore_error: true

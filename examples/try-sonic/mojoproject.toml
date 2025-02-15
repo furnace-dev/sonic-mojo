@@ -9,7 +9,7 @@ channels = [
 
 description = "Add a short description here"
 name = "try-sonic"
-platforms = ["osx-arm64"]
+platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
 version = "0.1.0"
 
 [tasks]

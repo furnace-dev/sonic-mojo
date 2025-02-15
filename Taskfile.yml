@@ -4,8 +4,12 @@ version: "3"
 dotenv:
   - .env
 
+# global env:
 env:
-  LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:$(realpath .magic/envs/default/lib)"
+  ENV1: testing
+#  LD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib:{{.PWD}}/bin" # TODO X: for linux
+#  DYLD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib:{{.PWD}}/bin" # TODO X: for macos
+#  DYLD_LIBRARY_PATH: "{{.PWD}}/.magic/envs/default/lib"  # TODO X: for macos
 
 tasks:
   install:ubuntu:
@@ -28,6 +32,15 @@ tasks:
       - echo $LD_LIBRARY_PATH
       - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .magic/envs/default/lib);  magic run mojo run src/main.mojo
     dir: examples/try-sonic/
+
+  build:run:
+    aliases: ["brun"]
+    cmds:
+      - echo "DYLD_LIBRARY_PATH = $DYLD_LIBRARY_PATH"
+      - mkdir -p output/
+      - magic run mojo build src/main.mojo -o ./output/main
+      - ./output/main
+    ignore_error: true
 
   generate:
     aliases: ["gen"]

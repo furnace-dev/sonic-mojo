@@ -1,6 +1,6 @@
 [project]
 authors = ["yl <2201441955@qq.com>"]
-channels = ["conda-forge", "https://conda.modular.com/max"]
+channels = ["conda-forge", "https://conda.modular.com/max", "https://repo.prefix.dev/better-ffi",]
 description = "Add a short description here"
 name = "sonic-mojo"
 
@@ -15,10 +15,18 @@ build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https
 [dependencies]
 max = "*"
 
+libsonic = "*"
+
 
 [feature.dev.dependencies]
+max = "*"
+
+libsonic = "*"
+
 rust = "*"
 rattler-build = "*"
+
+
 
 #
 # ref: https://pixi.sh/latest/features/multi_environment/#ambiguous-environment-selection
