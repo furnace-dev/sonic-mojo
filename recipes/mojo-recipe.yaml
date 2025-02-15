@@ -1,19 +1,22 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
 
 context:
-    version: "13.4.2"
+  version: "0.2.1"                   # package version
+  package_name: "sonic_mojo" # package name
+  package_path: "../sonic/"    # package path, TODO X: 注意是相对此文件的路径 !!!
 
 package:
-    name: "sonic_mojo"
-    version: 0.2.1
+  name: ${{ package_name }}
+  version: ${{ version }}
 
 source:
-    - path: ../sonic/  # TODO X: FIX HERE
+  - path: ${{ package_path }}    # TODO X: 包含 cargo.toml 的路径!!!
+
 
 build:
     script:
         - mkdir -p ${PREFIX}/lib/mojo
-        - magic run mojo package . -o ${PREFIX}/lib/mojo/sonic_mojo.mojopkg
+        - magic run mojo package . -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
 
 requirements:
     run:

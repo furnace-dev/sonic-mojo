@@ -30,7 +30,7 @@ tasks:
     dir: examples/try-sonic/
 
   generate:
-    aliases: [ "gen" ]
+    aliases: ["gen"]
     cmds:
       - RUST_LOG=info cargo run --bin gen
 
@@ -40,36 +40,35 @@ tasks:
     dir: sonic_rs_bindings/
 
   rel:mojo:
-    aliases: [ "relm" ]
+    aliases: ["relm"]
     cmds:
       - mkdir build/
       - magic run mojo package sonic -o ./build/sonic_mojo.mojopkg
     ignore_error: true
 
-
   build:rust:
-    aliases: [ "br" ]
+    aliases: ["br"]
     cmds:
       - magic run -e=dev build-rs
 
   build:mojo:
-    aliases: [ "bm" ]
+    aliases: ["bm"]
     cmds:
       - magic run build-mojo
+      - open output/
 
   clean:build:
-    aliases: [ "cb" ]
+    aliases: ["cb"]
     cmds:
       - rm -rf build/
       - task: br
       - task: bm
 
-
   #
   # ref: https://taskfile.dev/usage/#looping-over-variables
   #
   publish:ffi:
-    aliases: [ "upf", "pub", "pub:auto" ]
+    aliases: ["upf", "pub", "pub:auto"]
     vars:
       UP_PKGS:
         sh: find . -name "*.conda" -type f
@@ -77,8 +76,7 @@ tasks:
       - echo $PREFIX_DEV_API_KEY
       - echo {{ .UP_PKGS }}
       - for: { var: UP_PKGS }
-        cmd:
-          |
+        cmd: |
           magic run -e=dev rattler-build upload prefix -c "better-ffi" \
             --api-key=$PREFIX_DEV_API_KEY \
             {{.ITEM}}
@@ -86,7 +84,7 @@ tasks:
     dir: output/
 
   publish:mojo:
-    aliases: [ "upm", ]
+    aliases: ["upm"]
     vars:
       UP_PKGS:
         sh: find . -name "*.conda" -type f
@@ -94,8 +92,23 @@ tasks:
       - echo $PREFIX_DEV_API_KEY
       - echo {{ .UP_PKGS }}
       - for: { var: UP_PKGS }
-        cmd:
-          |
+        cmd: |
+          magic run -e=dev rattler-build upload prefix -c "better-mojo" \
+            --api-key=$PREFIX_DEV_API_KEY \
+            {{.ITEM}}
+      - open https://prefix.dev/channels/better-mojo
+    dir: output/
+
+  publish:mojo:nightly:
+    aliases: ["upmn", "up:m:n"]
+    vars:
+      UP_PKGS:
+        sh: find . -name "*.conda" -type f
+    cmds:
+      - echo $PREFIX_DEV_API_KEY
+      - echo {{ .UP_PKGS }}
+      - for: { var: UP_PKGS }
+        cmd: |
           magic run -e=dev rattler-build upload prefix -c "better-mojo-nightly" \
             --api-key=$PREFIX_DEV_API_KEY \
             {{.ITEM}}
@@ -103,16 +116,15 @@ tasks:
     dir: output/
 
   clean:
-    aliases: [ "cl", 'del' ]
+    aliases: ["cl", "del"]
     cmds:
       - rm -rf output/
-#      - cargo clean
-
+  #      - cargo clean
 
   ###########################################################################
 
   quick:
-    aliases: [ "q" ]
+    aliases: ["q"]
     cmds:
       - task: commit
       - task: commit
@@ -121,20 +133,19 @@ tasks:
     ignore_error: true
 
   commit:
-    aliases: [ "c" ]
+    aliases: ["c"]
     cmds:
       - git add .
       - git commit -m "update" --no-verify
     ignore_error: true
 
-
   pull:
-    aliases: [ "pl" ]
+    aliases: ["pl"]
     cmds:
       - git pull
 
   push:
-    aliases: [ "p" ]
+    aliases: ["p"]
     cmds:
       - git push origin main --tags
       - repo_url=`git remote -v | grep push | awk -F ":" '{print $2}' | awk -F ".git" '{print "https://github.com/"$1}'`; open $repo_url
