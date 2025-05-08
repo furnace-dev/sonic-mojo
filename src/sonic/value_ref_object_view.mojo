@@ -1,4 +1,5 @@
 from memory import UnsafePointer
+from collections.string import StringSlice, StaticString
 from .internal import *
 from .value import JsonValue, JsonContainerTrait, JsonObjectViewable
 from .value_ref import JsonValueRef
@@ -30,7 +31,7 @@ struct JsonValueRefObjectView[origin: MutableOrigin, T: JsonRefContainerTrait](
         pass
 
     @always_inline
-    fn to_string(self, cap: Int = 1024) -> String:
+    fn to_string[cap: Int = 1024](self) -> String:
         var out = diplomat_buffer_write_create(cap)
         _ = jobjectref_to_string(self._object, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
