@@ -15,9 +15,10 @@ struct JsonArray(Stringable):
         self._array = jarray_new()
 
     @always_inline
-    fn __init__(out self, s: String):
+    fn __init__[T: Stringable](out self, s: T):
+        var s_ = String(s)
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+            ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         self._array = jarray_from_str(s_ref)
 
@@ -55,10 +56,12 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn push_str(self, value: String) -> None:
+        var value_ = String(value)
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=value.unsafe_cstr_ptr().bitcast[Byte](), length=len(value)
+            ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
         jarray_push_str(self._array, s_ref)
+        _ = value_^
 
     @always_inline
     fn push_value(self, value: JsonValue) -> None:

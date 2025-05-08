@@ -11,7 +11,7 @@ trait JsonContainerTrait:
 
 
 trait JsonObjectViewable:
-    fn to_string(self, cap: Int = 1024) -> String:
+    fn to_string[cap: Int = 1024](self) -> String:
         pass
 
     fn capacity(self) -> Int:
@@ -89,9 +89,10 @@ struct JsonValue(JsonContainerTrait, Stringable):
         self._value = jvalue_new_f64(f64)
 
     @always_inline
-    fn __init__(out self, s: String):
+    fn __init__[T: Stringable](out self, s: T):
+        var s_ = String(s)
         var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+            ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         self._value = jvalue_new_str(s_view)
 
@@ -104,9 +105,10 @@ struct JsonValue(JsonContainerTrait, Stringable):
         self._value = other._value
 
     @staticmethod
-    fn from_str(s: String) -> JsonValue:
+    fn from_str[T: Stringable](s: T) -> JsonValue:
+        var s_ = String(s)
         var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=s.unsafe_cstr_ptr().bitcast[Byte](), length=len(s)
+            ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         return JsonValue(jvalue_from_str(s_view))
 
@@ -199,9 +201,10 @@ struct JsonValue(JsonContainerTrait, Stringable):
         return default
 
     @always_inline
-    fn as_str(self, default: String = "") -> String:
+    fn as_str[T: Stringable](self, default: T) -> String:
+        var default_ = String(default)
         var default_sref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=default.unsafe_cstr_ptr().bitcast[Byte](), length=len(default)
+            ptr=default_.unsafe_cstr_ptr().bitcast[Byte](), length=len(default_)
         )
         var out = diplomat_buffer_write_create(1024)
         jvalue_as_str(self._value, default_sref, out)
@@ -213,6 +216,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
             )
         )
         diplomat_buffer_write_destroy(out)
+        _ = default_^
         return s
 
     @always_inline

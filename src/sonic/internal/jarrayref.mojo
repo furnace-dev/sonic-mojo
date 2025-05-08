@@ -46,7 +46,7 @@ struct _DLWrapper:
     var _jarrayref_destroy: fn_jarrayref_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jarrayref_clone = self._handle.get_function[fn_jarrayref_clone]("JArrayRef_clone")
         

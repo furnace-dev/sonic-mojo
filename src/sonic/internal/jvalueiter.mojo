@@ -28,7 +28,7 @@ struct _DLWrapper:
     var _jvalueiter_destroy: fn_jvalueiter_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jvalueiter_len = self._handle.get_function[fn_jvalueiter_len]("JValueIter_len")
         

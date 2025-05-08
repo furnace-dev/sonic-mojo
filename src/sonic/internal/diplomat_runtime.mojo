@@ -1,8 +1,8 @@
 from memory import UnsafePointer
 from sys.ffi import DLHandle
 from sys.ffi import c_char, c_size_t
-from utils import StaticString, StringSlice
 from sys import os_is_macos
+from os import abort
 
 
 alias c_bool = Bool
@@ -26,14 +26,23 @@ alias c_nullptr = c_void_ptr()
 
 
 # os platform:
-fn get_libname() -> StringLiteral:
+fn get_libname() -> StaticString:
     @parameter
     if os_is_macos():
         return "libsonic.dylib"
     else:
         return "libsonic.so"
 
+
 alias LIBNAME = get_libname()
+
+
+fn get_handle(name: StaticString) -> DLHandle:
+    try:
+        return DLHandle(name)
+    except e:
+        return abort[DLHandle](String("library not found: ", e))
+
 
 @value
 @register_passable("trivial")
@@ -46,9 +55,9 @@ struct DiplomatWrite:
     var grow: fn (UnsafePointer[DiplomatWrite], c_size_t) -> Bool
 
 
-#@value
-#@register_passable("trivial")
-#struct DiplomatStringView:
+# @value
+# @register_passable("trivial")
+# struct DiplomatStringView:
 #    var data: c_char_ptr
 #    var len: c_size_t
 
@@ -172,7 +181,7 @@ struct _DLWrapper:
     var _diplomat_buffer_write_destroy: fn_diplomat_buffer_write_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
 
         self._diplomat_simple_write = self._handle.get_function[
             fn_diplomat_simple_write

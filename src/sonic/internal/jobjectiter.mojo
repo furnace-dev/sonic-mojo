@@ -24,7 +24,7 @@ struct _DLWrapper:
     var _jobjectiter_destroy: fn_jobjectiter_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jobjectiter_next = self._handle.get_function[fn_jobjectiter_next]("JObjectIter_next")
         

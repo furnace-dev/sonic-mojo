@@ -28,7 +28,7 @@ struct _DLWrapper:
     var _jkeyvaluemut_destroy: fn_jkeyvaluemut_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jkeyvaluemut_get_key = self._handle.get_function[fn_jkeyvaluemut_get_key]("JKeyValueMut_get_key")
         

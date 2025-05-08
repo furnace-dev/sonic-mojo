@@ -11,7 +11,7 @@ struct JsonValueRefArrayView[origin: MutableOrigin, T: JsonRefContainerTrait](
 
     @always_inline
     fn __init__(out self, ref [origin]value: T):
-        self._src = Pointer.address_of(value)
+        self._src = Pointer(to=value)
         self._array = value.as_jarray_pointer()
 
     @always_inline

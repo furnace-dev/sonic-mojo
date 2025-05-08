@@ -19,7 +19,7 @@ struct _DLWrapper:
     
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         
 

@@ -143,7 +143,7 @@ struct _DLWrapper:
     var _jobjectmut_destroy: fn_jobjectmut_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jobjectmut_clone = self._handle.get_function[fn_jobjectmut_clone]("JObjectMut_clone")
         

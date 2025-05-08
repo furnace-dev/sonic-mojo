@@ -170,7 +170,7 @@ struct _DLWrapper:
     var _jobject_destroy: fn_jobject_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jobject_new = self._handle.get_function[fn_jobject_new]("JObject_new")
         

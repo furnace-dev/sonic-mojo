@@ -12,7 +12,7 @@ struct JsonValueRefObjectView[origin: MutableOrigin, T: JsonRefContainerTrait](
 
     @always_inline
     fn __init__(out self, ref [origin]value: T):
-        self._src = Pointer.address_of(value)
+        self._src = Pointer(to=value)
         self._object = value.as_jobject_pointer()
 
     @always_inline

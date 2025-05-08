@@ -105,7 +105,7 @@ struct _DLWrapper:
     var _jvalueref_destroy: fn_jvalueref_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jvalueref_clone = self._handle.get_function[fn_jvalueref_clone]("JValueRef_clone")
         

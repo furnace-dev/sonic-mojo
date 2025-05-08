@@ -253,7 +253,7 @@ fn test_write_json() raises:
     o.insert_i64("d", 101)
     var a_2 = o.get_object_mut("a")
     assert_equal(a_2.to_string(), '{"b":{"c":100}}')
-    assert_equal(o.to_string(), '{"a":{"b":{"c":100}},"d":101}')
+    assert_equal(o.to_string(), String('{"a":{"b":{"c":100}},"d":101}'))
 
 
 # Write array
@@ -289,8 +289,8 @@ fn test_object_iterator() raises:
     # var value_list = List[Int64]()
 
     # for kv in o.iter():
-    #     var key = Pointer.address_of(kv[][0])
-    #     var value = Pointer.address_of(kv[][1])
+    #     var key = Pointer(to=kv[][0])
+    #     var value = Pointer(to=kv[][1])
     #     key_list.append((key[]))
     #     value_list.append(value[].as_i64())
 
@@ -383,3 +383,7 @@ fn test_object_iterator_mut() raises:
     _ = result_list^
     _ = result^
     _ = doc^
+
+
+fn main() raises:
+    test_object_insert()

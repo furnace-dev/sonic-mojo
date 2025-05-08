@@ -24,7 +24,7 @@ struct _DLWrapper:
     var _jobjectitermut_destroy: fn_jobjectitermut_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jobjectitermut_next = self._handle.get_function[fn_jobjectitermut_next]("JObjectIterMut_next")
         

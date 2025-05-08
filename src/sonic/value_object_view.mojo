@@ -12,7 +12,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
 
     @always_inline
     fn __init__(out self, ref [origin]value: T):
-        self._src = Pointer.address_of(value)
+        self._src = Pointer(to=value)
         self._object = value.as_jobject_pointer()
 
     @always_inline
@@ -30,15 +30,16 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
         pass
 
     @always_inline
-    fn to_string(self, cap: Int = 1024) -> String:
+    fn to_string[cap: Int = 1024](self) -> String:
         var out = diplomat_buffer_write_create(cap)
         _ = jobject_to_string(self._object, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=s_data.bitcast[Byte](), length=s_len
-        )
-        var ret_str = String(ret_str_ref)
+        var chars = stack_allocation[cap + 1, UInt8]()
+        for i in range(s_len):
+            chars[i] = s_data[i]
+        chars[s_len] = 0  # 添加 null 终止符
+        var ret_str = String(unsafe_from_utf8_ptr=chars)
         diplomat_buffer_write_destroy(out)
         return ret_str
 
@@ -76,10 +77,12 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
 
     @always_inline
     fn insert_str(self, key: StaticString, value: String) -> None:
+        var value_ = String(value)
         var value_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=value.unsafe_cstr_ptr().bitcast[Byte](), length=len(value)
+            ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
-        return jobject_insert_str(self._object, key, value_ref)
+        jobject_insert_str(self._object, key, value_ref)
+        _ = value_^
 
     @always_inline
     fn insert_value(self, key: StaticString, value: JsonValue) -> None:

@@ -28,7 +28,9 @@ struct JsonObjectMut(Stringable):
         _ = jobjectmut_to_string(self._object, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(self)](ptr=s_data, length=s_len)
+        var ret_str_ref = StringSlice[__origin_of(self)](
+            ptr=s_data, length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
@@ -67,15 +69,23 @@ struct JsonObjectMut(Stringable):
 
     @always_inline
     fn insert_str(self, key: StaticString, value: String) -> None:
-        var value_ref = StringSlice[__origin_of(StaticConstantOrigin)](ptr=value.unsafe_cstr_ptr().bitcast[Byte](), length=len(value))
-        return jobjectmut_insert_str(self._object, key, value_ref)
+        var value_ = String(value)
+        var value_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
+        )
+        jobjectmut_insert_str(self._object, key, value_ref)
+        _ = value_^
 
     @always_inline
-    fn insert_value(self, key: StaticString, value: UnsafePointer[JValue]) -> None:
+    fn insert_value(
+        self, key: StaticString, value: UnsafePointer[JValue]
+    ) -> None:
         return jobjectmut_insert_value(self._object, key, value)
 
     @always_inline
-    fn insert_array(self, key: StaticString, value: UnsafePointer[JArray]) -> None:
+    fn insert_array(
+        self, key: StaticString, value: UnsafePointer[JArray]
+    ) -> None:
         return jobjectmut_insert_array(self._object, key, value)
 
     @always_inline
@@ -143,7 +153,9 @@ struct JsonObjectMut(Stringable):
         jobjectmut_get_str(self._object, key, default, out)
         var s_data = diplomat_buffer_write_get_bytes(out)
         var s_len = diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](ptr=s_data.bitcast[Byte](), length=s_len)
+        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            ptr=s_data.bitcast[Byte](), length=s_len
+        )
         var ret_str = String(ret_str_ref)
         diplomat_buffer_write_destroy(out)
         return ret_str
@@ -172,7 +184,9 @@ struct JsonObjectMut(Stringable):
             jkeysiter_get(iter, i, default, out)
             var key = diplomat_buffer_write_get_bytes(out)
             var key_len = diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](ptr=key.bitcast[Byte](), length=key_len)
+            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+                ptr=key.bitcast[Byte](), length=key_len
+            )
             var key_str = String(key_ref)
             ret.append(key_str)
             diplomat_buffer_write_destroy(out)
@@ -188,7 +202,9 @@ struct JsonObjectMut(Stringable):
             jkeyvalueref_get_key(kv, out)
             var key = diplomat_buffer_write_get_bytes(out)
             var key_len = diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](ptr=key.bitcast[Byte](), length=key_len)
+            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+                ptr=key.bitcast[Byte](), length=key_len
+            )
             var key_str = String(key_ref)
             diplomat_buffer_write_destroy(out)
             if key_len == 0:

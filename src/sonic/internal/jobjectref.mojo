@@ -93,7 +93,7 @@ struct _DLWrapper:
     var _jobjectref_destroy: fn_jobjectref_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jobjectref_clone = self._handle.get_function[fn_jobjectref_clone]("JObjectRef_clone")
         

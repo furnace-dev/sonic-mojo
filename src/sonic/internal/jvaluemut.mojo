@@ -107,7 +107,7 @@ struct _DLWrapper:
     var _jvaluemut_destroy: fn_jvaluemut_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jvaluemut_clone = self._handle.get_function[fn_jvaluemut_clone]("JValueMut_clone")
         

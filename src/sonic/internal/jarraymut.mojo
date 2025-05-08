@@ -110,7 +110,7 @@ struct _DLWrapper:
     var _jarraymut_destroy: fn_jarraymut_destroy
 
     fn __init__(out self):
-        self._handle = DLHandle(LIBNAME)
+        self._handle = get_handle(LIBNAME)
         
         self._jarraymut_clone = self._handle.get_function[fn_jarraymut_clone]("JArrayMut_clone")
         

@@ -11,7 +11,7 @@ struct JsonValueArrayView[origin: MutableOrigin, T: JsonContainerTrait](
 
     @always_inline
     fn __init__(out self, ref [origin]value: T):
-        self._src = Pointer.address_of(value)
+        self._src = Pointer(to=value)
         self._array = value.as_jarray_pointer()
 
     @always_inline
@@ -50,10 +50,12 @@ struct JsonValueArrayView[origin: MutableOrigin, T: JsonContainerTrait](
 
     @always_inline
     fn push_str(self, value: String) -> None:
+        var value_ = String(value)
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=value.unsafe_cstr_ptr().bitcast[Byte](), length=len(value)
+            ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
         jarray_push_str(self._array, s_ref)
+        _ = value_^
 
     @always_inline
     fn push_value(self, value: JsonValue) -> None:

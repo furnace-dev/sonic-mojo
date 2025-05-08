@@ -106,9 +106,10 @@ struct JsonValueMut(Stringable):
         return default
 
     @always_inline
-    fn as_str(self, default: String = "") -> String:
+    fn as_str[T: Stringable](self, default: T) -> String:
+        var default_ = String(default)
         var default_sref = StringSlice[__origin_of(StaticConstantOrigin)](
-            ptr=default.unsafe_cstr_ptr().bitcast[Byte](), length=len(default)
+            ptr=default_.unsafe_cstr_ptr().bitcast[Byte](), length=len(default_)
         )
         var out = diplomat_buffer_write_create(1024)
         jvaluemut_as_str(self._value, default_sref, out)
@@ -120,6 +121,7 @@ struct JsonValueMut(Stringable):
             )
         )
         diplomat_buffer_write_destroy(out)
+        _ = default_^
         return s
 
     @always_inline
