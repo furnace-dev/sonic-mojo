@@ -3,40 +3,43 @@ from sonic.internal.jvalue import *
 from sonic.internal.jobject import *
 from sonic.internal.jvalueref import *
 from sonic.internal.jobjectmut import *
+from sonic.internal.csonic_bind import _sonic_ptr
 from testing import assert_equal, assert_true
 
 
 fn test_sonic_rs_internal_sample() raises:
+    var sonic = _sonic_ptr()
     var s = '{"a":100}'
-    var v = jvalue_from_str(s)
+    var v = sonic[].jvalue_from_str(s)
 
     var o = v.bitcast[JObject]()
-    jobject_insert_i64(o, "b", 101)
-    jobject_insert_str(o, "c", "hello")
-    var a = jvalue_from_str("[1,2,3]")
-    jobject_insert_value(o, "d", a)
+    sonic[].jobject_insert_i64(o, "b", 101)
+    sonic[].jobject_insert_str(o, "c", "hello")
+    var a = sonic[].jvalue_from_str("[1,2,3]")
+    sonic[].jobject_insert_value(o, "d", a)
 
-    var out = diplomat_buffer_write_create(1024)
-    _ = jvalue_to_string(v, out)
-    var s_data = diplomat_buffer_write_get_bytes(out)
-    var s_len = diplomat_buffer_write_len(out)
+    var out = sonic[].diplomat_buffer_write_create(1024)
+    _ = sonic[].jvalue_to_string(v, out)
+    var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+    var s_len = sonic[].diplomat_buffer_write_len(out)
     var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var ret_str = String(ret_str_ref)
-    diplomat_buffer_write_destroy(out)
-    jvalue_destroy(v)
-    jvalue_destroy(a)
+    sonic[].diplomat_buffer_write_destroy(out)
+    sonic[].jvalue_destroy(v)
+    sonic[].jvalue_destroy(a)
 
     _ = ret_str^
 
 
 fn test_object() raises:
+    var sonic = _sonic_ptr()
     var o = JsonObject('{"xxx": 1000}')
-    var a = jobject_get_u64(o._object, "xxx")
+    var a = sonic[].jobject_get_u64(o._object, "xxx")
     assert_equal(a.is_ok, True)
     assert_equal(a.ok, 1000)
-    var b = jobject_get_i64(o._object, "xxx1")
+    var b = sonic[].jobject_get_i64(o._object, "xxx1")
     assert_equal(b.is_ok, False)
 
 
@@ -68,27 +71,28 @@ fn test_object_get() raises:
 
 
 fn test_valueref() raises:
+    var sonic = _sonic_ptr()
     var str = '{"a":100, "b":true, "c": "hello", "f": 100.123}'
     var v = JsonValue.from_str(str)
     var type_ = v.get_type()
     assert_true(type_ == JsonType.JsonType_Object)
 
-    var a_ref = jobject_get_value_ref(v._value.bitcast[JObject](), "a")
-    var b_ref = jobject_get_value_ref(v._value.bitcast[JObject](), "b")
-    var c_ref = jobject_get_value_ref(v._value.bitcast[JObject](), "c")
-    var f_ref = jobject_get_value_ref(v._value.bitcast[JObject](), "f")
-    var a = jvalueref_as_u64(a_ref)
-    var b = jvalueref_as_bool(b_ref)
-    var out = diplomat_buffer_write_create(1024)
-    jvalueref_as_str(c_ref, "", out)
-    var s_data = diplomat_buffer_write_get_bytes(out)
-    var s_len = diplomat_buffer_write_len(out)
+    var a_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "a")
+    var b_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "b")
+    var c_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "c")
+    var f_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "f")
+    var a = sonic[].jvalueref_as_u64(a_ref)
+    var b = sonic[].jvalueref_as_bool(b_ref)
+    var out = sonic[].diplomat_buffer_write_create(1024)
+    sonic[].jvalueref_as_str(c_ref, "", out)
+    var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+    var s_len = sonic[].diplomat_buffer_write_len(out)
     var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var c = String(ret_str_ref)
-    diplomat_buffer_write_destroy(out)
-    var f = jvalueref_as_f64(f_ref)
+    sonic[].diplomat_buffer_write_destroy(out)
+    var f = sonic[].jvalueref_as_f64(f_ref)
 
     assert_equal(a.is_ok, True)
     assert_equal(a.ok, 100)
@@ -98,10 +102,10 @@ fn test_valueref() raises:
     assert_equal(f.is_ok, True)
     assert_equal(f.ok, 100.123)
 
-    jvalueref_destroy(a_ref)
-    jvalueref_destroy(b_ref)
-    jvalueref_destroy(c_ref)
-    jvalueref_destroy(f_ref)
+    sonic[].jvalueref_destroy(a_ref)
+    sonic[].jvalueref_destroy(b_ref)
+    sonic[].jvalueref_destroy(c_ref)
+    sonic[].jvalueref_destroy(f_ref)
 
 
 fn test_object_view() raises:

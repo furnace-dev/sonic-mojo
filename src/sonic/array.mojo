@@ -1,6 +1,7 @@
 from memory import UnsafePointer
 from .internal import *
 from .value_ref import JsonValueRef
+from .internal.csonic_bind import _sonic_ptr
 
 
 struct JsonArray(Stringable):
@@ -12,7 +13,7 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn __init__(out self):
-        self._array = jarray_new()
+        self._array = _sonic_ptr()[].jarray_new()
 
     @always_inline
     fn __init__[T: Stringable](out self, s: T):
@@ -20,11 +21,11 @@ struct JsonArray(Stringable):
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
-        self._array = jarray_from_str(s_ref)
+        self._array = _sonic_ptr()[].jarray_from_str(s_ref)
 
     @always_inline
     fn __copyinit__(out self, other: JsonArray):
-        self._array = jarray_clone(other._array)
+        self._array = _sonic_ptr()[].jarray_clone(other._array)
 
     @always_inline
     fn __moveinit__(out self, owned other: JsonArray):
@@ -32,27 +33,27 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn __del__(owned self):
-        jarray_destroy(self._array)
+        _sonic_ptr()[].jarray_destroy(self._array)
 
     @always_inline
     fn push_null(self) -> None:
-        jarray_push_null(self._array)
+        _sonic_ptr()[].jarray_push_null(self._array)
 
     @always_inline
     fn push_bool(self, value: Bool) -> None:
-        jarray_push_bool(self._array, value)
+        _sonic_ptr()[].jarray_push_bool(self._array, value)
 
     @always_inline
     fn push_i64(self, value: Int64) -> None:
-        jarray_push_i64(self._array, value)
+        _sonic_ptr()[].jarray_push_i64(self._array, value)
 
     @always_inline
     fn push_u64(self, value: UInt64) -> None:
-        jarray_push_u64(self._array, value)
+        _sonic_ptr()[].jarray_push_u64(self._array, value)
 
     @always_inline
     fn push_f64(self, value: Float64) -> None:
-        jarray_push_f64(self._array, value)
+        _sonic_ptr()[].jarray_push_f64(self._array, value)
 
     @always_inline
     fn push_str(self, value: String) -> None:
@@ -60,54 +61,55 @@ struct JsonArray(Stringable):
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
-        jarray_push_str(self._array, s_ref)
+        _sonic_ptr()[].jarray_push_str(self._array, s_ref)
         _ = value_^
 
     @always_inline
     fn push_value(self, value: JsonValue) -> None:
-        jarray_push_value(self._array, value._value)
+        _sonic_ptr()[].jarray_push_value(self._array, value._value)
 
     @always_inline
     fn push_object(self, value: JsonObject) -> None:
-        jarray_push_object(self._array, value._object)
+        _sonic_ptr()[].jarray_push_object(self._array, value._object)
 
     @always_inline
     fn push_array(self, value: JsonArray) -> None:
-        jarray_push_array(self._array, value._array)
+        _sonic_ptr()[].jarray_push_array(self._array, value._array)
 
     @always_inline
     fn insert(self, index: Int, value: JsonValue) -> None:
-        jarray_insert(self._array, index, value._value)
+        _sonic_ptr()[].jarray_insert(self._array, index, value._value)
 
     @always_inline
     fn pop(self) -> UnsafePointer[JValue]:
-        return jarray_pop(self._array)
+        return _sonic_ptr()[].jarray_pop(self._array)
 
     @always_inline
     fn len(self) -> Int:
-        return jarray_len(self._array)
+        return _sonic_ptr()[].jarray_len(self._array)
 
     @always_inline
     fn is_empty(self) -> Bool:
-        return jarray_is_empty(self._array)
+        return _sonic_ptr()[].jarray_is_empty(self._array)
 
     @always_inline
     fn clear(self) -> None:
-        jarray_clear(self._array)
+        _sonic_ptr()[].jarray_clear(self._array)
 
     @always_inline
     fn remove(self, index: Int) -> None:
-        jarray_remove(self._array, index)
+        _sonic_ptr()[].jarray_remove(self._array, index)
 
     @always_inline
     fn get(self, index: Int) -> JsonValueRef:
-        return JsonValueRef(jarray_get(self._array, index))
+        return JsonValueRef(_sonic_ptr()[].jarray_get(self._array, index))
 
     @always_inline
     fn get_bool(self, index: Int, default: Bool = False) -> Bool:
-        var vref = jarray_get(self._array, index)
-        var ret = jvalueref_as_bool(vref)
-        jvalueref_destroy(vref)
+        var sonic = _sonic_ptr()
+        var vref = sonic[].jarray_get(self._array, index)
+        var ret = sonic[].jvalueref_as_bool(vref)
+        sonic[].jvalueref_destroy(vref)
         if ret.is_ok:
             return ret.ok
         else:
@@ -115,9 +117,10 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn get_i64(self, index: Int, default: Int64 = 0) -> Int64:
-        var vref = jarray_get(self._array, index)
-        var ret = jvalueref_as_i64(vref)
-        jvalueref_destroy(vref)
+        var sonic = _sonic_ptr()
+        var vref = sonic[].jarray_get(self._array, index)
+        var ret = sonic[].jvalueref_as_i64(vref)
+        sonic[].jvalueref_destroy(vref)
         if ret.is_ok:
             return ret.ok
         else:
@@ -125,9 +128,10 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn get_u64(self, index: Int, default: UInt64 = 0) -> UInt64:
-        var vref = jarray_get(self._array, index)
-        var ret = jvalueref_as_u64(vref)
-        jvalueref_destroy(vref)
+        var sonic = _sonic_ptr()
+        var vref = sonic[].jarray_get(self._array, index)
+        var ret = sonic[].jvalueref_as_u64(vref)
+        sonic[].jvalueref_destroy(vref)
         if ret.is_ok:
             return ret.ok
         else:
@@ -135,9 +139,10 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn get_f64(self, index: Int, default: Float64 = 0.0) -> Float64:
-        var vref = jarray_get(self._array, index)
-        var ret = jvalueref_as_f64(vref)
-        jvalueref_destroy(vref)
+        var sonic = _sonic_ptr()
+        var vref = sonic[].jarray_get(self._array, index)
+        var ret = sonic[].jvalueref_as_f64(vref)
+        sonic[].jvalueref_destroy(vref)
         if ret.is_ok:
             return ret.ok
         else:
@@ -145,17 +150,18 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn get_str(self, index: Int, default: StaticString = "") -> String:
-        var vref = jarray_get(self._array, index)
-        var out = diplomat_buffer_write_create(1024)
-        jvalueref_as_str(vref, default, out)
-        var s_data = diplomat_buffer_write_get_bytes(out)
-        var s_len = diplomat_buffer_write_len(out)
+        var sonic = _sonic_ptr()
+        var vref = sonic[].jarray_get(self._array, index)
+        var out = sonic[].diplomat_buffer_write_create(1024)
+        sonic[].jvalueref_as_str(vref, default, out)
+        var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+        var s_len = sonic[].diplomat_buffer_write_len(out)
         var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
-        diplomat_buffer_write_destroy(out)
-        jvalueref_destroy(vref)
+        sonic[].diplomat_buffer_write_destroy(out)
+        sonic[].jvalueref_destroy(vref)
         return ret_str
 
     # @always_inline
@@ -167,24 +173,25 @@ struct JsonArray(Stringable):
 
     @always_inline
     fn iter(self) -> UnsafePointer[JValueIter]:
-        return jarray_iter(self._array)
+        return _sonic_ptr()[].jarray_iter(self._array)
 
     @always_inline
     fn to_string(self, cap: Int = 1024) -> String:
-        var out = diplomat_buffer_write_create(cap)
-        _ = jarray_to_string(self._array, out)
-        var s_data = diplomat_buffer_write_get_bytes(out)
-        var s_len = diplomat_buffer_write_len(out)
+        var sonic = _sonic_ptr()
+        var out = sonic[].diplomat_buffer_write_create(cap)
+        _ = sonic[].jarray_to_string(self._array, out)
+        var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+        var s_len = sonic[].diplomat_buffer_write_len(out)
         var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
-        diplomat_buffer_write_destroy(out)
+        sonic[].diplomat_buffer_write_destroy(out)
         return ret_str
 
     @always_inline
     fn destroy(self) -> None:
-        jarray_destroy(self._array)
+        _sonic_ptr()[].jarray_destroy(self._array)
 
     fn __str__(self) -> String:
         return self.to_string()

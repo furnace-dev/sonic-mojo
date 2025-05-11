@@ -163,71 +163,70 @@ alias fn_diplomat_buffer_write_destroy = fn (
 ) -> None
 
 
-var __wrapper = _DLWrapper()
+# # var __wrapper = _DLWrapper()
+
+# @value
+# struct _DLWrapper:
+#     var _handle: DLHandle
+
+#     var _diplomat_simple_write: fn_diplomat_simple_write
+
+#     var _diplomat_buffer_write_create: fn_diplomat_buffer_write_create
+
+#     var _diplomat_buffer_write_get_bytes: fn_diplomat_buffer_write_get_bytes
+
+#     var _diplomat_buffer_write_len: fn_diplomat_buffer_write_len
+
+#     var _diplomat_buffer_write_destroy: fn_diplomat_buffer_write_destroy
+
+#     fn __init__(out self):
+#         self._handle = get_handle(LIBNAME)
+
+#         self._diplomat_simple_write = self._handle.get_function[
+#             fn_diplomat_simple_write
+#         ]("diplomat_simple_write")
+
+#         self._diplomat_buffer_write_create = self._handle.get_function[
+#             fn_diplomat_buffer_write_create
+#         ]("diplomat_buffer_write_create")
+
+#         self._diplomat_buffer_write_get_bytes = self._handle.get_function[
+#             fn_diplomat_buffer_write_get_bytes
+#         ]("diplomat_buffer_write_get_bytes")
+
+#         self._diplomat_buffer_write_len = self._handle.get_function[
+#             fn_diplomat_buffer_write_len
+#         ]("diplomat_buffer_write_len")
+
+#         self._diplomat_buffer_write_destroy = self._handle.get_function[
+#             fn_diplomat_buffer_write_destroy
+#         ]("diplomat_buffer_write_destroy")
 
 
-@value
-struct _DLWrapper:
-    var _handle: DLHandle
-
-    var _diplomat_simple_write: fn_diplomat_simple_write
-
-    var _diplomat_buffer_write_create: fn_diplomat_buffer_write_create
-
-    var _diplomat_buffer_write_get_bytes: fn_diplomat_buffer_write_get_bytes
-
-    var _diplomat_buffer_write_len: fn_diplomat_buffer_write_len
-
-    var _diplomat_buffer_write_destroy: fn_diplomat_buffer_write_destroy
-
-    fn __init__(out self):
-        self._handle = get_handle(LIBNAME)
-
-        self._diplomat_simple_write = self._handle.get_function[
-            fn_diplomat_simple_write
-        ]("diplomat_simple_write")
-
-        self._diplomat_buffer_write_create = self._handle.get_function[
-            fn_diplomat_buffer_write_create
-        ]("diplomat_buffer_write_create")
-
-        self._diplomat_buffer_write_get_bytes = self._handle.get_function[
-            fn_diplomat_buffer_write_get_bytes
-        ]("diplomat_buffer_write_get_bytes")
-
-        self._diplomat_buffer_write_len = self._handle.get_function[
-            fn_diplomat_buffer_write_len
-        ]("diplomat_buffer_write_len")
-
-        self._diplomat_buffer_write_destroy = self._handle.get_function[
-            fn_diplomat_buffer_write_destroy
-        ]("diplomat_buffer_write_destroy")
+# @always_inline
+# fn diplomat_simple_write(
+#     buf: c_void_ptr, buf_size: c_size_t
+# ) -> UnsafePointer[DiplomatWrite]:
+#     return __wrapper._diplomat_simple_write(buf, buf_size)
 
 
-@always_inline
-fn diplomat_simple_write(
-    buf: c_void_ptr, buf_size: c_size_t
-) -> UnsafePointer[DiplomatWrite]:
-    return __wrapper._diplomat_simple_write(buf, buf_size)
+# @always_inline
+# fn diplomat_buffer_write_create(cap: c_size_t) -> UnsafePointer[DiplomatWrite]:
+#     return __wrapper._diplomat_buffer_write_create(cap)
 
 
-@always_inline
-fn diplomat_buffer_write_create(cap: c_size_t) -> UnsafePointer[DiplomatWrite]:
-    return __wrapper._diplomat_buffer_write_create(cap)
+# @always_inline
+# fn diplomat_buffer_write_get_bytes(
+#     this: UnsafePointer[DiplomatWrite],
+# ) -> c_void_ptr:
+#     return __wrapper._diplomat_buffer_write_get_bytes(this)
 
 
-@always_inline
-fn diplomat_buffer_write_get_bytes(
-    this: UnsafePointer[DiplomatWrite],
-) -> c_void_ptr:
-    return __wrapper._diplomat_buffer_write_get_bytes(this)
+# @always_inline
+# fn diplomat_buffer_write_len(this: UnsafePointer[DiplomatWrite]) -> c_size_t:
+#     return __wrapper._diplomat_buffer_write_len(this)
 
 
-@always_inline
-fn diplomat_buffer_write_len(this: UnsafePointer[DiplomatWrite]) -> c_size_t:
-    return __wrapper._diplomat_buffer_write_len(this)
-
-
-@always_inline
-fn diplomat_buffer_write_destroy(this: UnsafePointer[DiplomatWrite]) -> None:
-    return __wrapper._diplomat_buffer_write_destroy(this)
+# @always_inline
+# fn diplomat_buffer_write_destroy(this: UnsafePointer[DiplomatWrite]) -> None:
+#     return __wrapper._diplomat_buffer_write_destroy(this)

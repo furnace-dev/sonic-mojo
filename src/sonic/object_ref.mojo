@@ -2,6 +2,7 @@ from memory import UnsafePointer
 from .internal import *
 from .value_ref import *
 from .array_ref import *
+from .internal.csonic_bind import _sonic_ptr
 
 
 struct JsonObjectRef(Stringable):
@@ -17,52 +18,53 @@ struct JsonObjectRef(Stringable):
 
     @always_inline
     fn __del__(owned self):
-        jobjectref_destroy(self._object)
+        _sonic_ptr()[].jobjectref_destroy(self._object)
 
     @always_inline
     fn clone(self) -> JsonObject:
-        return JsonObject(jobjectref_clone(self._object))
+        return JsonObject(_sonic_ptr()[].jobjectref_clone(self._object))
 
     @always_inline
     fn to_string(self, cap: Int = 1024) -> String:
-        var out = diplomat_buffer_write_create(cap)
-        _ = jobjectref_to_string(self._object, out)
-        var s_data = diplomat_buffer_write_get_bytes(out)
-        var s_len = diplomat_buffer_write_len(out)
+        var sonic = _sonic_ptr()
+        var out = sonic[].diplomat_buffer_write_create(cap)
+        _ = sonic[].jobjectref_to_string(self._object, out)
+        var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+        var s_len = sonic[].diplomat_buffer_write_len(out)
         var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
-        diplomat_buffer_write_destroy(out)
+        sonic[].diplomat_buffer_write_destroy(out)
         return ret_str
 
     @always_inline
     fn capacity(self) -> Int:
-        return jobjectref_capacity(self._object)
+        return _sonic_ptr()[].jobjectref_capacity(self._object)
 
     @always_inline
     fn contains_key(self, key: StaticString) -> Bool:
-        return jobjectref_contains_key(self._object, key)
+        return _sonic_ptr()[].jobjectref_contains_key(self._object, key)
 
     @always_inline
     fn len(self) -> Int:
-        return jobjectref_len(self._object)
+        return _sonic_ptr()[].jobjectref_len(self._object)
 
     @always_inline
     fn is_empty(self) -> Bool:
-        return jobjectref_is_empty(self._object)
+        return _sonic_ptr()[].jobjectref_is_empty(self._object)
 
     @always_inline
     fn destroy(self) -> None:
-        return jobjectref_destroy(self._object)
+        return _sonic_ptr()[].jobjectref_destroy(self._object)
 
     @always_inline
     fn get_type(self) -> JsonType:
-        return jvalue_get_type(self._object.bitcast[JValue]())
+        return _sonic_ptr()[].jvalue_get_type(self._object.bitcast[JValue]())
 
     @always_inline
     fn get_value(self, key: StaticString) -> JsonValue:
-        return JsonValue(jobjectref_get_value(self._object, key))
+        return JsonValue(_sonic_ptr()[].jobjectref_get_value(self._object, key))
 
     # @always_inline
     # fn get_value_ref(self, key: StringRef) -> ValueRef:
@@ -70,25 +72,25 @@ struct JsonObjectRef(Stringable):
 
     @always_inline
     fn get_bool(self, key: StaticString, default: Bool = False) -> Bool:
-        return jobjectref_get_bool(self._object, key, default)
+        return _sonic_ptr()[].jobjectref_get_bool(self._object, key, default)
 
     @always_inline
     fn get_i64(self, key: StaticString, default: Int64 = 0) -> Int64:
-        var ret = jobjectref_get_i64(self._object, key)
+        var ret = _sonic_ptr()[].jobjectref_get_i64(self._object, key)
         if ret.is_ok:
             return ret.ok
         return default
 
     @always_inline
     fn get_u64(self, key: StaticString, default: UInt64 = 0) -> UInt64:
-        var ret = jobjectref_get_u64(self._object, key)
+        var ret = _sonic_ptr()[].jobjectref_get_u64(self._object, key)
         if ret.is_ok:
             return ret.ok
         return default
 
     @always_inline
     fn get_f64(self, key: StaticString, default: Float64 = 0.0) -> Float64:
-        var ret = jobjectref_get_f64(self._object, key)
+        var ret = _sonic_ptr()[].jobjectref_get_f64(self._object, key)
         if ret.is_ok:
             return ret.ok
         return default
@@ -99,15 +101,16 @@ struct JsonObjectRef(Stringable):
         key: StaticString,
         default: StaticString = "",
     ) -> String:
-        var out = diplomat_buffer_write_create(1024)
-        jobjectref_get_str(self._object, key, default, out)
-        var s_data = diplomat_buffer_write_get_bytes(out)
-        var s_len = diplomat_buffer_write_len(out)
+        var sonic = _sonic_ptr()
+        var out = sonic[].diplomat_buffer_write_create(1024)
+        sonic[].jobjectref_get_str(self._object, key, default, out)
+        var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
+        var s_len = sonic[].diplomat_buffer_write_len(out)
         var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
-        diplomat_buffer_write_destroy(out)
+        sonic[].diplomat_buffer_write_destroy(out)
         return ret_str
 
     # @always_inline
@@ -116,55 +119,56 @@ struct JsonObjectRef(Stringable):
 
     @always_inline
     fn get_object_ref(self, key: StaticString) -> JsonObjectRef:
-        var ret = jobjectref_get_object_ref(self._object, key)
+        var ret = _sonic_ptr()[].jobjectref_get_object_ref(self._object, key)
         return JsonObjectRef(ret)
 
     @always_inline
     fn get_array_ref(self, key: StaticString) -> JsonArrayRef:
-        var ret = jobjectref_get_array_ref(self._object, key)
+        var ret = _sonic_ptr()[].jobjectref_get_array_ref(self._object, key)
         return JsonArrayRef(ret)
 
     fn keys(self) -> List[String]:
-        var iter = jobjectref_keys_iter(self._object)
-        var len = jobjectref_len(self._object)
+        var iter = _sonic_ptr()[].jobjectref_keys_iter(self._object)
+        var len = _sonic_ptr()[].jobjectref_len(self._object)
         var ret = List[String](capacity=len)
         var default = StringSlice("")
         for i in range(len):
-            var out = diplomat_buffer_write_create(1024)
-            jkeysiter_get(iter, i, default, out)
-            var key = diplomat_buffer_write_get_bytes(out)
-            var key_len = diplomat_buffer_write_len(out)
+            var out = _sonic_ptr()[].diplomat_buffer_write_create(1024)
+            _sonic_ptr()[].jkeysiter_get(iter, i, default, out)
+            var key = _sonic_ptr()[].diplomat_buffer_write_get_bytes(out)
+            var key_len = _sonic_ptr()[].diplomat_buffer_write_len(out)
             var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)
             ret.append(key_str)
-            diplomat_buffer_write_destroy(out)
-        jkeysiter_destroy(iter)
+            _sonic_ptr()[].diplomat_buffer_write_destroy(out)
+        _sonic_ptr()[].jkeysiter_destroy(iter)
         return ret
 
     fn iter(self) -> List[Tuple[String, JsonValueRef]]:
-        var iter = jobjectref_iter(self._object)
+        var sonic = _sonic_ptr()
+        var iter = sonic[].jobjectref_iter(self._object)
         var ret = List[Tuple[String, JsonValueRef]]()
         while True:
-            var kv = jobjectiter_next(iter)
-            var out = diplomat_buffer_write_create(1024)
-            jkeyvalueref_get_key(kv, out)
-            var key = diplomat_buffer_write_get_bytes(out)
-            var key_len = diplomat_buffer_write_len(out)
+            var kv = sonic[].jobjectiter_next(iter)
+            var out = sonic[].diplomat_buffer_write_create(1024)
+            sonic[].jkeyvalueref_get_key(kv, out)
+            var key = sonic[].diplomat_buffer_write_get_bytes(out)
+            var key_len = sonic[].diplomat_buffer_write_len(out)
             var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)
-            diplomat_buffer_write_destroy(out)
+            sonic[].diplomat_buffer_write_destroy(out)
             if key_len == 0:
-                jkeyvalueref_destroy(kv)
+                sonic[].jkeyvalueref_destroy(kv)
                 break
-            var value = jkeyvalueref_get_value(kv)
+            var value = sonic[].jkeyvalueref_get_value(kv)
             var value_obj = JsonValueRef(value)
             ret.append((key_str, value_obj))
-            jkeyvalueref_destroy(kv)
-        jobjectiter_destroy(iter)
+            sonic[].jkeyvalueref_destroy(kv)
+        sonic[].jobjectiter_destroy(iter)
         return ret
 
     fn __str__(self) -> String:
