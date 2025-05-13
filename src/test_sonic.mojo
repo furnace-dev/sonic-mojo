@@ -3,48 +3,48 @@ from sonic.internal.jvalue import *
 from sonic.internal.jobject import *
 from sonic.internal.jvalueref import *
 from sonic.internal.jobjectmut import *
-from sonic.internal.csonic_bind import _sonic_ptr
 from testing import assert_equal, assert_true
 
 
 fn test_sonic_rs_internal_sample() raises:
-    var sonic = _sonic_ptr()
+    var ctx = sonic_ctx_ptr()
     var s = '{"a":100}'
-    var v = sonic[].jvalue_from_str(s)
+    var v = ctx[].jvalue_from_str(s)
 
     var o = v.bitcast[JObject]()
-    sonic[].jobject_insert_i64(o, "b", 101)
-    sonic[].jobject_insert_str(o, "c", "hello")
-    var a = sonic[].jvalue_from_str("[1,2,3]")
-    sonic[].jobject_insert_value(o, "d", a)
+    ctx[].jobject_insert_i64(o, "b", 101)
+    ctx[].jobject_insert_str(o, "c", "hello")
+    var a = ctx[].jvalue_from_str("[1,2,3]")
+    ctx[].jobject_insert_value(o, "d", a)
 
-    var out = sonic[].diplomat_buffer_write_create(1024)
-    _ = sonic[].jvalue_to_string(v, out)
-    var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
-    var s_len = sonic[].diplomat_buffer_write_len(out)
+    var out = ctx[].diplomat_buffer_write_create(1024)
+    _ = ctx[].jvalue_to_string(v, out)
+    var s_data = ctx[].diplomat_buffer_write_get_bytes(out)
+    var s_len = ctx[].diplomat_buffer_write_len(out)
     var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var ret_str = String(ret_str_ref)
-    sonic[].diplomat_buffer_write_destroy(out)
-    sonic[].jvalue_destroy(v)
-    sonic[].jvalue_destroy(a)
+    ctx[].diplomat_buffer_write_destroy(out)
+    ctx[].jvalue_destroy(v)
+    ctx[].jvalue_destroy(a)
 
     _ = ret_str^
 
 
 fn test_object() raises:
-    var sonic = _sonic_ptr()
-    var o = JsonObject('{"xxx": 1000}')
-    var a = sonic[].jobject_get_u64(o._object, "xxx")
+    var ctx = sonic_ctx_ptr()
+    var o = JsonObject(ctx, '{"xxx": 1000}')
+    var a = ctx[].jobject_get_u64(o._object, "xxx")
     assert_equal(a.is_ok, True)
     assert_equal(a.ok, 1000)
-    var b = sonic[].jobject_get_i64(o._object, "xxx1")
+    var b = ctx[].jobject_get_i64(o._object, "xxx1")
     assert_equal(b.is_ok, False)
 
 
 fn test_object_insert() raises:
-    var o2 = JsonObject('{"a":"abc"}')
+    var ctx = sonic_ctx_ptr()
+    var o2 = JsonObject(ctx, '{"a":"abc"}')
     o2.insert_str("b", "def")
     o2.insert_i64("c", 100)
 
@@ -55,7 +55,8 @@ fn test_object_insert() raises:
 
 
 fn test_object_get() raises:
-    var v4 = JsonObject('{"a":100, "b":true, "c": "hello", "f": 100.123}')
+    var ctx = sonic_ctx_ptr()
+    var v4 = JsonObject(ctx, '{"a":100, "b":true, "c": "hello", "f": 100.123}')
     assert_equal(v4.to_string(), '{"a":100,"b":true,"c":"hello","f":100.123}')
 
     var v5 = v4.get_i64("a")
@@ -71,28 +72,28 @@ fn test_object_get() raises:
 
 
 fn test_valueref() raises:
-    var sonic = _sonic_ptr()
+    var ctx = sonic_ctx_ptr()
     var str = '{"a":100, "b":true, "c": "hello", "f": 100.123}'
-    var v = JsonValue.from_str(str)
+    var v = JsonValue.from_str(ctx, str)
     var type_ = v.get_type()
     assert_true(type_ == JsonType.JsonType_Object)
 
-    var a_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "a")
-    var b_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "b")
-    var c_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "c")
-    var f_ref = sonic[].jobject_get_value_ref(v._value.bitcast[JObject](), "f")
-    var a = sonic[].jvalueref_as_u64(a_ref)
-    var b = sonic[].jvalueref_as_bool(b_ref)
-    var out = sonic[].diplomat_buffer_write_create(1024)
-    sonic[].jvalueref_as_str(c_ref, "", out)
-    var s_data = sonic[].diplomat_buffer_write_get_bytes(out)
-    var s_len = sonic[].diplomat_buffer_write_len(out)
+    var a_ref = ctx[].jobject_get_value_ref(v._value.bitcast[JObject](), "a")
+    var b_ref = ctx[].jobject_get_value_ref(v._value.bitcast[JObject](), "b")
+    var c_ref = ctx[].jobject_get_value_ref(v._value.bitcast[JObject](), "c")
+    var f_ref = ctx[].jobject_get_value_ref(v._value.bitcast[JObject](), "f")
+    var a = ctx[].jvalueref_as_u64(a_ref)
+    var b = ctx[].jvalueref_as_bool(b_ref)
+    var out = ctx[].diplomat_buffer_write_create(1024)
+    ctx[].jvalueref_as_str(c_ref, "", out)
+    var s_data = ctx[].diplomat_buffer_write_get_bytes(out)
+    var s_len = ctx[].diplomat_buffer_write_len(out)
     var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var c = String(ret_str_ref)
-    sonic[].diplomat_buffer_write_destroy(out)
-    var f = sonic[].jvalueref_as_f64(f_ref)
+    ctx[].diplomat_buffer_write_destroy(out)
+    var f = ctx[].jvalueref_as_f64(f_ref)
 
     assert_equal(a.is_ok, True)
     assert_equal(a.ok, 100)
@@ -102,17 +103,18 @@ fn test_valueref() raises:
     assert_equal(f.is_ok, True)
     assert_equal(f.ok, 100.123)
 
-    sonic[].jvalueref_destroy(a_ref)
-    sonic[].jvalueref_destroy(b_ref)
-    sonic[].jvalueref_destroy(c_ref)
-    sonic[].jvalueref_destroy(f_ref)
+    ctx[].jvalueref_destroy(a_ref)
+    ctx[].jvalueref_destroy(b_ref)
+    ctx[].jvalueref_destroy(c_ref)
+    ctx[].jvalueref_destroy(f_ref)
 
 
 fn test_object_view() raises:
+    var ctx = sonic_ctx_ptr()
     var v = JsonValue.from_str(
-        '{"a":100, "b":true, "c": "hello", "f": 100.123}'
+        ctx, '{"a":100, "b":true, "c": "hello", "f": 100.123}'
     )
-    var o = JsonValueObjectView(v)
+    var o = JsonValueObjectView(ctx, v)
     var a = o.get_i64("a")
     o.insert_i64("b", 101)
     assert_equal(a, 100)
@@ -120,27 +122,29 @@ fn test_object_view() raises:
 
 
 fn test_array_view() raises:
-    var v = JsonValue.from_str("[1,2,3]")
-    var a = JsonValueArrayView(v)
+    var ctx = sonic_ctx_ptr()
+    var v = JsonValue.from_str(ctx, "[1,2,3]")
+    var a = JsonValueArrayView(ctx, v)
     assert_equal(a.to_string(), "[1,2,3]")
-    a.insert(0, JsonValue(100))
+    a.insert(0, JsonValue(ctx, 100))
     assert_equal(a.to_string(), "[100,1,2,3]")
 
 
 fn test_copy() raises:
     # value
-    var v = JsonValue(100)
+    var ctx = sonic_ctx_ptr()
+    var v = JsonValue(ctx, 100)
     var v2 = v
     assert_equal(v.to_string(), v2.to_string())
 
     var v3 = v2
     assert_equal(v.to_string(), v3.to_string())
 
-    var v4 = JsonValue('"Hello"')
+    var v4 = JsonValue(ctx, '"Hello"')
     var v5 = v4
     assert_equal(v4.to_string(), v5.to_string())
 
-    var v6 = JsonValue.from_str('{"a":100}')
+    var v6 = JsonValue.from_str(ctx, '{"a":100}')
     var v7 = v6
     assert_equal(v6.to_string(), v7.to_string())
 
@@ -148,7 +152,7 @@ fn test_copy() raises:
     assert_equal(v6.to_string(), v8.to_string())
 
     # object
-    var o = JsonObject('{"a":100}')
+    var o = JsonObject(ctx, '{"a":100}')
     var o2 = o
     assert_equal(o.to_string(), o2.to_string())
 
@@ -156,14 +160,14 @@ fn test_copy() raises:
     assert_equal(o.to_string(), o3.to_string())
 
     # array
-    var a = JsonArray()
+    var a = JsonArray(ctx)
     var a2 = a
     assert_equal(a.to_string(), a2.to_string())
 
     var a3 = a2
     assert_equal(a.to_string(), a3.to_string())
 
-    var a4 = JsonArray("[1,2,3]")
+    var a4 = JsonArray(ctx, "[1,2,3]")
     var a5 = a4
     assert_equal(a4.to_string(), a5.to_string())
 
@@ -172,10 +176,14 @@ fn test_copy() raises:
 
 
 fn test_read_json() raises:
+    var ctx = sonic_ctx_ptr()
     var o = JsonObject(
-        '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'
-        ' {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a", "b", "c"],'
-        ' "null": null}'
+        ctx,
+        (
+            '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi",'
+            ' "obj": {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a",'
+            ' "b", "c"], "null": null}'
+        ),
     )
     var i64 = o.get_i64("i64")
     assert_equal(i64, 1000)
@@ -237,7 +245,8 @@ fn test_read_json() raises:
 
 # Deep JSON structure
 fn test_deep_json() raises:
-    var o = JsonObject('{"a": {"b": {"c": 100}}}')
+    var ctx = sonic_ctx_ptr()
+    var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
     var a = o.get_object_mut("a")
     var b = a.get_object_mut("b")
     var c = b.get_i64("c")
@@ -249,7 +258,8 @@ fn test_deep_json() raises:
 
 # Write JSON
 fn test_write_json() raises:
-    var o = JsonObject('{"a": {"b": {"c": 100}}}')
+    var ctx = sonic_ctx_ptr()
+    var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
     var a = o.get_object_mut("a")
     var b = a.get_object_mut("b")
     var c = b.get_i64("c")
@@ -262,16 +272,18 @@ fn test_write_json() raises:
 
 # Write array
 fn test_write_array() raises:
-    var o = JsonObject('{"a": [1,2,3]}')
+    var ctx = sonic_ctx_ptr()
+    var o = JsonObject(ctx, '{"a": [1,2,3]}')
     var a = o.get_array_mut("a")
-    var v = JsonValue(100)
+    var v = JsonValue(ctx, 100)
     a.insert(0, v)
     assert_equal(o.to_string(), '{"a":[100,1,2,3]}')
 
 
 # test object iterator
 fn test_object_iterator() raises:
-    var o = JsonObject('{"a":100, "b":200, "c":300}')
+    var ctx = sonic_ctx_ptr()
+    var o = JsonObject(ctx, '{"a":100, "b":200, "c":300}')
     var keys = o.keys()
     assert_equal(len(keys), 3)
     assert_equal(keys[0], "a")
@@ -307,11 +319,12 @@ fn test_object_iterator() raises:
 
 
 fn test_object_iterator_ref() raises:
+    var ctx = sonic_ctx_ptr()
     var body = String(
         '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
     )
 
-    var doc = JsonObject(body)
+    var doc = JsonObject(ctx, body)
     var ret_code = doc.get_i64("retCode")
     var ret_msg = doc.get_str("retMsg")
     if ret_code != 0:
@@ -346,11 +359,12 @@ fn test_object_iterator_ref() raises:
 
 
 fn test_object_iterator_mut() raises:
+    var ctx = sonic_ctx_ptr()
     var body = String(
         '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
     )
 
-    var doc = JsonObject(body)
+    var doc = JsonObject(ctx, body)
     var ret_code = doc.get_i64("retCode")
     var ret_msg = doc.get_str("retMsg")
     if ret_code != 0:

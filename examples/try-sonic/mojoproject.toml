@@ -3,13 +3,13 @@ authors = ["hhglory <hhglory@outlook.com>"]
 channels = [
     "conda-forge",
     "https://conda.modular.com/max",
-    "https://repo.prefix.dev/better-ffi",
-    "https://repo.prefix.dev/better-mojo",
+    "https://repo.prefix.dev/furnace-dev",
 ]
 
 description = "Add a short description here"
 name = "try-sonic"
-platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
+# platforms = ["osx-arm64", "linux-64", "linux-aarch64"]
+platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
@@ -17,7 +17,6 @@ dev = "mojo run src/main.mojo"
 
 [dependencies]
 max = "*"
-
 
 libsonic = "*"
 sonic = "*"

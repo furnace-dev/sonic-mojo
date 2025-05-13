@@ -6,20 +6,16 @@ A high-performance JSON processing library for the Mojo programming language, pr
 ### add 
 
 - channel: 
-  - https://prefix.dev/channels/better-mojo
-  - https://prefix.dev/channels/better-mojo-nightly
-  - https://prefix.dev/channels/better-ffi
+  - https://prefix.dev/channels/furnace-dev
+  - https://prefix.dev/channels/furnace-dev-nightly
 - add channel:
 
 ```bash
-# for libsonic
-magic project channel add "https://repo.prefix.dev/better-ffi" 
-
-# for sonic-mojo
-magic project channel add "https://repo.prefix.dev/better-mojo"
+# for libsonic & sonic
+magic project channel add "https://repo.prefix.dev/furnace-dev" 
 
 # for sonic-mojo + nightly
-magic project channel add "https://repo.prefix.dev/better-mojo-nightly"
+magic project channel add "https://repo.prefix.dev/furnace-dev-nightly"
 
 
 ```
@@ -31,7 +27,7 @@ magic project channel add "https://repo.prefix.dev/better-mojo-nightly"
 magic add libsonic
 
 # add mojopkg
-magic add sonic_mojo
+magic add sonic
 
 
 ```
@@ -106,11 +102,15 @@ Here’s a quick example of how to use Sonic-Mojo to read and write JSON data:
 
 ```mojo
 fn main() raises:
+    var ctx = sonic_ctx_ptr()
     # Create a JSON object
     var o = JsonObject(
-        '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'
-        ' {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a", "b", "c"],'
-        ' "null": null}'
+        ctx,
+        (
+            '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi",'
+            ' "obj": {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a",'
+            ' "b", "c"], "null": null}'
+        ),
     )
 
     # Reading
@@ -163,8 +163,9 @@ fn main() raises:
 
 ```mojo
 fn main() raises:
+    var ctx = sonic_ctx_ptr()
     # Create a JSON object
-    var o = JsonObject('{"a": {"b": {"c": 100}}}')
+    var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
 
     # Get the nested object
     var a = o.get_object_mut("a")

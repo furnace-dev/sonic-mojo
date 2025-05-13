@@ -1,3 +1,4 @@
+from .internal.csonic_bind import sonic_ctx_ptr
 from .value import *
 from .value_ref import *
 from .object import *

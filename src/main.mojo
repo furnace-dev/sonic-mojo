@@ -1,13 +1,16 @@
-from sonic import JsonObject
-from sonic import JsonArray
+from sonic import JsonObject, JsonArray, sonic_ctx_ptr
 
 
 fn test_read_json() raises:
+    var ctx = sonic_ctx_ptr()
     # Create a JSON object
     var o = JsonObject(
-        '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi", "obj":'
-        ' {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a", "b", "c"],'
-        ' "null": null}'
+        ctx,
+        (
+            '{"i64": 1000, "u64": 1000000000000000000, "b": true, "s": "Hi",'
+            ' "obj": {"a": 100, "s": "hello"}, "arr": [1,2,3], "s_arr": ["a",'
+            ' "b", "c"], "null": null}'
+        ),
     )
 
     # Reading
@@ -57,8 +60,9 @@ fn test_read_json() raises:
 
 
 fn test_write_json() raises:
+    var ctx = sonic_ctx_ptr()
     # Create a JSON object
-    var o = JsonObject('{"a": {"b": {"c": 100}}}')
+    var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
 
     # Get the nested object
     var a = o.get_object_mut("a")
@@ -75,8 +79,8 @@ fn test_write_json() raises:
     o.insert_u64("g", 1000000000000000000)
     o.insert_i64("d", 101)
     o.insert_str("e", "hello")
-    o.insert_array("h", JsonArray())
-    o.insert_object("i", JsonObject('{"j": 100}'))
+    o.insert_array("h", JsonArray(ctx))
+    o.insert_object("i", JsonObject(ctx, '{"j": 100}'))
 
     # Get the updated object
     var a_2 = o.get_object_mut("a")

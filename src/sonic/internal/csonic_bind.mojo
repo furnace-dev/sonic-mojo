@@ -9,7 +9,7 @@ fn _init_sonic_global() -> CSonic:
     return CSonic()
 
 
-fn _sonic_ptr() -> Pointer[CSonic, StaticConstantOrigin]:
+fn sonic_ctx_ptr() -> Pointer[CSonic, StaticConstantOrigin]:
     var global_ptr: UnsafePointer[CSonic] = _SONIC_GLOBAL.get_or_create_ptr()
 
     return Pointer[CSonic, StaticConstantOrigin](to=global_ptr[])
@@ -19,7 +19,7 @@ struct Sonic:
     var _impl: Pointer[CSonic, StaticConstantOrigin]
 
     fn __init__(out self):
-        self._impl = _sonic_ptr()
+        self._impl = sonic_ctx_ptr()
 
     fn __copyinit__(out self, existing: Self):
         self._impl = existing._impl
