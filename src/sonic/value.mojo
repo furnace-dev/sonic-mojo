@@ -58,50 +58,50 @@ trait JsonObjectViewable:
 
 
 struct JsonValue(JsonContainerTrait, Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValue]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         v: UnsafePointer[JValue],
     ):
         self._ctx = ctx
         self._value = ctx[].jvalue_clone(v)
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[CSonic, StaticConstantOrigin]):
+    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin]):
         self._ctx = ctx
         self._value = ctx[].jvalue_new()
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[CSonic, StaticConstantOrigin], b: Bool):
+    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin], b: Bool):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_bool(b)
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[CSonic, StaticConstantOrigin], i64: Int):
+    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin], i64: Int):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_i64(i64)
 
     @always_inline
     fn __init__(
-        out self, ctx: Pointer[CSonic, StaticConstantOrigin], i64: Int64
+        out self, ctx: Pointer[SonicContext, StaticConstantOrigin], i64: Int64
     ):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_i64(i64)
 
     @always_inline
     fn __init__(
-        out self, ctx: Pointer[CSonic, StaticConstantOrigin], u64: UInt64
+        out self, ctx: Pointer[SonicContext, StaticConstantOrigin], u64: UInt64
     ):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_u64(u64)
 
     @always_inline
     fn __init__(
-        out self, ctx: Pointer[CSonic, StaticConstantOrigin], f64: Float64
+        out self, ctx: Pointer[SonicContext, StaticConstantOrigin], f64: Float64
     ):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_f64(f64)
@@ -109,7 +109,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
     @always_inline
     fn __init__[
         T: Stringable
-    ](out self, ctx: Pointer[CSonic, StaticConstantOrigin], s: T):
+    ](out self, ctx: Pointer[SonicContext, StaticConstantOrigin], s: T):
         self._ctx = ctx
         var s_ = String(s)
         var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
@@ -130,7 +130,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
     @staticmethod
     fn from_str[
         T: Stringable
-    ](ctx: Pointer[CSonic, StaticConstantOrigin], s: T) -> JsonValue:
+    ](ctx: Pointer[SonicContext, StaticConstantOrigin], s: T) -> JsonValue:
         var s_ = String(s)
         var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
             ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
@@ -258,13 +258,13 @@ struct JsonValue(JsonContainerTrait, Stringable):
 
 
 struct ValueIter:
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _iter: UnsafePointer[JValueIter]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JValueIter],
     ):
         self._ctx = ctx
@@ -281,13 +281,13 @@ struct ValueIter:
 
 
 struct ValueIterMut:
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _iter: UnsafePointer[JValueIterMut]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JValueIterMut],
     ):
         self._ctx = ctx

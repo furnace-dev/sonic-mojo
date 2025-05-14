@@ -7,14 +7,14 @@ from .value_ref import JsonValueRef
 struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
     Stringable, JsonObjectViewable
 ):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _src: Pointer[T, origin]
     var _object: UnsafePointer[JObject]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         ref [origin]value: T,
     ):
         self._ctx = ctx
@@ -24,7 +24,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: Pointer[T, origin],
     ):
         self._ctx = ctx

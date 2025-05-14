@@ -4,27 +4,27 @@ from .value_ref import JsonValueRef
 
 
 struct JsonArray(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _array: UnsafePointer[JArray]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JArray],
     ):
         self._ctx = ctx
         self._array = value
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[CSonic, StaticConstantOrigin]):
+    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin]):
         self._ctx = ctx
         self._array = self._ctx[].jarray_new()
 
     @always_inline
     fn __init__[
         T: Stringable
-    ](out self, ctx: Pointer[CSonic, StaticConstantOrigin], s: T):
+    ](out self, ctx: Pointer[SonicContext, StaticConstantOrigin], s: T):
         self._ctx = ctx
         var s_ = String(s)
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](

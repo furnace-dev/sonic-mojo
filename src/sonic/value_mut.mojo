@@ -3,13 +3,13 @@ from .internal import *
 
 
 struct JsonValueMut(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValueMut]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         v: UnsafePointer[JValueMut],
     ):
         self._ctx = ctx

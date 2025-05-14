@@ -4,13 +4,13 @@ from .value_ref import *
 
 
 struct JsonObjectMut(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _object: UnsafePointer[JObjectMut]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JObjectMut],
     ):
         self._ctx = ctx

@@ -4,13 +4,13 @@ from .value import *
 
 
 struct JsonArrayRef(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _array: UnsafePointer[JArrayRef]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JArrayRef],
     ):
         self._ctx = ctx

@@ -5,7 +5,7 @@ from .object_ref import *
 
 @always_inline
 fn convert_jvalue_to_string(
-    ctx: Pointer[CSonic, StaticConstantOrigin], self: UnsafePointer[JValueRef]
+    ctx: Pointer[SonicContext, StaticConstantOrigin], self: UnsafePointer[JValueRef]
 ) -> String:
     var out = ctx[].diplomat_buffer_write_create(1024)
     ctx[].jvalueref_to_string(self, out)
@@ -20,18 +20,18 @@ fn convert_jvalue_to_string(
 
 
 struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _object: UnsafePointer[JObject]
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[CSonic, StaticConstantOrigin]):
+    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin]):
         self._ctx = ctx
         self._object = ctx[].jobject_new()
 
     @always_inline
     fn __init__[
         T: Stringable
-    ](out self, ctx: Pointer[CSonic, StaticConstantOrigin], s: T):
+    ](out self, ctx: Pointer[SonicContext, StaticConstantOrigin], s: T):
         self._ctx = ctx
         var s_ = String(s)
         var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
@@ -44,7 +44,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         o: UnsafePointer[JObject],
     ):
         self._ctx = ctx

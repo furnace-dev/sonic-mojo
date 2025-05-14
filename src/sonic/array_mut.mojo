@@ -5,13 +5,13 @@ from .value_mut import JsonValueMut
 
 
 struct JsonArrayMut(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _array: UnsafePointer[JArrayMut]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JArrayMut],
     ):
         self._ctx = ctx

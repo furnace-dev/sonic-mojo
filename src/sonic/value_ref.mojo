@@ -11,13 +11,13 @@ trait JsonRefContainerTrait:
 
 
 struct JsonValueRef(JsonRefContainerTrait, Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValueRef]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JValueRef],
     ):
         self._ctx = ctx

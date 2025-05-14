@@ -5,13 +5,13 @@ from .array_ref import *
 
 
 struct JsonObjectRef(Stringable):
-    var _ctx: Pointer[CSonic, StaticConstantOrigin]
+    var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _object: UnsafePointer[JObjectRef]
 
     @always_inline
     fn __init__(
         out self,
-        ctx: Pointer[CSonic, StaticConstantOrigin],
+        ctx: Pointer[SonicContext, StaticConstantOrigin],
         value: UnsafePointer[JObjectRef],
     ):
         self._ctx = ctx

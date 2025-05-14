@@ -39,7 +39,7 @@ from .jkeyvalueref import *
 
 
 @value
-struct CSonic:
+struct SonicContext:
     var _handle: DLHandle
 
     var _diplomat_simple_write: fn_diplomat_simple_write

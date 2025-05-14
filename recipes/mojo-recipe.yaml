@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
 
 context:
-  version: "0.3.1" # package version
+  version: "0.3.2" # package version
   package_name: "sonic" # package name
   package_path: "../src/" # package path, TODO X: 注意是相对此文件的路径 !!!
 
