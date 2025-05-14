@@ -7,7 +7,7 @@ from testing import assert_equal, assert_true
 
 
 fn test_sonic_rs_internal_sample() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var s = '{"a":100}'
     var v = ctx[].jvalue_from_str(s)
 
@@ -33,7 +33,7 @@ fn test_sonic_rs_internal_sample() raises:
 
 
 fn test_object() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(ctx, '{"xxx": 1000}')
     var a = ctx[].jobject_get_u64(o._object, "xxx")
     assert_equal(a.is_ok, True)
@@ -43,7 +43,7 @@ fn test_object() raises:
 
 
 fn test_object_insert() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o2 = JsonObject(ctx, '{"a":"abc"}')
     o2.insert_str("b", "def")
     o2.insert_i64("c", 100)
@@ -55,7 +55,7 @@ fn test_object_insert() raises:
 
 
 fn test_object_get() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var v4 = JsonObject(ctx, '{"a":100, "b":true, "c": "hello", "f": 100.123}')
     assert_equal(v4.to_string(), '{"a":100,"b":true,"c":"hello","f":100.123}')
 
@@ -72,7 +72,7 @@ fn test_object_get() raises:
 
 
 fn test_valueref() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var str = '{"a":100, "b":true, "c": "hello", "f": 100.123}'
     var v = JsonValue.from_str(ctx, str)
     var type_ = v.get_type()
@@ -110,7 +110,7 @@ fn test_valueref() raises:
 
 
 fn test_object_view() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var v = JsonValue.from_str(
         ctx, '{"a":100, "b":true, "c": "hello", "f": 100.123}'
     )
@@ -122,7 +122,7 @@ fn test_object_view() raises:
 
 
 fn test_array_view() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var v = JsonValue.from_str(ctx, "[1,2,3]")
     var a = JsonValueArrayView(ctx, v)
     assert_equal(a.to_string(), "[1,2,3]")
@@ -132,7 +132,7 @@ fn test_array_view() raises:
 
 fn test_copy() raises:
     # value
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var v = JsonValue(ctx, 100)
     var v2 = v
     assert_equal(v.to_string(), v2.to_string())
@@ -176,7 +176,7 @@ fn test_copy() raises:
 
 
 fn test_read_json() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(
         ctx,
         (
@@ -245,7 +245,7 @@ fn test_read_json() raises:
 
 # Deep JSON structure
 fn test_deep_json() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
     var a = o.get_object_mut("a")
     var b = a.get_object_mut("b")
@@ -258,7 +258,7 @@ fn test_deep_json() raises:
 
 # Write JSON
 fn test_write_json() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
     var a = o.get_object_mut("a")
     var b = a.get_object_mut("b")
@@ -272,7 +272,7 @@ fn test_write_json() raises:
 
 # Write array
 fn test_write_array() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(ctx, '{"a": [1,2,3]}')
     var a = o.get_array_mut("a")
     var v = JsonValue(ctx, 100)
@@ -282,7 +282,7 @@ fn test_write_array() raises:
 
 # test object iterator
 fn test_object_iterator() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var o = JsonObject(ctx, '{"a":100, "b":200, "c":300}')
     var keys = o.keys()
     assert_equal(len(keys), 3)
@@ -319,7 +319,7 @@ fn test_object_iterator() raises:
 
 
 fn test_object_iterator_ref() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var body = String(
         '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
     )
@@ -359,7 +359,7 @@ fn test_object_iterator_ref() raises:
 
 
 fn test_object_iterator_mut() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     var body = String(
         '{"retCode":0,"retMsg":"OK","result":{"category":"linear","list":[{"symbol":"BTCUSDT","contractType":"LinearPerpetual","status":"Trading","baseCoin":"BTC","quoteCoin":"USDT","launchTime":"1585526400000","deliveryTime":"0","deliveryFeeRate":"","priceScale":"2","leverageFilter":{"minLeverage":"1","maxLeverage":"100.00","leverageStep":"0.01"},"priceFilter":{"minPrice":"0.10","maxPrice":"199999.80","tickSize":"0.10"},"lotSizeFilter":{"maxOrderQty":"100.000","minOrderQty":"0.001","qtyStep":"0.001","postOnlyMaxOrderQty":"1000.000"},"unifiedMarginTrade":true,"fundingInterval":480,"settleCoin":"USDT","copyTrading":"normalOnly"}],"nextPageCursor":""},"retExtInfo":{},"time":1696236288675}'
     )

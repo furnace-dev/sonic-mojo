@@ -1,8 +1,8 @@
-from sonic import JsonObject, sonic_ctx_ptr
+from sonic import JsonObject, get_sonic_context
 
 
 fn main() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     # Create a JSON object
     var o = JsonObject(
         ctx,

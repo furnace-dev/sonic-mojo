@@ -11,7 +11,7 @@ fn bench_small_keys1(mut b: Bencher) raises:
     @always_inline
     @parameter
     fn call_fn():
-        _ = sonic_ctx_ptr()[]
+        _ = get_sonic_context()[]
 
     b.iter[call_fn]()
 
@@ -33,7 +33,7 @@ fn main() raises:
     var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
         ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
     )
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     _ = ctx[].jvalue_from_str(s_ref)
     _ = Sonic().csonic().jvalue_from_str(s_ref)
 

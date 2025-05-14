@@ -102,7 +102,7 @@ Here’s a quick example of how to use Sonic-Mojo to read and write JSON data:
 
 ```mojo
 fn main() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     # Create a JSON object
     var o = JsonObject(
         ctx,
@@ -163,7 +163,7 @@ fn main() raises:
 
 ```mojo
 fn main() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     # Create a JSON object
     var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
 

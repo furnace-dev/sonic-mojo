@@ -34,4 +34,4 @@ from .jvalueitermut import *
 from .jkeyvalueref_d import *
 from .jkeyvalueref import *
 from .csonic import *
-from .csonic_bind import Sonic, sonic_ctx_ptr
+from .csonic_bind import Sonic, get_sonic_context

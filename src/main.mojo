@@ -1,8 +1,8 @@
-from sonic import JsonObject, JsonArray, sonic_ctx_ptr
+from sonic import JsonObject, JsonArray, get_sonic_context
 
 
 fn test_read_json() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     # Create a JSON object
     var o = JsonObject(
         ctx,
@@ -60,7 +60,7 @@ fn test_read_json() raises:
 
 
 fn test_write_json() raises:
-    var ctx = sonic_ctx_ptr()
+    var ctx = get_sonic_context()
     # Create a JSON object
     var o = JsonObject(ctx, '{"a": {"b": {"c": 100}}}')
 
