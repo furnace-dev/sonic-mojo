@@ -173,8 +173,9 @@ struct JsonArray(Stringable):
         return ret_str
 
     @always_inline
-    fn iter(self) -> UnsafePointer[JValueIter]:
-        return self._ctx[].jarray_iter(self._array)
+    fn iter(self) -> ValueIter:
+        var iter = self._ctx[].jarray_iter(self._array)
+        return ValueIter(self._ctx, iter)
 
     @always_inline
     fn to_string(self, cap: Int = 1024) -> String:
