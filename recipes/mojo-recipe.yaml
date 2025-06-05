@@ -15,7 +15,7 @@ source:
 build:
   script:
     - mkdir -p ${PREFIX}/lib/mojo
-    - magic run mojo package ${{ package_name }} -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
+    - pixi run mojo package ${{ package_name }} -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
 
 requirements:
   run:
