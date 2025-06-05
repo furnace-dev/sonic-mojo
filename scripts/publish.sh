@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# curl -fsSL https://pixi.sh/install.sh | bash
 # pixi global install rattler-build
 
 # ignore errors because we want to ignore duplicate packages
