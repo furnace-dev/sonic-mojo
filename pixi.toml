@@ -10,15 +10,16 @@ version = "0.1.0"
 
 [tasks]
 build-mojo = { cmd = "rattler-build build --recipe recipes/mojo-recipe.yaml -c https://conda.modular.com/max -c conda-forge --skip-existing=all" }
+build-mojo-nightly = { cmd = "rattler-build build --recipe recipes/mojo-recipe-nightly.yaml -c https://conda.modular.com/max-nightly -c conda-forge --skip-existing=all" }
 build-rs = { cmd = "rattler-build build --recipe recipes/rs-recipe.yaml -c https://conda.modular.com/max -c conda-forge --skip-existing=all" }
 publish = { cmd = "bash scripts/publish.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
 publish-forge = { cmd = "bash scripts/publish-forge.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
+publish-nightly = { cmd = "bash scripts/publish-nightly.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
 
 [dependencies]
 max = "*"
 
 libsonic = "*"
-
 
 [feature.dev.dependencies]
 max = "*"
@@ -28,7 +29,18 @@ libsonic = "*"
 rust = "*"
 rattler-build = "*"
 
+[feature.nightly]
+channels = [
+    "conda-forge",
+    "https://conda.modular.com/max-nightly",
+    "https://repo.prefix.dev/better-ffi",
+]
 
+[feature.nightly.dependencies]
+max = "*"
+libsonic = "*"
+rust = "*"
+rattler-build = "*"
 
 #
 # ref: https://pixi.sh/latest/features/multi_environment/#ambiguous-environment-selection
@@ -36,4 +48,5 @@ rattler-build = "*"
 [environments]
 #default = ["default"]
 dev = ["dev"]
+nightly = ["nightly"]
 

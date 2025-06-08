@@ -15,11 +15,11 @@ source:
 build:
   script:
     - mkdir -p ${PREFIX}/lib/mojo
-    - pixi run mojo package ${{ package_name }} -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
+    - pixi run -e nightly mojo package ${{ package_name }} -o ${PREFIX}/lib/mojo/${{ package_name }}.mojopkg
 
 requirements:
   run:
-    - max >= 25.3.0
+    - max >= 25.4.0.dev2025060721
     - libsonic >= 0.2.1
 
 about:

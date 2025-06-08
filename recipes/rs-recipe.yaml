@@ -57,7 +57,7 @@ requirements:
 #    - cargo-bundle-licenses
 
 about:
-  homepage: https://github.com/better-mojo/sonic-mojo
+  homepage: https://github.com/furnace-dev/sonic-mojo
   license: MIT
   summary: "sonic-rs ffi for mojo"
-  repository: https://github.com/better-mojo/sonic-mojo
+  repository: https://github.com/furnace-dev/sonic-mojo
