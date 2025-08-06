@@ -1,7 +1,7 @@
 from memory import UnsafePointer
 from sys.ffi import DLHandle
 from sys.ffi import c_char, c_size_t
-from sys import os_is_macos
+from sys import CompilationTarget
 from os import abort
 
 
@@ -28,7 +28,7 @@ alias c_nullptr = c_void_ptr()
 # os platform:
 fn get_libname() -> StaticString:
     @parameter
-    if os_is_macos():
+    if CompilationTarget.is_macos():
         return "libsonic.dylib"
     else:
         return "libsonic.so"
@@ -44,9 +44,9 @@ fn get_handle(name: StaticString) -> DLHandle:
         return abort[DLHandle](String("library not found: ", e))
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct DiplomatWrite:
+struct DiplomatWrite(Copyable, Movable):
     var context: c_void_ptr
     var buf: c_char_ptr
     var len: c_size_t
@@ -65,79 +65,79 @@ struct DiplomatWrite:
 alias DiplomatStringView = StaticString
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionI8Result:
+struct OptionI8Result(Copyable, Movable):
     var ok: c_int8
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionU8Result:
+struct OptionU8Result(Copyable, Movable):
     var ok: c_uint8
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionI16Result:
+struct OptionI16Result(Copyable, Movable):
     var ok: c_int16
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionU16Result:
+struct OptionU16Result(Copyable, Movable):
     var ok: c_uint16
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionI32Result:
+struct OptionI32Result(Copyable, Movable):
     var ok: c_int32
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionU32Result:
+struct OptionU32Result(Copyable, Movable):
     var ok: c_uint32
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionI64Result:
+struct OptionI64Result(Copyable, Movable):
     var ok: c_int64
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionU64Result:
+struct OptionU64Result(Copyable, Movable):
     var ok: c_uint64
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionF32Result:
+struct OptionF32Result(Copyable, Movable):
     var ok: c_float
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionF64Result:
+struct OptionF64Result(Copyable, Movable):
     var ok: c_double
     var is_ok: c_bool
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct OptionBoolResult:
+struct OptionBoolResult(Copyable, Movable):
     var ok: c_bool
     var is_ok: c_bool
 

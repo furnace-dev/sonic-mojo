@@ -1,11 +1,10 @@
-
 from memory import UnsafePointer
 from sys.ffi import DLHandle
 from .diplomat_runtime import *
 
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct JArray:
+struct JArray(Copyable, Movable):
     pass

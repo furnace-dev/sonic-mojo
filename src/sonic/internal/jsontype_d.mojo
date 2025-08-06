@@ -5,9 +5,9 @@ from .diplomat_runtime import *
 
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct JsonType:
+struct JsonType(Copyable, Movable):
     var _value: UInt32
     alias JsonType_Null = JsonType(0)
     alias JsonType_Boolean = JsonType(1)
@@ -20,8 +20,8 @@ struct JsonType:
         return self._value == other._value
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct JsonType_option:
+struct JsonType_option(Copyable, Movable):
     var ok: JsonType
     var is_ok: c_bool

@@ -5,7 +5,7 @@ from .diplomat_runtime import *
 
 
 
-@value
+@fieldwise_init
 @register_passable("trivial")
-struct JObjectRef:
+struct JObjectRef(Copyable, Movable):
     pass

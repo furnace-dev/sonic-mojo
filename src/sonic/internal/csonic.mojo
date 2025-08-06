@@ -38,8 +38,8 @@ from .jkeyvalueref_d import *
 from .jkeyvalueref import *
 
 
-@value
-struct SonicContext:
+@fieldwise_init
+struct SonicContext(Copyable, Movable):
     var _handle: DLHandle
 
     var _diplomat_simple_write: fn_diplomat_simple_write
