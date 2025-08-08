@@ -5,13 +5,14 @@ from .object_ref import *
 
 @always_inline
 fn convert_jvalue_to_string(
-    ctx: Pointer[SonicContext, StaticConstantOrigin], self: UnsafePointer[JValueRef]
+    ctx: Pointer[SonicContext, StaticConstantOrigin],
+    self: UnsafePointer[JValueRef],
 ) -> String:
     var out = ctx[].diplomat_buffer_write_create(1024)
     ctx[].jvalueref_to_string(self, out)
     var s_data = ctx[].diplomat_buffer_write_get_bytes(out)
     var s_len = ctx[].diplomat_buffer_write_len(out)
-    var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+    var ret_str_ref = StringSlice[mut=False](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var ret_str = String(ret_str_ref)
@@ -34,7 +35,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
     ](out self, ctx: Pointer[SonicContext, StaticConstantOrigin], s: T):
         self._ctx = ctx
         var s_ = String(s)
-        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_ref = StaticString(
             ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         var v = self._ctx[].jvalue_from_str(s_ref)
@@ -124,7 +125,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
     @always_inline
     fn insert_str[T: Stringable](self, key: StaticString, value: T) -> None:
         var value_ = String(value)
-        var value_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var value_ref = StaticString(
             ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
         self._ctx[].jobject_insert_str(self._object, key, value_ref)
@@ -201,7 +202,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
         self._ctx[].jobject_get_str(self._object, key, default, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var ret_str_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
@@ -233,7 +234,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
             self._ctx[].jkeysiter_get(iter, i, default, out)
             var key = self._ctx[].diplomat_buffer_write_get_bytes(out)
             var key_len = self._ctx[].diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            var key_ref = StringSlice[mut=False](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)
@@ -251,7 +252,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
             self._ctx[].jkeyvalueref_get_key(kv, out)
             var key = self._ctx[].diplomat_buffer_write_get_bytes(out)
             var key_len = self._ctx[].diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            var key_ref = StringSlice[mut=False](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)

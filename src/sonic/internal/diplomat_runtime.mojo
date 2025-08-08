@@ -61,7 +61,7 @@ struct DiplomatWrite(Copyable, Movable):
 #    var data: c_char_ptr
 #    var len: c_size_t
 
-
+# StringSlice[ImmutableAnyOrigin]
 alias DiplomatStringView = StaticString
 
 

@@ -1,90 +1,146 @@
 from sonic import *
 from benchmark import *
 
+
 fn get_data(file: String) -> String:
-	try:
-		with open("./bench_data/data/" + file, "r") as f:
-			return f.read()
-	except:
-		pass
-	print("read failed")
-	return "READ FAILED"
+    try:
+        with open("./bench_data/data/" + file, "r") as f:
+            return f.read()
+    except:
+        pass
+    print("read failed")
+    return "READ FAILED"
+
 
 fn main() raises:
-	var config = BenchConfig()
-	config.verbose_timing = True
-	config.tabular_view = True
-	var m = Bench(config)
+    var config = BenchConfig()
+    config.verbose_timing = True
+    config.tabular_view = True
+    var m = Bench(config)
 
-	var canada = get_data("canada.json")
-	var catalog = get_data("citm_catalog.json")
-	var twitter = get_data("twitter.json")
+    var canada = get_data("canada.json")
+    var catalog = get_data("citm_catalog.json")
+    var twitter = get_data("twitter.json")
 
-	var data: String
-	with open("./bench_data/users_1k.json", "r") as f:
-		data = f.read()
+    var data: String
+    with open("./bench_data/users_1k.json", "r") as f:
+        data = f.read()
 
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonParseSmall"), small_data)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayMedium"), medium_array)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayLarge"), large_array)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayExtraLarge"), data)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayCanada"), canada)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayTwitter"), twitter)
-	m.bench_with_input[String, benchmark_json_parse](BenchId("JsonArrayCitmCatalog"), catalog)
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonParseSmall"), small_data
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayMedium"), medium_array
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayLarge"), large_array
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayExtraLarge"), data
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayCanada"), canada
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayTwitter"), twitter
+    )
+    m.bench_with_input[String, benchmark_json_parse](
+        BenchId("JsonArrayCitmCatalog"), catalog
+    )
 
-	m.bench_with_input[JsonValue, benchmark_json_stringify](BenchId("JsonStringify"), JsonValue.from_str(large_array))
-	m.bench_with_input[JsonValue, benchmark_json_stringify](BenchId("JsonStringifyCanada"), JsonValue.from_str(canada))
-	m.bench_with_input[JsonValue, benchmark_json_stringify](BenchId("JsonStringifyTwitter"), JsonValue.from_str(twitter))
-	m.bench_with_input[JsonValue, benchmark_json_stringify](BenchId("JsonStringifyCitmCatalog"), JsonValue.from_str(catalog))
+    m.bench_with_input[JsonValue, benchmark_json_stringify](
+        BenchId("JsonStringify"), JsonValue.from_str(large_array)
+    )
+    m.bench_with_input[JsonValue, benchmark_json_stringify](
+        BenchId("JsonStringifyCanada"), JsonValue.from_str(canada)
+    )
+    m.bench_with_input[JsonValue, benchmark_json_stringify](
+        BenchId("JsonStringifyTwitter"), JsonValue.from_str(twitter)
+    )
+    m.bench_with_input[JsonValue, benchmark_json_stringify](
+        BenchId("JsonStringifyCitmCatalog"), JsonValue.from_str(catalog)
+    )
 
-	m.bench_with_input[String, benchmark_value_parse](BenchId("ValueParseBool"), "false")
-	m.bench_with_input[String, benchmark_value_parse](BenchId("ValueParseNull"), "null")
-	m.bench_with_input[String, benchmark_value_parse](BenchId("ValueParseInt"), "12345")
-	m.bench_with_input[String, benchmark_value_parse](BenchId("ValueParseFloat"), "453.45643")
-	m.bench_with_input[String, benchmark_value_parse](BenchId("ValueParseString"), '"some example string of short length, not all that long really"')
+    m.bench_with_input[String, benchmark_value_parse](
+        BenchId("ValueParseBool"), "false"
+    )
+    m.bench_with_input[String, benchmark_value_parse](
+        BenchId("ValueParseNull"), "null"
+    )
+    m.bench_with_input[String, benchmark_value_parse](
+        BenchId("ValueParseInt"), "12345"
+    )
+    m.bench_with_input[String, benchmark_value_parse](
+        BenchId("ValueParseFloat"), "453.45643"
+    )
+    m.bench_with_input[String, benchmark_value_parse](
+        BenchId("ValueParseString"),
+        '"some example string of short length, not all that long really"',
+    )
 
-	m.bench_with_input[JsonValue, benchmark_value_stringify](BenchId("ValueStringifyBool"), JsonValue(False))
-	m.bench_with_input[JsonValue, benchmark_value_stringify](BenchId("ValueStringifyNull"), JsonValue())
-	m.bench_with_input[JsonValue, benchmark_value_stringify](BenchId("ValueStringifyInt"), JsonValue(12345))
-	m.bench_with_input[JsonValue, benchmark_value_stringify](BenchId("ValueStringifyFloat"), JsonValue(456.345))
-	m.bench_with_input[JsonValue, benchmark_value_stringify](BenchId("ValueStringifyString"), JsonValue('"some example string of short length, not all that long really"'))
+    m.bench_with_input[JsonValue, benchmark_value_stringify](
+        BenchId("ValueStringifyBool"), JsonValue(False)
+    )
+    m.bench_with_input[JsonValue, benchmark_value_stringify](
+        BenchId("ValueStringifyNull"), JsonValue()
+    )
+    m.bench_with_input[JsonValue, benchmark_value_stringify](
+        BenchId("ValueStringifyInt"), JsonValue(12345)
+    )
+    m.bench_with_input[JsonValue, benchmark_value_stringify](
+        BenchId("ValueStringifyFloat"), JsonValue(456.345)
+    )
+    m.bench_with_input[JsonValue, benchmark_value_stringify](
+        BenchId("ValueStringifyString"),
+        JsonValue(
+            '"some example string of short length, not all that long really"'
+        ),
+    )
 
-	m.dump_report()
+    m.dump_report()
+
 
 @parameter
-fn benchmark_value_parse(inout b: Bencher, s: String) raises:
-	@always_inline
-	@parameter
-	fn do() raises:
-		_ = JsonValue.from_str(s)
-	b.iter[do]()
-	_ = s
+fn benchmark_value_parse(inoutb: Bencher, s: String) raises:
+    @always_inline
+    @parameter
+    fn do() raises:
+        _ = JsonValue.from_str(s)
+
+    b.iter[do]()
+    _ = s
+
 
 @parameter
-fn benchmark_json_parse(inout b: Bencher, s: String) raises:
-	@always_inline
-	@parameter
-	fn do() raises:
-		_ = JsonValue.from_str(s)
-	b.iter[do]()
-	_ = s
+fn benchmark_json_parse(inoutb: Bencher, s: String) raises:
+    @always_inline
+    @parameter
+    fn do() raises:
+        _ = JsonValue.from_str(s)
+
+    b.iter[do]()
+    _ = s
+
 
 @parameter
-fn benchmark_value_stringify(inout b: Bencher, v: JsonValue) raises:
-	@always_inline
-	@parameter
-	fn do():
-		_ = str(v)
-	b.iter[do]()
+fn benchmark_value_stringify(inoutb: Bencher, v: JsonValue) raises:
+    @always_inline
+    @parameter
+    fn do():
+        _ = str(v)
+
+    b.iter[do]()
+
 
 @parameter
-fn benchmark_json_stringify(inout b: Bencher, json: JsonValue) raises:
-	@always_inline
-	@parameter
-	fn do() raises:
-		_ = str(json)
-	
-	b.iter[do]()
+fn benchmark_json_stringify(inoutb: Bencher, json: JsonValue) raises:
+    @always_inline
+    @parameter
+    fn do() raises:
+        _ = str(json)
+
+    b.iter[do]()
+
 
 # source https://opensource.adobe.com/Spry/samples/data_region/JSONDataSetSample.html
 var small_data = """{

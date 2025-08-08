@@ -17,12 +17,12 @@ publish-forge = { cmd = "bash scripts/publish-forge.sh", env = { CONDA_BLD_PATH 
 publish-nightly = { cmd = "bash scripts/publish-nightly.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
 
 [dependencies]
-max = "*"
+mojo = "*"
 
 libsonic = "*"
 
 [feature.dev.dependencies]
-max = "*"
+mojo = "*"
 
 libsonic = "*"
 
@@ -37,7 +37,7 @@ channels = [
 ]
 
 [feature.nightly.dependencies]
-max = "*"
+mojo = "*"
 libsonic = "*"
 rust = "*"
 rattler-build = "*"

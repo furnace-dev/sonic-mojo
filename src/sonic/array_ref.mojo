@@ -91,7 +91,7 @@ struct JsonArrayRef(Stringable):
         self._ctx[].jvalueref_as_str(vref, default, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var ret_str_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
@@ -109,7 +109,7 @@ struct JsonArrayRef(Stringable):
         _ = self._ctx[].jarrayref_to_string(self._array, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var ret_str_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)

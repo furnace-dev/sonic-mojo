@@ -53,7 +53,7 @@ struct JsonArrayMut(Stringable):
     @always_inline
     fn push_str(self, value: String) -> None:
         var value_ = String(value)
-        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_ref = StaticString(
             ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
         self._ctx[].jarraymut_push_str(self._array, s_ref)
@@ -148,7 +148,7 @@ struct JsonArrayMut(Stringable):
         self._ctx[].jvalueref_as_str(vref, default, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var ret_str_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)

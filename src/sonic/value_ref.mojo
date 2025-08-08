@@ -10,7 +10,7 @@ trait JsonRefContainerTrait:
         pass
 
 
-struct JsonValueRef(JsonRefContainerTrait, Stringable, Copyable, Movable):
+struct JsonValueRef(Copyable, JsonRefContainerTrait, Movable, Stringable):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValueRef]
 
@@ -124,7 +124,7 @@ struct JsonValueRef(JsonRefContainerTrait, Stringable, Copyable, Movable):
     @always_inline
     fn as_str[T: Stringable](self, default: T) -> String:
         var default_ = String(default)
-        var default_sref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var default_sref = StaticString(
             ptr=default_.unsafe_cstr_ptr().bitcast[Byte](), length=len(default_)
         )
         var out = self._ctx[].diplomat_buffer_write_create(1024)
@@ -132,9 +132,7 @@ struct JsonValueRef(JsonRefContainerTrait, Stringable, Copyable, Movable):
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
         var s = String(
-            StringSlice[__origin_of(StaticConstantOrigin)](
-                ptr=s_data.bitcast[Byte](), length=s_len
-            )
+            StringSlice[mut=False](ptr=s_data.bitcast[Byte](), length=s_len)
         )
         self._ctx[].diplomat_buffer_write_destroy(out)
         _ = default_^
@@ -166,7 +164,7 @@ struct JsonValueRef(JsonRefContainerTrait, Stringable, Copyable, Movable):
         _ = self._ctx[].jvalueref_to_string(self._value, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var s = String(s_ref)

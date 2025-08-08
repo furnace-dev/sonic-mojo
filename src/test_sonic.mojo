@@ -8,7 +8,7 @@ from testing import assert_equal, assert_true
 
 fn test_sonic_rs_internal_sample() raises:
     var ctx = get_sonic_context()
-    var s = '{"a":100}'
+    var s = '{"a":100}'.as_string_slice()
     var v = ctx[].jvalue_from_str(s)
 
     var o = v.bitcast[JObject]()
@@ -21,9 +21,7 @@ fn test_sonic_rs_internal_sample() raises:
     _ = ctx[].jvalue_to_string(v, out)
     var s_data = ctx[].diplomat_buffer_write_get_bytes(out)
     var s_len = ctx[].diplomat_buffer_write_len(out)
-    var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
-        ptr=s_data.bitcast[Byte](), length=s_len
-    )
+    var ret_str_ref = StaticString(ptr=s_data.bitcast[Byte](), length=s_len)
     var ret_str = String(ret_str_ref)
     ctx[].diplomat_buffer_write_destroy(out)
     ctx[].jvalue_destroy(v)
@@ -88,7 +86,7 @@ fn test_valueref() raises:
     ctx[].jvalueref_as_str(c_ref, "", out)
     var s_data = ctx[].diplomat_buffer_write_get_bytes(out)
     var s_len = ctx[].diplomat_buffer_write_len(out)
-    var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+    var ret_str_ref = StringSlice[mut=False](
         ptr=s_data.bitcast[Byte](), length=s_len
     )
     var c = String(ret_str_ref)

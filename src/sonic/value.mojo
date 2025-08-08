@@ -76,12 +76,16 @@ struct JsonValue(JsonContainerTrait, Stringable):
         self._value = ctx[].jvalue_new()
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin], b: Bool):
+    fn __init__(
+        out self, ctx: Pointer[SonicContext, StaticConstantOrigin], b: Bool
+    ):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_bool(b)
 
     @always_inline
-    fn __init__(out self, ctx: Pointer[SonicContext, StaticConstantOrigin], i64: Int):
+    fn __init__(
+        out self, ctx: Pointer[SonicContext, StaticConstantOrigin], i64: Int
+    ):
         self._ctx = ctx
         self._value = ctx[].jvalue_new_i64(i64)
 
@@ -112,7 +116,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
     ](out self, ctx: Pointer[SonicContext, StaticConstantOrigin], s: T):
         self._ctx = ctx
         var s_ = String(s)
-        var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_view = StaticString(
             ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         self._value = ctx[].jvalue_new_str(s_view)
@@ -132,7 +136,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
         T: Stringable
     ](ctx: Pointer[SonicContext, StaticConstantOrigin], s: T) -> JsonValue:
         var s_ = String(s)
-        var s_view = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_view = StaticString(
             ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
         )
         return JsonValue(ctx, ctx[].jvalue_from_str(s_view))
@@ -224,7 +228,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
     @always_inline
     fn as_str[T: Stringable](self, default: T) -> String:
         var default_ = String(default)
-        var default_sref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var default_sref = StaticString(
             ptr=default_.unsafe_cstr_ptr().bitcast[Byte](), length=len(default_)
         )
         var out = self._ctx[].diplomat_buffer_write_create(1024)
@@ -232,9 +236,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
         var s = String(
-            StringSlice[__origin_of(StaticConstantOrigin)](
-                ptr=s_data.bitcast[Byte](), length=s_len
-            )
+            StringSlice[mut=False](ptr=s_data.bitcast[Byte](), length=s_len)
         )
         self._ctx[].diplomat_buffer_write_destroy(out)
         _ = default_^
@@ -246,7 +248,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
         _ = self._ctx[].jvalue_to_string(self._value, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var s_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var s = String(s_ref)

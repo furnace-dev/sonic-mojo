@@ -30,7 +30,7 @@ fn bench_small_keys2(mut b: Bencher) raises:
 
 fn main() raises:
     var s_ = String('{"a": 100}')
-    var s_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+    var s_ref = StaticString(
         ptr=s_.unsafe_cstr_ptr().bitcast[Byte](), length=len(s_)
     )
     var ctx = get_sonic_context()

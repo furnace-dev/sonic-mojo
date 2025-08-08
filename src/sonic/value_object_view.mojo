@@ -5,7 +5,7 @@ from .value_ref import JsonValueRef
 
 
 struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
-    Stringable, JsonObjectViewable
+    JsonObjectViewable, Stringable
 ):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _src: Pointer[T, origin]
@@ -90,7 +90,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
     @always_inline
     fn insert_str(self, key: StaticString, value: String) -> None:
         var value_ = String(value)
-        var value_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var value_ref = StaticString(
             ptr=value_.unsafe_cstr_ptr().bitcast[Byte](), length=len(value_)
         )
         self._ctx[].jobject_insert_str(self._object, key, value_ref)
@@ -167,7 +167,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
         self._ctx[].jobject_get_str(self._object, key, default, out)
         var s_data = self._ctx[].diplomat_buffer_write_get_bytes(out)
         var s_len = self._ctx[].diplomat_buffer_write_len(out)
-        var ret_str_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+        var ret_str_ref = StringSlice[mut=False](
             ptr=s_data.bitcast[Byte](), length=s_len
         )
         var ret_str = String(ret_str_ref)
@@ -194,7 +194,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
             self._ctx[].jkeysiter_get(iter, i, default, out)
             var key = self._ctx[].diplomat_buffer_write_get_bytes(out)
             var key_len = self._ctx[].diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            var key_ref = StringSlice[mut=False](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)
@@ -212,7 +212,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
             self._ctx[].jkeyvalueref_get_key(kv, out)
             var key = self._ctx[].diplomat_buffer_write_get_bytes(out)
             var key_len = self._ctx[].diplomat_buffer_write_len(out)
-            var key_ref = StringSlice[__origin_of(StaticConstantOrigin)](
+            var key_ref = StringSlice[mut=False](
                 ptr=key.bitcast[Byte](), length=key_len
             )
             var key_str = String(key_ref)
