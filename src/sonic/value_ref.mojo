@@ -29,12 +29,12 @@ struct JsonValueRef(Copyable, JsonRefContainerTrait, Movable, Stringable):
         self._value = value._value
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonValueRef):
+    fn __moveinit__(out self, deinit other: JsonValueRef):
         self._ctx = other._ctx
         self._value = other._value
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jvalueref_destroy(self._value)
 
     @always_inline

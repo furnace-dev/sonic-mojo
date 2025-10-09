@@ -17,7 +17,7 @@ publish-forge = { cmd = "bash scripts/publish-forge.sh", env = { CONDA_BLD_PATH 
 publish-nightly = { cmd = "bash scripts/publish-nightly.sh", env = { CONDA_BLD_PATH = "output", PREFIX_DEV_API_KEY = "$PREFIX_DEV_API_KEY" } }
 
 [dependencies]
-mojo = "*"
+mojo = "0.25.6.*"
 
 libsonic = "*"
 

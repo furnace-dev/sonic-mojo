@@ -18,7 +18,7 @@ struct JsonArrayMut(Stringable):
         self._array = value
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonArrayMut):
+    fn __moveinit__(out self, deinit other: JsonArrayMut):
         self._ctx = other._ctx
         self._array = other._array
 
@@ -27,7 +27,7 @@ struct JsonArrayMut(Stringable):
         return JsonArray(self._ctx, self._ctx[].jarraymut_clone(self._array))
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jarraymut_destroy(self._array)
 
     @always_inline

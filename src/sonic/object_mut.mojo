@@ -17,12 +17,12 @@ struct JsonObjectMut(Stringable):
         self._object = value
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonObjectMut):
+    fn __moveinit__(out self, deinit other: JsonObjectMut):
         self._ctx = other._ctx
         self._object = other._object
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jobjectmut_destroy(self._object)
 
     @always_inline

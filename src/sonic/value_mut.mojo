@@ -21,12 +21,12 @@ struct JsonValueMut(Stringable):
         self._value = other._value
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonValueMut):
+    fn __moveinit__(out self, deinit other: JsonValueMut):
         self._ctx = other._ctx
         self._value = other._value
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jvaluemut_destroy(self._value)
 
     @always_inline

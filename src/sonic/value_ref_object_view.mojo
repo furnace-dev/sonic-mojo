@@ -33,13 +33,13 @@ struct JsonValueRefObjectView[origin: MutableOrigin, T: JsonRefContainerTrait](
         self._object = value[].as_jobject_pointer()
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonValueRefObjectView[origin, T]):
+    fn __moveinit__(out self, deinit other: JsonValueRefObjectView[origin, T]):
         self._ctx = other._ctx
         self._src = other._src
         self._object = other._object
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         pass
 
     @always_inline

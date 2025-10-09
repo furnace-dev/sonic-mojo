@@ -3,7 +3,7 @@ from .internal import *
 from .value_ref import JsonValueRef
 
 
-struct JsonArray(Stringable):
+struct JsonArray(Stringable, ImplicitlyCopyable):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _array: UnsafePointer[JArray]
 
@@ -38,12 +38,12 @@ struct JsonArray(Stringable):
         self._array = self._ctx[].jarray_clone(other._array)
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonArray):
+    fn __moveinit__(out self, deinit other: JsonArray):
         self._ctx = other._ctx
         self._array = other._array
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jarray_destroy(self._array)
 
     @always_inline

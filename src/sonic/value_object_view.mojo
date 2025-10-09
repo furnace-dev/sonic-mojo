@@ -32,13 +32,13 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
         self._object = value[].as_jobject_pointer()
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonValueObjectView[origin, T]):
+    fn __moveinit__(out self, deinit other: JsonValueObjectView[origin, T]):
         self._ctx = other._ctx
         self._src = other._src
         self._object = other._object
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         pass
 
     @always_inline
@@ -201,7 +201,7 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
             ret.append(key_str)
             self._ctx[].diplomat_buffer_write_destroy(out)
         self._ctx[].jkeysiter_destroy(iter)
-        return ret
+        return ret^
 
     fn iter(self) -> List[Tuple[String, JsonValueRef]]:
         var iter = self._ctx[].jobject_iter(self._object)
@@ -222,10 +222,10 @@ struct JsonValueObjectView[origin: MutableOrigin, T: JsonContainerTrait](
                 break
             var value = self._ctx[].jkeyvalueref_get_value(kv)
             var value_obj = JsonValueRef(self._ctx, value)
-            ret.append((key_str, value_obj))
+            ret.append((key_str, value_obj^))
             self._ctx[].jkeyvalueref_destroy(kv)
         self._ctx[].jobjectiter_destroy(iter)
-        return ret
+        return ret^
 
     fn __str__(self) -> String:
         return self.to_string()

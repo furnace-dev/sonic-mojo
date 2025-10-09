@@ -20,7 +20,7 @@ fn convert_jvalue_to_string(
     return ret_str
 
 
-struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
+struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable, ImplicitlyCopyable):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _object: UnsafePointer[JObject]
 
@@ -57,12 +57,12 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
         self._object = self._ctx[].jobject_clone(other._object)
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonObject):
+    fn __moveinit__(out self, deinit other: JsonObject):
         self._ctx = other._ctx
         self._object = other._object
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jobject_destroy(self._object)
 
     @always_inline
@@ -241,7 +241,7 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
             ret.append(key_str)
             self._ctx[].diplomat_buffer_write_destroy(out)
         self._ctx[].jkeysiter_destroy(iter)
-        return ret
+        return ret^
 
     fn iter(self) -> List[Tuple[String, JsonValueRef]]:
         var iter = self._ctx[].jobject_iter(self._object)
@@ -264,10 +264,10 @@ struct JsonObject(JsonContainerTrait, JsonObjectViewable, Stringable):
             # var value_str = convert_jvalue_to_string(value)
             # print("y", value_str)
             var value_obj = JsonValueRef(self._ctx, value)
-            ret.append((key_str, value_obj))
+            ret.append((key_str, value_obj^))
             self._ctx[].jkeyvalueref_destroy(kv)
         self._ctx[].jobjectiter_destroy(iter)
-        return ret
+        return ret^
 
     fn __str__(self) -> String:
         return self.to_string()

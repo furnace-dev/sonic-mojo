@@ -57,7 +57,7 @@ trait JsonObjectViewable:
         pass
 
 
-struct JsonValue(JsonContainerTrait, Stringable):
+struct JsonValue(JsonContainerTrait, Stringable, ImplicitlyCopyable):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValue]
 
@@ -127,7 +127,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
         self._value = other._ctx[].jvalue_clone(other._value)
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonValue):
+    fn __moveinit__(out self, deinit other: JsonValue):
         self._ctx = other._ctx
         self._value = other._value
 
@@ -142,7 +142,7 @@ struct JsonValue(JsonContainerTrait, Stringable):
         return JsonValue(ctx, ctx[].jvalue_from_str(s_view))
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jvalue_destroy(self._value)
 
     @always_inline
@@ -272,7 +272,7 @@ struct ValueIter:
         self._ctx = ctx
         self._iter = value
 
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jvalueiter_destroy(self._iter)
 
     fn len(self) -> Int:
@@ -295,7 +295,7 @@ struct ValueIterMut:
         self._ctx = ctx
         self._iter = value
 
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jvalueitermut_destroy(self._iter)
 
     fn len(self) -> Int:

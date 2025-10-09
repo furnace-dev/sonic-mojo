@@ -1,8 +1,9 @@
 from memory import UnsafePointer
 from sys.ffi import _Global
+from os import abort
 from .csonic import SonicContext
 
-alias _SONIC_GLOBAL = _Global["SONIC", SonicContext, _init_sonic_global]
+alias _SONIC_GLOBAL = _Global["SONIC", _init_sonic_global]
 
 
 fn _init_sonic_global() -> SonicContext:
@@ -10,9 +11,11 @@ fn _init_sonic_global() -> SonicContext:
 
 
 fn get_sonic_context() -> Pointer[SonicContext, StaticConstantOrigin]:
-    var global_ptr: UnsafePointer[SonicContext] = _SONIC_GLOBAL.get_or_create_ptr()
-
-    return Pointer[SonicContext, StaticConstantOrigin](to=global_ptr[])
+    try:
+        var global_ptr: UnsafePointer[SonicContext] = _SONIC_GLOBAL.get_or_create_ptr()
+        return Pointer[SonicContext, StaticConstantOrigin](to=global_ptr[])
+    except:
+        return abort[Pointer[SonicContext, StaticConstantOrigin]]("SonicContext")
 
 
 struct Sonic:

@@ -63,6 +63,7 @@ task publish:mojo
 ### Compile the sonic-rs library
 
 ```bash
+cd sonic_rs_bindings
 cargo build --release
 ```
 
@@ -81,7 +82,7 @@ sed -i 's/libXXX/libsonic/g' ./sonic/internal/diplomat_runtime.mojo
 ### Run the tests
 
 ```bash
-cp ./target/release/libsonic.so ./
+cp ./sonic_rs_bindings/target/release/libsonic.so ./
 
 magic shell
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(realpath .)

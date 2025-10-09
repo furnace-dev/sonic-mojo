@@ -22,12 +22,12 @@ struct JsonArrayRef(Stringable):
         self._array = other._array
 
     @always_inline
-    fn __moveinit__(out self, owned other: JsonArrayRef):
+    fn __moveinit__(out self, deinit other: JsonArrayRef):
         self._ctx = other._ctx
         self._array = other._array
 
     @always_inline
-    fn __del__(owned self):
+    fn __del__(deinit self):
         self._ctx[].jarrayref_destroy(self._array)
 
     @always_inline
