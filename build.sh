@@ -10,12 +10,12 @@ cargo build --release
 cd ..
 
 # Step 2: Generate bindings for sonic-rs
-echo "Generating bindings for sonic-rs..."
-cargo run --release -- generator
+# echo "Generating bindings for sonic-rs..."
+# cargo run --release -- generator
 
 # Step 3: Update the files in the internal directory to use the correct library name
-echo "Updating internal files..."
-sed -i 's/libXXX/libsonic/g' ./sonic/internal/diplomat_runtime.mojo
+# echo "Updating internal files..."
+# sed -i 's/libXXX/libsonic/g' ./sonic/internal/diplomat_runtime.mojo
 
 # Step 4: Copy the compiled .so file to the current directory
 echo "Copying the compiled .so file..."

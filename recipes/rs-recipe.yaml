@@ -6,7 +6,7 @@
 
 
 context:
-  version: "0.2.1"                   # package version
+  version: "0.2.2"                   # package version
   package_name: "libsonic" # package name
   package_path: "../sonic_rs_bindings/"    # package path, TODO X: 注意是相对此文件的路径 !!!
 
