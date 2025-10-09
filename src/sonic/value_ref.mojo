@@ -10,7 +10,7 @@ trait JsonRefContainerTrait:
         pass
 
 
-struct JsonValueRef(Copyable, JsonRefContainerTrait, Movable, Stringable):
+struct JsonValueRef(Copyable, JsonRefContainerTrait, Movable, Stringable, ImplicitlyCopyable):
     var _ctx: Pointer[SonicContext, StaticConstantOrigin]
     var _value: UnsafePointer[JValueRef]
 
