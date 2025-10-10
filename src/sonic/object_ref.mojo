@@ -142,7 +142,7 @@ struct JsonObjectRef(Stringable):
             ret.append(key_str)
             self._ctx[].diplomat_buffer_write_destroy(out)
         self._ctx[].jkeysiter_destroy(iter)
-        return ret
+        return ret^
 
     fn iter(self) -> List[Tuple[String, JsonValueRef]]:
         var iter = self._ctx[].jobjectref_iter(self._object)
@@ -166,7 +166,7 @@ struct JsonObjectRef(Stringable):
             ret.append((key_str, value_obj))
             self._ctx[].jkeyvalueref_destroy(kv)
         self._ctx[].jobjectiter_destroy(iter)
-        return ret
+        return ret^
 
     fn __str__(self) -> String:
         return self.to_string()
